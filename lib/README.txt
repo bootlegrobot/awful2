@@ -1,0 +1,1 @@
+Place any closed-source, 3rd-party libraries in the ./private folder! Any files placed there will be ignored by source control.

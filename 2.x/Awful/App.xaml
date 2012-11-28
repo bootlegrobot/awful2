@@ -1,0 +1,48 @@
+﻿<Application xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+             xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:common="clr-namespace:Awful.Common"
+             mc:Ignorable="d"
+             x:Class="Awful.App">
+
+    <!--Application Resources-->
+    <Application.Resources>
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Common/CommonStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
+            <!-- Converters -->
+            <common:CollapseOnTrue x:Key="collapseOnTrueConverter" />
+            <common:CollapseOnFalse x:Key="collapseOnFalseConverter" />
+            <common:AssetRetriever x:Key="assetRetriever" />
+
+            <!-- Rating Colors -->
+            <SolidColorBrush x:Key="ThreadRating1Brush" Color="#FFA5B667" />
+            <SolidColorBrush x:Key="ThreadRating2Brush" Color="#FFB69363" />
+            <SolidColorBrush x:Key="ThreadRating3Brush" Color="#FFF4AD09" />
+            <SolidColorBrush x:Key="ThreadRating4Brush" Color="#FFFFDD15" />
+            <SolidColorBrush x:Key="ThreadRating5Brush" Color="gold" />
+            
+            <!-- Post Read Status Colors -->
+            <SolidColorBrush x:Key="PostReadBrush"
+                             Color="{StaticResource PhoneAccentColor}" />
+            <SolidColorBrush x:Key="PostUnreadBrush"
+                             Color="{StaticResource PhoneForegroundColor}" />
+
+        </ResourceDictionary>
+    </Application.Resources>
+
+    <Application.ApplicationLifetimeObjects>
+        <!--Required object that handles lifetime events for the application-->
+        <shell:PhoneApplicationService Launching="Application_Launching"
+                                       Closing="Application_Closing"
+                                       Activated="Application_Activated"
+                                       Deactivated="Application_Deactivated" />
+    </Application.ApplicationLifetimeObjects>
+
+</Application>

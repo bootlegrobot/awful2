@@ -1,0 +1,58 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="Awful.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:viewmodel="clr-namespace:Awful.ViewModels"
+    xmlns:local="clr-namespace:Awful.Controls"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait"  Orientation="Portrait"
+    shell:SystemTray.IsVisible="True">
+   
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" 
+          Background="Transparent">
+        <!--Pivot Control-->
+        <controls:Pivot x:Name="MainPivot"
+            Title="MY APPLICATION"
+                        ItemsSource="{Binding Items}"
+                        SelectionChanged="LoadPivotContent">
+            <controls:Pivot.HeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Title}"
+                               Style="{StaticResource PhoneTextTitle2Style}" />
+                </DataTemplate>
+            </controls:Pivot.HeaderTemplate>
+            
+            <controls:Pivot.ItemTemplate>
+                <DataTemplate>
+                    
+                    <viewmodel:HomePageSectionTemplateSelector Content="{Binding Content}"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch">
+                    
+                        <viewmodel:HomePageSectionTemplateSelector.ForumListTemplate>
+                            <DataTemplate>
+                                <local:ForumListControl DataContext="{Binding}" />
+                            </DataTemplate>
+                        </viewmodel:HomePageSectionTemplateSelector.ForumListTemplate>
+                        <viewmodel:HomePageSectionTemplateSelector.BookmarkListTemplate>
+                            <DataTemplate>
+                                <local:AppendingThreadListControl DataContext="{Binding}" />
+                            </DataTemplate>
+                        </viewmodel:HomePageSectionTemplateSelector.BookmarkListTemplate>
+                        
+                    </viewmodel:HomePageSectionTemplateSelector>
+                </DataTemplate>
+            </controls:Pivot.ItemTemplate>
+        </controls:Pivot>
+    </Grid>
+    
+</phone:PhoneApplicationPage>

@@ -1,0 +1,18 @@
+# Any svn metafiles
+*.svn
+.svn/
+# Ignore all bin directories
+[Bb]in/
+# Ignore all obj directories
+[Oo]bj/
+# Solution files
+*.suo
+# User files
+*.user
+# NuGet
+packages/
+# design and marketplace assets
+design/
+marketplace/
+# private 3rd-party library folder
+lib/private/
