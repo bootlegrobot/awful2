@@ -45,10 +45,10 @@ namespace Awful
             get { return this.ThreadViewPostListPanel.Visibility == System.Windows.Visibility.Visible; }
         }
 
-        public void GoToPage(int index = -1)
+        public void GoToIndex(int index = -1)
         {
             // if index equals -1, load last read page
-            if (index < 1)
+            if (index < 0)
             {
                 int lastRead = this.viewmodel.Thread.Data.GetLastReadPage();
                 lastRead = Math.Min(lastRead, this.viewmodel.Items.Count);
@@ -56,12 +56,7 @@ namespace Awful
             }
 
             var item = this.viewmodel.Items[index];
-
-            if (item != this.viewmodel.SelectedItem)
-            {
-                this.viewmodel.SelectedIndex = index;
-                this.viewmodel.SelectedItem = item;
-            }
+            GoToPage(item);
         }
 
         private void GoToPage(Data.ThreadPageDataSource item)
@@ -122,7 +117,7 @@ namespace Awful
                 {
                     this.viewmodel.UpdateModel(state);
                     this.DataContext = viewmodel;
-                    this.GoToPage(state.PageNumber);
+                    this.GoToIndex(state.PageNumber);
                 }
             }
         }
@@ -155,7 +150,7 @@ namespace Awful
 
             this.viewmodel.UpdateModel(threadId, forumId, currentPage);
             this.DataContext = viewmodel;
-            this.GoToPage(currentPage);
+            this.GoToIndex(currentPage);
         }
 
         void ThreadViewPage_Loaded(object sender, RoutedEventArgs e)
@@ -242,12 +237,12 @@ namespace Awful
 
         private void GoToLastPage(object sender, EventArgs e)
         {
-            this.GoToPage(this.viewmodel.Items.Count - 1);
+            this.GoToIndex(this.viewmodel.Items.Count - 1);
         }
 
         private void GoToFirstPage(object sender, EventArgs e)
         {
-            this.GoToPage(0);
+            this.GoToIndex(0);
         }
 
         private void ScrollToPost(object sender, Telerik.Windows.Controls.ListBoxItemTapEventArgs e)

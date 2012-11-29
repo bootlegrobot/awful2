@@ -609,7 +609,7 @@ namespace Awful.Data
             FormatImage(data.IconUri);
         }
 
-        public void NavigateToThreadView(NavigationDelegate nav, int pageNumber = 0)
+        public void NavigateToThreadView(NavigationDelegate nav, int pageNumber = -1)
         {
             string uri = string.Format("/ThreadViewPage.xaml?ForumID={0}&ThreadID={1}&Page={2}",
                 this.ForumID,
