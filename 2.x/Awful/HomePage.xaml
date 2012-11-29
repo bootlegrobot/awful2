@@ -20,18 +20,18 @@
     <Grid x:Name="LayoutRoot" 
           Background="Transparent">
         <!--Pivot Control-->
-        <controls:Pivot x:Name="MainPivot"
+        <controls:Panorama x:Name="MainPanorama"
             Title="MY APPLICATION"
                         ItemsSource="{Binding Items}"
-                        SelectionChanged="LoadPivotContent">
-            <controls:Pivot.HeaderTemplate>
+                        SelectionChanged="LoadPanoramaContent" Loaded="LoadPanoramaContentInitial">
+            <controls:Panorama.HeaderTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Title}"
                                Style="{StaticResource PhoneTextTitle2Style}" />
                 </DataTemplate>
-            </controls:Pivot.HeaderTemplate>
-            
-            <controls:Pivot.ItemTemplate>
+            </controls:Panorama.HeaderTemplate>
+
+            <controls:Panorama.ItemTemplate>
                 <DataTemplate>
                     
                     <viewmodel:HomePageSectionTemplateSelector Content="{Binding Content}"
@@ -51,8 +51,8 @@
                         
                     </viewmodel:HomePageSectionTemplateSelector>
                 </DataTemplate>
-            </controls:Pivot.ItemTemplate>
-        </controls:Pivot>
+            </controls:Panorama.ItemTemplate>
+        </controls:Panorama>
     </Grid>
     
 </phone:PhoneApplicationPage>

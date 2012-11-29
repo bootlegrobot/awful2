@@ -20,7 +20,7 @@ namespace Awful
         {
             InitializeComponent();
             Datasource = new HomePageViewModel();
-            MainPivot.DataContext = Datasource;
+            MainPanorama.DataContext = Datasource;
         }
 
         private HomePageViewModel Datasource
@@ -29,9 +29,9 @@ namespace Awful
             set;
         }
 
-        private void LoadPivotContent(object sender, SelectionChangedEventArgs e)
+        private void LoadPanoramaContent(object sender, SelectionChangedEventArgs e)
         {
-            var index = (sender as Pivot).SelectedIndex;
+            var index = (sender as Panorama).SelectedIndex;
             var item = Datasource.Items[index];
             if (!item.IsDataLoaded)
                 item.LoadData();
@@ -46,6 +46,14 @@ namespace Awful
             {
                 NavigationService.RemoveBackEntry();
             }
+        }
+
+        private void LoadPanoramaContentInitial(object sender, RoutedEventArgs e)
+        {
+            //When we initially load the panorama, get items to put into the data source.
+            var item = Datasource.Items[0];
+            if (!item.IsDataLoaded)
+                item.LoadData();
         }
     }
 }
