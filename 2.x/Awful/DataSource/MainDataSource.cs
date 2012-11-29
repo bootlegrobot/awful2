@@ -42,12 +42,13 @@ namespace Awful.Data
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 if (Instance.CurrentUser.IsLoggedIn)
-                {
-                    e.SetCookiesAndProcced(Instance.CurrentUser.Metadata.Cookies);
-                }
-
+                    e.SetUserAndProceed(Instance.CurrentUser.Metadata);
+                
                 else
                 {
+                    // TODO: Create settings page that has a login interface -- no need to restart the app.
+                    // Notify users at this point that they need to head to settings and login from there.
+
                     StringBuilder builder = new StringBuilder();
                     builder.Append("You must login first before continuing.");
                     e.Cancel = true;

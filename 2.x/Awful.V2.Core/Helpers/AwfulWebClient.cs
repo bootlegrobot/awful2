@@ -152,9 +152,9 @@ namespace Awful
             Signal = new AutoResetEvent(false);
         }
 
-        public void SetCookiesAndProcced(IEnumerable<Cookie> cookies)
+        public void SetUserAndProceed(UserMetadata user)
         {
-            AwfulWebRequest.SetCookieJar(cookies);
+            AwfulWebRequest.SetCredentials(user);
             this.Ignore = true;
         }
     }

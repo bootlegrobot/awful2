@@ -47,7 +47,6 @@ namespace Awful.ViewModels
 
         public ICommand LoginCommand { get { return this; } }
 
-        private readonly AwfulLoginClient _client;
         private readonly BackgroundWorker _worker;
 
         public event EventHandler LoginFailed;
@@ -55,7 +54,6 @@ namespace Awful.ViewModels
 
         public LoginPageViewModel()
         {
-            _client = new AwfulLoginClient();
             _worker = new BackgroundWorker();
             _worker.WorkerSupportsCancellation = false;
             _worker.WorkerReportsProgress = true;
@@ -100,9 +98,9 @@ namespace Awful.ViewModels
 
         private void OnDoWork(object sender, DoWorkEventArgs e)
         {
-            object cookies = null;
-            cookies = _client.Authenticate(this._username, this._password);
-            e.Result = cookies != null;
+            UserMetadata user = new UserMetadata();
+            user.Username = this.Username;
+            e.Result = user.Login(this.Password);
         }
 
 
