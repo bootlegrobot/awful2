@@ -16,7 +16,6 @@ namespace Awful
         string FormCookie { get; }
         bool IsForward { get; }
         string Body { get; set; }
-        bool SendMessage();
     }
 
     [DataContract]
@@ -38,10 +37,5 @@ namespace Awful
         public string Subject { get; set; }
         [DataMember]
         public string Body { get; set; }
-
-        public bool SendMessage()
-        {
-            return false;
-        }
     }
 }

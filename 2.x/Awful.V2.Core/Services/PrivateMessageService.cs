@@ -250,7 +250,7 @@ namespace Awful
         /// <param name="thisFolderID"></param>
         /// <param name="folderID"></param>
         /// <param name="result"></param>
-        public bool MoveMessages(System.Collections.Generic.List<int> privateMessageIDs, int thisFolderID, int folderID)
+        public bool MoveMessages(IList<int> privateMessageIDs, int thisFolderID, int folderID)
         {
             string submitMove = string.Format("&move={0}", MOVE_MESSAGE_SUBMIT_VALUE);
             return this.HandleMessages(privateMessageIDs, thisFolderID, folderID, submitMove);

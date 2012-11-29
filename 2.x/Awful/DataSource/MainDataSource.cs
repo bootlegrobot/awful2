@@ -791,7 +791,7 @@ namespace Awful.Data
             ThreadPageDataSource result = null;
             ThreadPageMetadata metadata = Data != null ? Data : new ThreadPageMetadata() { ThreadID = ThreadID, PageNumber = PageNumber };
 
-            var page = metadata.FetchThreadPage();
+            var page = metadata.Refresh();
             
             if (page != null)
                 result = new ThreadPageDataObject(page);
