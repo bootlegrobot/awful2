@@ -41,7 +41,7 @@ namespace Awful.Data
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (Instance.CurrentUser.IsLoggedIn)
+                if (Instance.CurrentUser.CanLogIn)
                     e.SetUserAndProceed(Instance.CurrentUser.Metadata);
                 
                 else
@@ -194,7 +194,7 @@ namespace Awful.Data
             this.Title = metadata.Username;
         }
 
-        public bool IsLoggedIn { get { return this.Metadata != null && !this.Metadata.Cookies.IsNullOrEmpty(); } }
+        public bool CanLogIn { get { return this.Metadata != null && !this.Metadata.Cookies.IsNullOrEmpty(); } }
     }
 
     [DataContract]
@@ -332,7 +332,8 @@ namespace Awful.Data
         public ForumCollection Refresh()
         {
             ForumCollection result = null;
-            var forums = ForumTasks.FetchAllForums();
+            var user = MainDataSource.Instance.CurrentUser.Metadata;
+            var forums = user.LoadForums();
             if (forums != null)
             {
                 result = new ForumCollection(CreateItems(forums));
@@ -436,19 +437,25 @@ namespace Awful.Data
         [DataMember]
         public virtual string ForumID { get; set; }
 
+        protected List<ThreadDataSource> CreateThreadSources(ForumPageMetadata page)
+        {
+            var threads = new List<ThreadDataSource>(page.Threads.Count);
+            foreach (var thread in page.Threads)
+            {
+                var source = new ThreadDataSource(thread);
+                source.ForumID = this.ForumID;
+                threads.Add(source);
+            }
+            return threads;
+        }
+
         protected IEnumerable<ThreadDataSource> LoadThreadsFromPage(ForumMetadata forum, int pageNumber)
         {
             List<ThreadDataSource> threads = null;
             var forumPageData = forum.LoadPage(pageNumber);
             if (forumPageData != null)
             {
-                threads = new List<ThreadDataSource>(forumPageData.Threads.Count);
-                foreach (var thread in forumPageData.Threads)
-                {
-                    var source = new ThreadDataSource(thread);
-                    source.ForumID = this.ForumID;
-                    threads.Add(source);
-                }
+                threads = CreateThreadSources(forumPageData);
             }
             return threads;
         }
@@ -487,8 +494,9 @@ namespace Awful.Data
 
         public override IEnumerable<ThreadDataSource> LoadThreadsFromPage(int pageNumber)
         {
-            var bookmarks = new BookmarkMetadata();
-            return LoadThreadsFromPage(bookmarks, 0);
+            var user = MainDataSource.Instance.CurrentUser.Metadata;
+            var bookmarks = user.LoadBookmarks();
+            return CreateThreadSources(bookmarks);
         }
     }
 

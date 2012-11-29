@@ -41,7 +41,7 @@ namespace Awful
             base.OnNavigatedTo(e);
             
             // check if user has already logged in
-            if (Data.MainDataSource.Instance.CurrentUser.IsLoggedIn)
+            if (Data.MainDataSource.Instance.CurrentUser.CanLogIn)
                 NavigateToHomePage();
             else
                 ShowLoginScreen();
