@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Linq;
 using System.IO.IsolatedStorage;
 using System.Runtime.Serialization;
 using System.Diagnostics;
 using System.Text;
 using System.IO;
 using System.Windows;
+using HtmlAgilityPack;
 
 namespace Awful
 {
@@ -173,6 +175,18 @@ namespace Awful
             value = value.Replace("\n", "");
             value = value.Replace("#", "");
             value = value.Replace("?", "");
+            return value;
+        }
+
+        internal static string ParseTitleFromBreadcrumbsNode(this HtmlNode node)
+        {
+            string value = string.Empty;
+            try
+            {
+                var breadcrumbs = node.InnerText.Replace("&gt;", "|").Split('|');
+                value = breadcrumbs.Last().Trim();
+            }
+            catch (Exception) { value = "Unknown Value"; }
             return value;
         }
     }
