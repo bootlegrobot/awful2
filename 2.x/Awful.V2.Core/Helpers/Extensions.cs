@@ -276,26 +276,48 @@ namespace Awful
 
         #region Forum Extensions
 
-        public static ForumPageMetadata FetchForumPage(this ForumMetadata forum, int pageNumber)
+        private static ForumPageMetadata LoadPageFromUrl(string forumPageUrl)
         {
-            var url = new StringBuilder();
-            if (forum is BookmarkMetadata)
-                url.Append((forum as BookmarkMetadata).Url);
-            else
-            {
-                // http://forums.somethingawful.com/forumdisplay.php
-                url.AppendFormat("{0}/{1}", CoreConstants.BASE_URL, CoreConstants.FORUM_PAGE_URI);
-                // ?forumid=<FORUMID>
-                url.AppendFormat("?forumid={0}", forum.ForumID);
-                // &daysprune=30&perpage=30&posticon=0sortorder=desc&sortfield=lastpost
-                url.Append("&daysprune=30&perpage=30&posticon=0sortorder=desc&sortfield=lastpost");
-                // &pagenumber=<PAGENUMBER>
-                url.AppendFormat("&pagenumber={0}", pageNumber);
-            }
             var web = new AwfulWebClient();
-            var doc = web.FetchHtml(url.ToString());
+            var doc = web.FetchHtml(forumPageUrl);
             var result = ForumParser.ParseForumPage(doc);
             return result;
+        }
+
+        private static ForumPageMetadata LoadPageFromForumId(string forumId, int pageNumber)
+        {
+            var url = new StringBuilder();
+            // http://forums.somethingawful.com/forumdisplay.php
+            url.AppendFormat("{0}/{1}", CoreConstants.BASE_URL, CoreConstants.FORUM_PAGE_URI);
+            // ?forumid=<FORUMID>
+            url.AppendFormat("?forumid={0}", forumId);
+            // &daysprune=30&perpage=30&posticon=0sortorder=desc&sortfield=lastpost
+            url.Append("&daysprune=30&perpage=30&posticon=0sortorder=desc&sortfield=lastpost");
+            // &pagenumber=<PAGENUMBER>
+            url.AppendFormat("&pagenumber={0}", pageNumber);
+
+            return LoadPageFromUrl(url.ToString());
+        }
+
+        public static ForumPageMetadata LoadPage(this ForumMetadata forum, int pageNumber)
+        {
+            ForumPageMetadata page = null;
+            if (forum is BookmarkMetadata)
+            {
+                string url = null;
+                url = (forum as BookmarkMetadata).Url;
+                page = LoadPageFromUrl(url);
+            }
+            else
+            {
+                page = LoadPageFromForumId(forum.ForumID, pageNumber);
+            }
+            return page;
+        }
+
+        public static ForumPageMetadata Refresh(this ForumPageMetadata page)
+        {
+            return LoadPageFromForumId(page.ForumID, page.PageNumber);
         }
 
         #endregion
@@ -425,5 +447,61 @@ namespace Awful
 
         #endregion
 
+        #region User Extensions
+
+        public static bool Login(this UserMetadata user, string password)
+        {
+            var login = new AwfulLoginClient();
+            var cookies = login.Authenticate(user.Username, password);
+            bool success = false;
+            if (cookies != null)
+            {
+                success = true;
+                user.Cookies = cookies;
+                AwfulWebRequest.SetCredentials(user);
+            }
+
+            return success;
+        }
+
+        public static void MakeActive(this UserMetadata user)
+        {
+            if (!user.IsActive())
+                AwfulWebRequest.SetCredentials(user);
+        }
+
+        public static bool IsActive(this UserMetadata user)
+        {
+            return AwfulWebRequest.ActiveUser.Equals(user) &&
+                AwfulWebRequest.CanAuthenticate;
+        }
+
+        public static void Logout(this UserMetadata user)
+        {
+            if (user.IsActive())
+            {
+                AwfulWebRequest.ClearCredentials();
+            }
+        }
+    
+        public static IEnumerable<ForumMetadata> LoadForums(this UserMetadata user)
+        {
+            var forums = ForumTasks.FetchAllForums();
+            return forums;
+        }
+
+        public static ForumPageMetadata LoadBookmarks(this UserMetadata user)
+        {
+            BookmarkMetadata data = new BookmarkMetadata();
+            return data.LoadPage(0);
+        }
+
+        public static IEnumerable<PrivateMessageFolderMetadata> LoadPrivateMessageFolders(this UserMetadata user)
+        {
+            var messages = PrivateMessageService.Service.FetchFolders();
+            return messages;
+        }
+
+        #endregion
     }
 }
