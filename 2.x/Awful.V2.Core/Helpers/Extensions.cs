@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Linq;
 using System.IO.IsolatedStorage;
 using System.Runtime.Serialization;
 using System.Diagnostics;
 using System.Text;
 using System.IO;
 using System.Windows;
+using HtmlAgilityPack;
 
 namespace Awful
 {
@@ -111,6 +113,10 @@ namespace Awful
             }
             catch (Exception ex)
             {
+#if DEBUG
+                throw ex;
+#endif
+
                 Debug.WriteLine(ex.Message);
                 result = false;
             }
@@ -175,10 +181,24 @@ namespace Awful
             value = value.Replace("?", "");
             return value;
         }
+
+        internal static string ParseTitleFromBreadcrumbsNode(this HtmlNode node)
+        {
+            string value = string.Empty;
+            try
+            {
+                var breadcrumbs = node.InnerText.Replace("&gt;", "|").Split('|');
+                value = breadcrumbs.Last().Trim();
+            }
+            catch (Exception) { value = "Unknown Value"; }
+            return value;
+        }
     }
 
     public static class MetadataExtensions
     {
+        #region Thread Extensions
+
         public static int GetLastReadPage(this ThreadMetadata thread)
         {
             if (thread.IsNew)
@@ -215,7 +235,7 @@ namespace Awful
             return MetroStyler.Metrofy(page.Posts);
         }
 
-        public static string CreatePageUrl(this ThreadMetadata data, int page = -1)
+        public static string PageUrl(this ThreadMetadata data, int page = -1)
         {
             StringBuilder url = new StringBuilder();
             url.AppendFormat("http://forums.somethingawful.com/displaythread.php?threadid={0}", data.ThreadID);
@@ -227,9 +247,9 @@ namespace Awful
             return url.ToString();
         }
 
-        public static ThreadPageMetadata FetchThreadPage(string threadId, int pageNumber)
+        private static ThreadPageMetadata FetchThreadPage(string threadId, int pageNumber)
         {
-            // http://forums.somethingawful.com/showthread.php?noseen=0&threadid=3439182&pagenumber=69
+            // example string: http://forums.somethingawful.com/showthread.php?noseen=0&threadid=3439182&pagenumber=69
             var url = new StringBuilder();
             // http://forums.somethingawful.com/showthread.php
             url.AppendFormat("{0}/{1}", CoreConstants.BASE_URL, CoreConstants.THREAD_PAGE_URI);
@@ -242,37 +262,246 @@ namespace Awful
             return result;
         }
 
-        public static ThreadPageMetadata FetchThreadPage(this ThreadMetadata thread, int pageNumber)
+        public static ThreadPageMetadata LoadPage(this ThreadMetadata thread, int pageNumber)
         {
            return FetchThreadPage(thread.ThreadID, pageNumber);
         }
 
-        public static ThreadPageMetadata FetchThreadPage(this ThreadPageMetadata page)
+        public static ThreadPageMetadata Refresh(this ThreadPageMetadata page)
         {
             return FetchThreadPage(page.ThreadID, page.PageNumber);
         }
 
-        public static ForumPageMetadata FetchForumPage(this ForumMetadata forum, int pageNumber)
+        #endregion
+
+        #region Forum Extensions
+
+        private static ForumPageMetadata LoadPageFromUrl(string forumPageUrl)
         {
-            var url = new StringBuilder();
-            if (forum is BookmarkMetadata)
-                url.Append((forum as BookmarkMetadata).Url);
-            else
-            {
-                // http://forums.somethingawful.com/forumdisplay.php
-                url.AppendFormat("{0}/{1}", CoreConstants.BASE_URL, CoreConstants.FORUM_PAGE_URI);
-                // ?forumid=<FORUMID>
-                url.AppendFormat("?forumid={0}", forum.ForumID);
-                // &daysprune=30&perpage=30&posticon=0sortorder=desc&sortfield=lastpost
-                url.Append("&daysprune=30&perpage=30&posticon=0sortorder=desc&sortfield=lastpost");
-                // &pagenumber=<PAGENUMBER>
-                url.AppendFormat("&pagenumber={0}", pageNumber);
-            }
             var web = new AwfulWebClient();
-            var doc = web.FetchHtml(url.ToString());
+            var doc = web.FetchHtml(forumPageUrl);
             var result = ForumParser.ParseForumPage(doc);
             return result;
         }
-        
+
+        private static ForumPageMetadata LoadPageFromForumId(string forumId, int pageNumber)
+        {
+            var url = new StringBuilder();
+            // http://forums.somethingawful.com/forumdisplay.php
+            url.AppendFormat("{0}/{1}", CoreConstants.BASE_URL, CoreConstants.FORUM_PAGE_URI);
+            // ?forumid=<FORUMID>
+            url.AppendFormat("?forumid={0}", forumId);
+            // &daysprune=30&perpage=30&posticon=0sortorder=desc&sortfield=lastpost
+            url.Append("&daysprune=30&perpage=30&posticon=0sortorder=desc&sortfield=lastpost");
+            // &pagenumber=<PAGENUMBER>
+            url.AppendFormat("&pagenumber={0}", pageNumber);
+
+            return LoadPageFromUrl(url.ToString());
+        }
+
+        public static ForumPageMetadata LoadPage(this ForumMetadata forum, int pageNumber)
+        {
+            ForumPageMetadata page = null;
+            if (forum is BookmarkMetadata)
+            {
+                string url = null;
+                url = (forum as BookmarkMetadata).Url;
+                page = LoadPageFromUrl(url);
+            }
+            else
+            {
+                page = LoadPageFromForumId(forum.ForumID, pageNumber);
+            }
+            return page;
+        }
+
+        public static ForumPageMetadata Refresh(this ForumPageMetadata page)
+        {
+            return LoadPageFromForumId(page.ForumID, page.PageNumber);
+        }
+
+        #endregion
+
+        #region Private Message Extensions
+
+        public static PrivateMessageMetadata Refresh(this PrivateMessageMetadata metadata)
+        {
+            int id = -1;
+            if (int.TryParse(metadata.PrivateMessageId, out id))
+                return PrivateMessageService.Service.FetchMessage(id);
+            else
+                return null;
+        }
+
+        public static IPrivateMessageRequest BeginForward(this PrivateMessageMetadata metadata)
+        {
+            IPrivateMessageRequest request = null;
+            int id = -1;
+            if (int.TryParse(metadata.PrivateMessageId, out id))
+                request = PrivateMessageService.Service.BeginForwardToMessageRequest(id);
+
+            return request;
+        }
+
+        public static IPrivateMessageRequest BeginReply(this PrivateMessageMetadata metadata)
+        {
+            IPrivateMessageRequest request = null;
+            int id = -1;
+            if (int.TryParse(metadata.PrivateMessageId, out id))
+                request = PrivateMessageService.Service.BeginReplyToMessageRequest(id);
+
+            return request;
+        }
+
+        public static bool Send(this IPrivateMessageRequest request)
+        {
+            return PrivateMessageService.Service.SendMessage(request);
+        }
+
+        public static bool Delete(this PrivateMessageMetadata metadata)
+        {
+            int id = -1;
+            int folderId = -1;
+            bool success = false;
+            if (int.TryParse(metadata.PrivateMessageId, out id) &&
+                int.TryParse(metadata.FolderId, out folderId))
+            {
+                success = PrivateMessageService.Service.DeleteMessage(id, folderId, folderId);
+            }
+
+            return success;
+        }
+
+        public static bool MoveTo(this PrivateMessageMetadata metadata, PrivateMessageFolderMetadata folder)
+        {
+            int id = int.Parse(metadata.PrivateMessageId);
+            int srcId = int.Parse(metadata.FolderId);
+            int destId = int.Parse(folder.FolderId);
+            return PrivateMessageService.Service.MoveMessage(id, srcId, destId);
+        }
+
+        public static bool MoveTo(this IEnumerable<PrivateMessageMetadata> messages, PrivateMessageFolderMetadata folder)
+        {
+            var idList = new List<int>(messages.Count());
+            string folderId = messages.First().FolderId;
+            foreach (var message in messages)
+            {
+                if (folderId.Equals(message.FolderId))
+                    throw new Exception("All messages must belong to the same folder.");
+
+                int messageId = int.Parse(message.PrivateMessageId);
+                idList.Add(messageId);
+            }
+
+            int srcId = int.Parse(folderId);
+            int destId = int.Parse(folder.FolderId);
+            return PrivateMessageService.Service.MoveMessages(idList, srcId, destId);
+        }
+
+        public static PrivateMessageFolderMetadata Refresh(this PrivateMessageFolderMetadata metadata)
+        {
+            int id = -1;
+            PrivateMessageFolderMetadata folder = null;
+            if (int.TryParse(metadata.FolderId, out id))
+                folder = PrivateMessageService.Service.FetchFolder(id);
+
+            return folder;
+        }
+
+        public static bool RenameTo(this PrivateMessageFolderMetadata metadata, string name)
+        {
+            bool success = false;
+            var editor = PrivateMessageService.Service.BeginEditFolderRequest();
+            editor.RenameFolder(metadata, name);
+            success = editor.SendRequest();
+            return success;
+        }
+
+        public static bool Delete(this PrivateMessageFolderMetadata metadata)
+        {
+            bool success = false;
+            var editor = PrivateMessageService.Service.BeginEditFolderRequest();
+            editor.DeleteFolder(metadata);
+            success = editor.SendRequest();
+            return success;
+        }
+
+        public static bool DeleteAllMessages(this PrivateMessageFolderMetadata metadata)
+        {
+            int folderId = int.Parse(metadata.FolderId);
+            var messageIds = metadata.Messages.Select(message => int.Parse(message.PrivateMessageId)).ToList();
+            return PrivateMessageService.Service.DeleteMessages(messageIds, folderId, folderId);
+        }
+
+        public static bool CreateNew(this PrivateMessageFolderMetadata metadata)
+        {
+            if (metadata.Name == null || metadata.Name == string.Empty)
+                throw new Exception("Cannot create a new folder with no name!");
+
+            bool success = false;
+            var editor = PrivateMessageService.Service.BeginEditFolderRequest();
+            editor.CreateFolder(metadata.Name);
+            success = editor.SendRequest();
+            return success;
+        }
+
+        #endregion
+
+        #region User Extensions
+
+        public static bool Login(this UserMetadata user, string password)
+        {
+            var login = new AwfulLoginClient();
+            var cookies = login.Authenticate(user.Username, password);
+            bool success = false;
+            if (cookies != null)
+            {
+                success = true;
+                user.Cookies = cookies;
+                AwfulWebRequest.SetCredentials(user);
+            }
+
+            return success;
+        }
+
+        public static void MakeActive(this UserMetadata user)
+        {
+            if (!user.IsActive())
+                AwfulWebRequest.SetCredentials(user);
+        }
+
+        public static bool IsActive(this UserMetadata user)
+        {
+            return AwfulWebRequest.ActiveUser.Equals(user) &&
+                AwfulWebRequest.CanAuthenticate;
+        }
+
+        public static void Logout(this UserMetadata user)
+        {
+            if (user.IsActive())
+            {
+                AwfulWebRequest.ClearCredentials();
+            }
+        }
+    
+        public static IEnumerable<ForumMetadata> LoadForums(this UserMetadata user)
+        {
+            var forums = ForumTasks.FetchAllForums();
+            return forums;
+        }
+
+        public static ForumPageMetadata LoadBookmarks(this UserMetadata user)
+        {
+            BookmarkMetadata data = new BookmarkMetadata();
+            return data.LoadPage(0);
+        }
+
+        public static IEnumerable<PrivateMessageFolderMetadata> LoadPrivateMessageFolders(this UserMetadata user)
+        {
+            var messages = PrivateMessageService.Service.FetchFolders();
+            return messages;
+        }
+
+        #endregion
     }
 }

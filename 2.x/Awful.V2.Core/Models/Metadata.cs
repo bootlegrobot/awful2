@@ -156,4 +156,60 @@ namespace Awful
         [DataMember]
         public List<Cookie> Cookies { get; set; }
     }
+
+    [DataContract]
+    public class TagMetadata
+    {
+        [DataMember]
+        public string Title { get; set; }
+        [DataMember]
+        public string Value { get; set; }
+        [DataMember]
+        public string TagUri { get; set; }
+
+        public static readonly TagMetadata NoTag;
+        static TagMetadata() { NoTag = new TagMetadata() { Title = "No Icon", Value = "0", TagUri = string.Empty }; }
+    }
+
+    [DataContract]
+    public class PrivateMessageMetadata
+    {
+        public enum MessageStatus
+        {
+            Unknown=0,
+            New,
+            Read,
+            Cancelled,
+            Replied,
+            Forwarded
+        };
+
+        [DataMember]
+        public string Subject { get; set; }
+        [DataMember]
+        public string To { get; set; }
+        [DataMember]
+        public string From { get; set; }
+        [DataMember]
+        public string Body { get; set; }
+        [DataMember]
+        public string PrivateMessageId { get; set; }
+        [DataMember]
+        public MessageStatus Status { get; set; }
+        [DataMember]
+        public DateTime? PostDate { get; set; }
+        [DataMember]
+        public string FolderId { get; set; }
+    }
+
+    [DataContract]
+    public class PrivateMessageFolderMetadata
+    {
+        [DataMember]
+        public string Name { get; set; }
+        [DataMember]
+        public string FolderId { get; set; }
+        [DataMember]
+        public ICollection<PrivateMessageMetadata> Messages { get; set; }
+    }
 }

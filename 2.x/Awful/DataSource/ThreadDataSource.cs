@@ -453,7 +453,7 @@ namespace Awful.Data
 
             if (task.Html == null || task.Posts == null)
             {
-                ThreadPageMetadata pageData = metadata.FetchThreadPage(this.PageNumber);
+                ThreadPageMetadata pageData = metadata.LoadPage(this.PageNumber);
                 if (pageData != null)
                 {
                     task.Html = pageData.ConvertToMetroStyle();
