@@ -113,6 +113,10 @@ namespace Awful
             }
             catch (Exception ex)
             {
+#if DEBUG
+                throw ex;
+#endif
+
                 Debug.WriteLine(ex.Message);
                 result = false;
             }
