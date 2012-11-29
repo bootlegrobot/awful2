@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace Awful.Common
 {
     /// <summary>
     /// Implementation of <see cref="INotifyPropertyChanged"/> to simplify models.
     /// </summary>
+    [DataContract]
     public abstract class BindableBase : INotifyPropertyChanged
     {
         /// <summary>

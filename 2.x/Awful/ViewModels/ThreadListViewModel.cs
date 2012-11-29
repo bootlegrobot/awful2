@@ -300,7 +300,7 @@ namespace Awful.ViewModels
             // try and get the page metadata from the web.
             // Best to run this in the background, lest you freeze the UI thread.
             // TODO : develop a check for total pages and add to forum metadata
-            var pageMetadata = metadata.FetchForumPage(1);
+            var pageMetadata = metadata.LoadPage(1);
 
             if (pageMetadata != null)
                 this._currentPage = 1;
@@ -351,7 +351,7 @@ namespace Awful.ViewModels
             // try and get the page metadata from the web
             // Best to run this in the background, lest you freeze the UI thread.
             // TODO : develop a check for total pages and add to forum metadata
-            var pageMetadata = metadata.FetchForumPage(newPage);
+            var pageMetadata = metadata.LoadPage(newPage);
 
             if (pageMetadata != null)
                 this._currentPage = newPage;

@@ -15,7 +15,17 @@ namespace Awful
         private const string POST_CONTENT_TYPE = "application/x-www-form-urlencoded";
 
         private static List<Cookie> _cookieJar = new List<Cookie>();
+        private static UserMetadata _user;
+        
+        /// <summary>
+        /// Gets the cookie container used by all web requests. The cookies belong to the
+        /// active user.
+        /// </summary>
         public static IEnumerable<Cookie> CookieJar { get { return _cookieJar; } }
+        /// <summary>
+        /// Gets the instance of the active user. All server requests are made as this user.
+        /// </summary>
+        public static UserMetadata ActiveUser { get { return _user; } }
 
         /// <summary>
         /// Sets the global cookie container for all future web requests. If this container is not set,
@@ -26,7 +36,30 @@ namespace Awful
         public static void SetCookieJar(IEnumerable<Cookie> jar)
         {
             _cookieJar.Clear();
-            _cookieJar.AddRange(jar);
+            if (jar != null)
+                _cookieJar.AddRange(jar);
+        }
+
+        /// <summary>
+        /// Sets the global cookie container for all future web requests to that of the specified user.
+        /// If the user has invalid cookies, future requests may fail. This method is typically called
+        /// after authentication cookies are obtained.
+        /// </summary>
+        /// <param name="user">The specified user.</param>
+        internal static void SetCredentials(UserMetadata user)
+        {
+            _user = user;
+            SetCookieJar(user.Cookies);
+        }
+
+        /// <summary>
+        /// Removes the cookies for all global web requests. Any future requests which require
+        /// authentication will fail until credentials are set again.
+        /// </summary>
+        internal static void ClearCredentials()
+        {
+            _user = null;
+            _cookieJar.Clear();
         }
 
         /// <summary>

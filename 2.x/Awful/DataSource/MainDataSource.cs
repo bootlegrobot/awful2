@@ -438,7 +438,7 @@ namespace Awful.Data
         protected IEnumerable<ThreadDataSource> LoadThreadsFromPage(ForumMetadata forum, int pageNumber)
         {
             List<ThreadDataSource> threads = null;
-            var forumPageData = forum.FetchForumPage(pageNumber);
+            var forumPageData = forum.LoadPage(pageNumber);
             if (forumPageData != null)
             {
                 threads = new List<ThreadDataSource>(forumPageData.Threads.Count);
@@ -791,7 +791,7 @@ namespace Awful.Data
             ThreadPageDataSource result = null;
             ThreadPageMetadata metadata = Data != null ? Data : new ThreadPageMetadata() { ThreadID = ThreadID, PageNumber = PageNumber };
 
-            var page = metadata.FetchThreadPage();
+            var page = metadata.Refresh();
             
             if (page != null)
                 result = new ThreadPageDataObject(page);
