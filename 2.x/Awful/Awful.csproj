@@ -148,6 +148,9 @@
     <Compile Include="LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PrivateMessageViewPage.xaml.cs">
+      <DependentUpon>PrivateMessageViewPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\CommonViewModels.cs" />
     <Compile Include="ViewModels\ForumNavViewModel.cs" />
     <Compile Include="DataSource\SampleDataSource.cs" />
@@ -217,6 +220,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PrivateMessageViewPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

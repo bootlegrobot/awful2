@@ -14,7 +14,6 @@ namespace Awful
             var web = new AwfulWebClient();
             var doc = web.FetchHtml(url);
             var result = ForumParser.ParseForumList(doc);
-
 #if DEBUG
             Debug.WriteLine("Performing Sanitization Check...");
             bool clear = SanitizationCheck(result);
