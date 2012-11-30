@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -26,7 +27,7 @@ namespace Awful.ViewModels
             private set { SetProperty(ref _title, value, "Title"); }
         }
 
-        private Data.ForumThreadCollection _threads;
+        private ObservableCollection<Data.ThreadDataSource> _threads;
 
         public void UpdateModel(string forumId, int currentPage)
         {
@@ -40,7 +41,7 @@ namespace Awful.ViewModels
             var threads = Data.MainDataSource.Instance.FindForumThreadsByID(forumId);
             if (threads != null)
             {
-                this._threads = threads;
+                this._threads = threads as Data.ForumThreadCollection;
                 this.Items = threads;
             }
 
@@ -50,11 +51,33 @@ namespace Awful.ViewModels
         protected override IEnumerable<Data.ThreadDataSource> LoadDataWork(int index)
         {
             IEnumerable<Data.ThreadDataSource> threads = null;
-            var page = _threads.LoadThreadsFromPage(index + 1);
-            if (page != null)
-                threads = page;
+            var pageSource = _threads as Data.ForumThreadCollection;
+            
+            if (pageSource != null)
+            {
+                var page = LoadThreadsFromPage(pageSource.ForumID, index + 1);
+                if (page != null)
+                    threads = page;
+            }
 
-            return page;
+            return threads;
+        }
+
+        private IEnumerable<Data.ThreadDataSource> LoadThreadsFromPage(ForumMetadata forum, int pageNumber)
+        {
+            List<Data.ThreadDataSource> threads = null;
+            var forumPageData = forum.LoadPage(pageNumber);
+            if (forumPageData != null)
+            {
+                threads = Data.ForumThreadCollection.CreateThreadSources(forumPageData, forum);
+            }
+            return threads;
+        }
+
+        public virtual IEnumerable<Data.ThreadDataSource> LoadThreadsFromPage(string forumId, int pageNumber)
+        {
+            var forum = new ForumMetadata() { ForumID = forumId };
+            return LoadThreadsFromPage(forum, pageNumber);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Awful.ViewModels
         bool IsDataLoaded { get; }
     }
 
-    public enum ListViewModelCommands
+    public enum ListCommands
     {
         Refresh = 0,
         NextPage,
@@ -130,14 +130,14 @@ namespace Awful.ViewModels
         {
             if (CanExecute(parameter))
             {
-                var param = (ListViewModelCommands)parameter;
+                var param = (ListCommands)parameter;
                 switch (param)
                 {
-                    case ListViewModelCommands.Refresh:
+                    case ListCommands.Refresh:
                         this.Refresh();
                         break;
 
-                    case ListViewModelCommands.Clear:
+                    case ListCommands.Clear:
                         this.Items.Clear();
                         break;
                 }

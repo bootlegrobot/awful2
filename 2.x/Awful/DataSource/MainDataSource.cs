@@ -95,20 +95,6 @@ namespace Awful.Data
             set { SetProperty(ref _forums, value, "Forums"); }
         }
 
-        private ForumCollection _pinned;
-        [DataMember]
-        public ForumCollection Pinned
-        {
-            get
-            {
-                if (this._pinned == null)
-                    this._pinned = new ForumCollection();
-
-                return this._pinned;
-            }
-            set { SetProperty(ref _pinned, value, "Pinned"); }
-        }
-
         private UserBookmarks _bookmarks;
         [DataMember]
         public UserBookmarks Bookmarks
@@ -145,9 +131,9 @@ namespace Awful.Data
             return Forums.Where(f => f.ForumID.Equals(forumId)).FirstOrDefault();
         }
 
-        public ForumThreadCollection FindForumThreadsByID(string forumId)
+        public ObservableCollection<ThreadDataSource> FindForumThreadsByID(string forumId)
         {
-            ForumThreadCollection threads = null;
+            ObservableCollection<ThreadDataSource> threads = null;
 
             if (forumId == Bookmarks.ForumID)
                 threads = Bookmarks;
@@ -157,8 +143,9 @@ namespace Awful.Data
 
             else
             {
-                threads = new ForumThreadCollection(forumId);
-                ThreadTable.Add(forumId, threads);
+                var forumThreads = new ForumThreadCollection(forumId);
+                ThreadTable.Add(forumId, forumThreads);
+                threads = forumThreads;
             }
 
             return threads;
@@ -194,6 +181,20 @@ namespace Awful.Data
             SetMetadata(metadata);
         }
 
+        private ObservableCollection<string> _pinned;
+        [DataMember]
+        public ObservableCollection<string> PinnedForumIds
+        {
+            get 
+            {
+                if (this._pinned == null)
+                    this._pinned = new ObservableCollection<string>();
+
+                return this._pinned; 
+            }
+            set { SetProperty(ref this._pinned, value, "PinnedForumIds"); }
+        }
+
         private UserMetadata _metadata;
         [DataMember]
         public UserMetadata Metadata
@@ -211,6 +212,28 @@ namespace Awful.Data
         public bool CanLogIn { get { return this.Metadata != null && !this.Metadata.Cookies.IsNullOrEmpty(); } }
     }
 
+    [CollectionDataContract]
+    public class UserBookmarks : ObservableCollection<ThreadDataSource>
+    {
+        public UserBookmarks() : base() { CollectionChanged += UserBookmarks_CollectionChanged; }
+
+        public UserBookmarks(IEnumerable<ThreadDataSource> collection) : base(collection) { CollectionChanged += UserBookmarks_CollectionChanged; }
+
+        private void UserBookmarks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                foreach (var item in e.NewItems)
+                    (item as ThreadDataSource).ForumID = this.ForumID;
+            }
+        }
+
+        [IgnoreDataMember]
+        public string ForumID { get { return "-1"; } }
+    }
+
+    #region Forum related
+
     [DataContract]
     public class ForumDataSource : SampleDataCommon, ICommand
     {
@@ -222,6 +245,14 @@ namespace Awful.Data
         }
 
         #region properties
+
+        private bool _isPinned;
+        [DataMember]
+        public bool IsPinned
+        {
+            get { return this._isPinned; }
+            set { SetProperty(ref _isPinned, value, "IsPinned"); }
+        }
 
         [IgnoreDataMember]
         public string ForumID
@@ -286,8 +317,6 @@ namespace Awful.Data
         [IgnoreDataMember]
         public bool HasNoItems { get { return !HasSubforums; } }
         [DataMember]
-        public bool IsPinned { get; set; }
-        [DataMember]
         public double Weight { get; set; }
         [IgnoreDataMember]
         public ICommand Command { get { return this; } }
@@ -343,60 +372,7 @@ namespace Awful.Data
         public ForumCollection() : base() { }
         public ForumCollection(IEnumerable<ForumDataSource> source) : base(source) { }
 
-        public ForumCollection Refresh()
-        {
-            ForumCollection result = null;
-            var user = MainDataSource.Instance.CurrentUser.Metadata;
-            var forums = user.LoadForums();
-            if (forums != null)
-            {
-                result = new ForumCollection(CreateItems(forums));
-            }
-
-            return result;
-        }
-
-        public ForumCollection PinnedRefresh()
-        {
-            ForumCollection result = null;
-            var forums = ForumTasks.FetchAllForums();
-            if (forums != null)
-            {
-                //TODO: Currently, "IsPinned" is always false, so this will return nothing.
-                //Need a way to actually pin forums, and persist it.
-                //result = new ForumCollection(CreateItems(forums).Where(forum => forum.IsPinned.Equals(true)));
-                result = new ForumCollection(CreateItems(forums));
-            }
-
-            return result;
-        }
-
-        private IEnumerable<ForumDataSource> CreateItems(IEnumerable<ForumMetadata> forums)
-        {
-            if (forums == null)
-                throw new ArgumentNullException("Cannot create model items without metadata.");
-
-            List<ForumDataSource> result = new List<ForumDataSource>(forums.Count());
-            var enumerator = forums.GetEnumerator();
-            OrganizeItems(enumerator, result, null, null, 10);
-            CollapseSubforums(result);
-            return result;
-        }
-
-        private void CollapseSubforums(List<ForumDataSource> result)
-        {
-            foreach (var forum in result)
-            {
-                var children = forum.Subforums.SelectMany(f => f.Subforums)
-                    .Concat(forum.Subforums);
-
-                var subforums = children.ToList();
-                forum.Subforums.Clear();
-                forum.Subforums.AddRange(subforums);
-            }
-        }
-
-        private ForumDataSource OrganizeItems(IEnumerator<ForumMetadata> enumerator,
+        private static ForumDataSource OrganizeItems(IEnumerator<ForumMetadata> enumerator,
             IList<ForumDataSource> list,
             ForumDataSource parent,
             int? level,
@@ -450,12 +426,117 @@ namespace Awful.Data
 
             return ancestor;
         }
+
+        internal static IEnumerable<ForumDataSource> FormatItems(IEnumerable<ForumDataSource> forums)
+        {
+            if (forums == null)
+                throw new ArgumentNullException("forum collection must not be null.");
+
+            List<ForumDataSource> result = new List<ForumDataSource>(forums.Count());
+
+            var enumerator = forums.GetEnumerator();
+            OrganizeItems(enumerator, result, null, null, 10);
+            CollapseSubforums(result);
+            return result;
+        }
+
+        private static ForumDataSource OrganizeItems(IEnumerator<ForumDataSource> enumerator,
+            IList<ForumDataSource> list,
+            ForumDataSource parent,
+            int? level,
+            int weightStep)
+        {
+            ForumDataSource ancestor = null;
+
+            while (enumerator.MoveNext())
+            {
+                var currentLevel = enumerator.Current.Data.LevelCount;
+                var item = enumerator.Current;
+                level = level.GetValueOrDefault(currentLevel);
+
+                if (parent == null)
+                    parent = item;
+
+                // set the weight of the item here. this will be used for sorting later.
+                item.Weight = parent.Weight + weightStep;
+
+                // if the current item is a sibling, add to the list.
+                if (level.Value == currentLevel)
+                {
+                    list.Add(item);
+                    parent = item;
+                }
+
+                // if the item is a descendant of the previous item.
+                else if (currentLevel > level)
+                {
+                    // add the item as a child of the parent.
+                    parent.Subforums.Add(item);
+                    //parent.AddAsSubforum(item);
+
+                    // set child's group to that of the parent.
+                    item.Data.ForumGroup = parent.Data.ForumGroup;
+
+                    // add future children to this item until we reach a sibling.
+                    // the weight of this items should fall within an order of 1.
+                    var sibling = OrganizeItems(enumerator, parent.Subforums, item, currentLevel, 1);
+                    list.Add(sibling);
+                    parent = sibling;
+                }
+
+                // if the item is an ancestor
+                else
+                {
+                    ancestor = item;
+                    break;
+                }
+            }
+
+            return ancestor;
+        }
+
+        private static void CollapseSubforums(List<ForumDataSource> result)
+        {
+            foreach (var forum in result)
+            {
+                var children = forum.Subforums.SelectMany(f => f.Subforums)
+                    .Concat(forum.Subforums);
+
+                var subforums = children.ToList();
+                forum.Subforums.Clear();
+                forum.Subforums.AddRange(subforums);
+            }
+        }
     }
 
     [CollectionDataContract]
     public class ForumThreadCollection : ObservableCollection<ThreadDataSource>
     {
-        public ForumThreadCollection() : base() { }
+        public static List<ThreadDataSource> CreateThreadSources(ForumPageMetadata page, ForumMetadata forum)
+        {
+            var threads = new List<ThreadDataSource>(page.Threads.Count);
+            foreach (var thread in page.Threads)
+            {
+                var source = new ThreadDataSource(thread);
+                source.ForumID = forum.ForumID;
+                threads.Add(source);
+            }
+            return threads;
+        }
+
+        public ForumThreadCollection() : base() 
+        {
+            CollectionChanged += ForumThreadCollection_CollectionChanged;
+        }
+
+        private void ForumThreadCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                foreach (var item in e.NewItems)
+                    (item as ThreadDataSource).ForumID = this.ForumID;
+            }
+        }
 
         public ForumThreadCollection(string forumId)
             : this()
@@ -465,35 +546,6 @@ namespace Awful.Data
 
         [DataMember]
         public virtual string ForumID { get; set; }
-
-        protected List<ThreadDataSource> CreateThreadSources(ForumPageMetadata page)
-        {
-            var threads = new List<ThreadDataSource>(page.Threads.Count);
-            foreach (var thread in page.Threads)
-            {
-                var source = new ThreadDataSource(thread);
-                source.ForumID = this.ForumID;
-                threads.Add(source);
-            }
-            return threads;
-        }
-
-        protected IEnumerable<ThreadDataSource> LoadThreadsFromPage(ForumMetadata forum, int pageNumber)
-        {
-            List<ThreadDataSource> threads = null;
-            var forumPageData = forum.LoadPage(pageNumber);
-            if (forumPageData != null)
-            {
-                threads = CreateThreadSources(forumPageData);
-            }
-            return threads;
-        }
-
-        public virtual IEnumerable<ThreadDataSource> LoadThreadsFromPage(int pageNumber)
-        {
-            var forum = new ForumMetadata() { ForumID = ForumID };
-            return LoadThreadsFromPage(forum, pageNumber);
-        }
 
         public virtual void Update(IEnumerable<ThreadDataSource> threads)
         {
@@ -516,18 +568,9 @@ namespace Awful.Data
         )]
     public class ForumThreadsByID : Dictionary<string, ForumThreadCollection> { }
 
-    [CollectionDataContract]
-    public class UserBookmarks : ForumThreadCollection
-    {
-        public UserBookmarks() : base() { ForumID = "-1"; }
+    #endregion
 
-        public override IEnumerable<ThreadDataSource> LoadThreadsFromPage(int pageNumber)
-        {
-            var user = MainDataSource.Instance.CurrentUser.Metadata;
-            var bookmarks = user.LoadBookmarks();
-            return CreateThreadSources(bookmarks);
-        }
-    }
+    #region Thread related
 
     [DataContract]
     public class ThreadDataSource : SampleDataCommon
@@ -822,8 +865,6 @@ namespace Awful.Data
         public event EventHandler ThreadPageUpdating;
         public event EventHandler ThreadPageUpdated;
 
-       
-
         public virtual ThreadPageDataSource Refresh()
         {
             ThreadPageDataSource result = null;
@@ -1018,4 +1059,6 @@ namespace Awful.Data
             OnPropertyChanged("Data");
         }
     }
+
+    #endregion
 }
