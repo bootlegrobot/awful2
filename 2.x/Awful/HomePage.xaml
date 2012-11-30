@@ -19,7 +19,7 @@
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" 
           Background="Transparent">
-        <!--Pivot Control-->
+        <!--Panorama Control-->
         <controls:Panorama x:Name="MainPanorama"
             Title="MY APPLICATION"
                         ItemsSource="{Binding Items}"
@@ -48,7 +48,11 @@
                                 <local:AppendingThreadListControl DataContext="{Binding}" />
                             </DataTemplate>
                         </viewmodel:HomePageSectionTemplateSelector.BookmarkListTemplate>
-                        
+                        <viewmodel:HomePageSectionTemplateSelector.PinnedListTemplate>
+                            <DataTemplate>
+                                <local:ForumListControl DataContext="{Binding}" />
+                            </DataTemplate>
+                        </viewmodel:HomePageSectionTemplateSelector.PinnedListTemplate>
                     </viewmodel:HomePageSectionTemplateSelector>
                 </DataTemplate>
             </controls:Panorama.ItemTemplate>

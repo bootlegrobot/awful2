@@ -94,6 +94,20 @@ namespace Awful.Data
             set { SetProperty(ref _forums, value, "Forums"); }
         }
 
+        private ForumCollection _pinned;
+        [DataMember]
+        public ForumCollection Pinned
+        {
+            get
+            {
+                if (this._pinned == null)
+                    this._pinned = new ForumCollection();
+
+                return this._pinned;
+            }
+            set { SetProperty(ref _pinned, value, "Pinned"); }
+        }
+
         private UserBookmarks _bookmarks;
         [DataMember]
         public UserBookmarks Bookmarks
@@ -334,6 +348,21 @@ namespace Awful.Data
             var forums = ForumTasks.FetchAllForums();
             if (forums != null)
             {
+                result = new ForumCollection(CreateItems(forums));
+            }
+
+            return result;
+        }
+
+        public ForumCollection PinnedRefresh()
+        {
+            ForumCollection result = null;
+            var forums = ForumTasks.FetchAllForums();
+            if (forums != null)
+            {
+                //TODO: Currently, "IsPinned" is always false, so this will return nothing.
+                //Need a way to actually pin forums, and persist it.
+                //result = new ForumCollection(CreateItems(forums).Where(forum => forum.IsPinned.Equals(true)));
                 result = new ForumCollection(CreateItems(forums));
             }
 

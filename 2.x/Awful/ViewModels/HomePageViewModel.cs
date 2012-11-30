@@ -29,11 +29,13 @@ namespace Awful.ViewModels
         {
             var forums = new ForumSectionViewModel(Data.MainDataSource.Instance.Forums);
             var bookmarks = new BookmarkSectionViewModel(Data.MainDataSource.Instance.Bookmarks);
+            var pinned = new PinnedSectionViewModel(Data.MainDataSource.Instance.Pinned);
 
             _items = new List<HomePageSection>()
             {
                 new HomePageSection("forums") { Content = forums, Command = forums },
-                new HomePageSection("bookmarks") { Content = bookmarks, Command = bookmarks }
+                new HomePageSection("bookmarks") { Content = bookmarks, Command = bookmarks },
+                new HomePageSection("pinned") { Content = pinned, Command = pinned }
             };
 
             return _items;
@@ -77,6 +79,7 @@ namespace Awful.ViewModels
     {
         public DataTemplate ForumListTemplate { get; set; }
         public DataTemplate BookmarkListTemplate { get; set; }
+        public DataTemplate PinnedListTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
@@ -84,7 +87,8 @@ namespace Awful.ViewModels
                 return ForumListTemplate;
             else if (item is BookmarkSectionViewModel)
                 return BookmarkListTemplate;
-
+            else if (item is PinnedSectionViewModel)
+                return PinnedListTemplate;
             else
                 return base.SelectTemplate(item, container);
         }
@@ -102,6 +106,20 @@ namespace Awful.ViewModels
             Data.ForumCollection forums = null;
             forums = _forums.Refresh();
             return forums;
+        }
+    }
+
+    public class PinnedSectionViewModel : ListViewModel<Data.ForumDataSource>, IDataLoadable
+    {
+        private Data.ForumCollection _pinned;
+
+        public PinnedSectionViewModel(Data.ForumCollection pinned) : base(pinned) { _pinned = pinned; }
+
+        protected override IEnumerable<Data.ForumDataSource> LoadDataWork()
+        {
+            Data.ForumCollection pinned = null;
+            pinned = _pinned.PinnedRefresh();
+            return pinned;
         }
     }
 
