@@ -242,6 +242,7 @@ namespace Awful.Data
             : base()
         {
             SetMetadata(data);
+			SetImage("http://fi.somethingawful.com/forumicons/ylls.png");
         }
 
         #region properties

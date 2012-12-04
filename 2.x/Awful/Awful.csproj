@@ -134,6 +134,7 @@
       <DependentUpon>AppendingThreadListControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ContextMenus.cs" />
+    <Compile Include="Controls\ForumItemControl.cs" />
     <Compile Include="Controls\ForumListControl.xaml.cs">
       <DependentUpon>ForumListControl.xaml</DependentUpon>
     </Compile>
@@ -146,6 +147,7 @@
     <Compile Include="DataSource\ForumDataSource.cs" />
     <Compile Include="DataSource\MainDataSource.cs" />
     <Compile Include="Helpers\ForumItemTemplateSelector.cs" />
+    <Compile Include="Helpers\OddEvenTemplateSelector.cs" />
     <Compile Include="Helpers\PinnedItemsManager.cs" />
     <Compile Include="HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
@@ -155,6 +157,12 @@
     </Compile>
     <Compile Include="PrivateMessageViewPage.xaml.cs">
       <DependentUpon>PrivateMessageViewPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SampleData\SampleForumCollection\SampleForumCollection.xaml.cs">
+      <DependentUpon>SampleForumCollection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SampleData\SampleForumSource\SampleForumSource.xaml.cs">
+      <DependentUpon>SampleForumSource.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\CommonViewModels.cs" />
     <Compile Include="ViewModels\ForumNavViewModel.cs" />
@@ -232,6 +240,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <DesignTimeOnly Include="SampleData\SampleForumCollection\SampleForumCollection.xaml">
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <SubType>Designer</SubType>
+    </DesignTimeOnly>
+    <Page Include="SampleData\SampleForumSource\SampleForumSource.xaml">
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ThreadViewPage.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
@@ -277,6 +297,8 @@
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
+    <DesignTimeOnly Include="SampleData\SampleForumCollection\SampleForumCollection.xsd" />
+    <DesignTimeOnly Include="SampleData\SampleForumSource\SampleForumSource.xsd" />
     <Resource Include="www\awful.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -297,8 +319,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Assets\ForumIcons\" />
     <Folder Include="Assets\Glyph\" />
-    <Folder Include="SampleData\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Awful.V2.Core\Awful.V2.Core.csproj">

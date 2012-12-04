@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:common="clr-namespace:Awful.Common"
+             xmlns:SampleData="clr-namespace:Expression.Blend.SampleData.SampleForumSource"
              mc:Ignorable="d"
              x:Class="Awful.App">
 
@@ -13,8 +14,11 @@
         <ResourceDictionary>
 
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/generic.xaml" />
                 <ResourceDictionary Source="Common/CommonStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            
+        	<SampleData:SampleForumSource x:Key="SampleForumSource" d:IsDataSource="True"/>
             
             <!-- Converters -->
             <common:CollapseOnTrue x:Key="collapseOnTrueConverter" />

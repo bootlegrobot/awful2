@@ -278,30 +278,8 @@
             </Border>
         </DataTemplate>
 
-    </UserControl.Resources>
-
-    <Grid x:Name="LayoutRoot">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel"
-              Grid.Row="1"
-              Margin="12,0,12,0">
-            <toolkit:PerformanceProgressBar IsIndeterminate="{Binding IsRunning}"
-                                            HorizontalAlignment="Stretch"
-                                            VerticalAlignment="Top" />
-
-            <telerikData:RadJumpList x:Name="ForumItemSelector"
-                                     ItemTap="ForumItemSelector_ItemTap"
-                                     ItemsSource="{Binding Items}"
-                                     IsPullToRefreshEnabled="True"
-                                     RefreshRequested="OnRefreshRequested"
-                                     GroupHeaderTemplate="{StaticResource ForumGroupHeader}">
-                <telerikData:RadJumpList.ItemTemplateSelector>
-                    <helpers:ForumItemTemplateSelector SingleForumTemplate="{StaticResource SingleForumItemTemplate}">
+		 <helpers:ForumItemTemplateSelector x:Key="ItemTemplateSelector"
+			 SingleForumTemplate="{StaticResource SingleForumItemTemplate}">
                         <helpers:ForumItemTemplateSelector.MultiForumTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -318,8 +296,106 @@
 
                             </DataTemplate>
                         </helpers:ForumItemTemplateSelector.MultiForumTemplate>
-                    </helpers:ForumItemTemplateSelector>
-                </telerikData:RadJumpList.ItemTemplateSelector>
+               
+     </helpers:ForumItemTemplateSelector>
+
+    <DataTemplate x:Key="ForumDataTemplate">
+      <StackPanel x:Name="TextPanel"
+                  IsHitTestVisible="False"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Center">
+        <TextBlock Text="{Binding Title}"
+                   TextWrapping="Wrap"
+                   TextAlignment="Right"
+                   TextTrimming="WordEllipsis"
+                   MaxHeight="70"
+                   Style="{StaticResource PhoneTextTitle3Style}"
+                   x:Name="TitleText"
+                   Margin="0,0,12,0"
+                   HorizontalAlignment="Right" />
+        <TextBlock Text="{Binding Subtitle}"
+                   TextWrapping="Wrap"
+                   TextAlignment="Right"
+                   Style="{StaticResource PhoneTextSubtleStyle}"
+                   Visibility="Collapsed"
+                   x:Name="SubtitleText"
+                   Margin="0,0,12,0"
+                   HorizontalAlignment="Right" />
+        <TextBlock Text="{Binding Description}"
+                   TextAlignment="Right"
+                   Style="{StaticResource PhoneTextSmallStyle}"
+                   Visibility="Collapsed"
+                   x:Name="DescriptionText"
+                   Margin="0,0,12,0"
+                   HorizontalAlignment="Right"
+                   Foreground="{StaticResource PhoneAccentBrush}" />
+      </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="OddForumItemTemplate">
+      <controls:ForumItemControl Content="{Binding}"
+                                 ContentTemplate="{StaticResource ForumDataTemplate}"
+                                 GlyphHeight="100"
+                                 SkewX="10"
+                                 Background="{StaticResource PhoneAccentBrush}">
+        <controls:ForumItemControl.GlyphBrush>
+          <LinearGradientBrush EndPoint="0.5,1"
+                               StartPoint="0.5,0">
+            <GradientStop Color="{StaticResource PhoneSemitransparentColor}"
+                          Offset="1" />
+            <GradientStop Color="{StaticResource PhoneAccentColor}"
+                          Offset="0.6" />
+          </LinearGradientBrush>
+        </controls:ForumItemControl.GlyphBrush>
+      </controls:ForumItemControl>
+    </DataTemplate>
+
+    <DataTemplate x:Key="EvenForumItemTemplate">
+      <controls:ForumItemControl Content="{Binding}"
+                                 SkewX="-10"
+                                 SkewRight="-9,0,0,0"
+                                 GlyphHeight="100"
+                                 ContentTemplate="{StaticResource ForumDataTemplate}"
+                                 Background="{StaticResource PhoneAccentBrush}">
+        <controls:ForumItemControl.GlyphBrush>
+          <LinearGradientBrush EndPoint="0.5,1"
+                               StartPoint="0.5,0">
+            <GradientStop Color="{StaticResource PhoneSemitransparentColor}"
+                          Offset="0.3" />
+            <GradientStop Color="{StaticResource PhoneAccentColor}"
+                          Offset="1" />
+          </LinearGradientBrush>
+        </controls:ForumItemControl.GlyphBrush>
+      </controls:ForumItemControl>
+    </DataTemplate>
+
+  </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" d:DataContext="{Binding Source={StaticResource SampleForumSource}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel"
+              Grid.Row="1"
+              Margin="0">
+            <toolkit:PerformanceProgressBar IsIndeterminate="{Binding IsRunning}"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Top" />
+
+            <telerikData:RadJumpList x:Name="ForumItemSelector"
+                                     ItemTap="ForumItemSelector_ItemTap"
+                                     ItemsSource="{Binding Items}"
+                                     IsPullToRefreshEnabled="True"
+                                     RefreshRequested="OnRefreshRequested"
+                                     GroupHeaderTemplate="{StaticResource ForumGroupHeader}" HorizontalContentAlignment="Stretch">
+				<telerikData:RadJumpList.ItemTemplateSelector>
+					<helpers:OddEvenTemplateSelector OddTemplate="{StaticResource OddForumItemTemplate}"
+						EvenTemplate="{StaticResource EvenForumItemTemplate}"/>
+				</telerikData:RadJumpList.ItemTemplateSelector>
+              
             </telerikData:RadJumpList>
         </Grid>
     </Grid>
