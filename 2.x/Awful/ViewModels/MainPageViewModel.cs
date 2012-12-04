@@ -7,7 +7,7 @@ using System.Windows.Navigation;
 
 namespace Awful.ViewModels
 {
-    public class MainPageViewModel : Data.SampleDataGroup
+    public class MainPageViewModel : Data.CommonDataGroup
     {
         private NavigationService NavigationService;
 
@@ -46,7 +46,7 @@ namespace Awful.ViewModels
         }
     }
 
-    public class MainPageItem : Data.SampleDataItem
+    public class MainPageItem : Data.CommonDataItem
     {
         public MainPageItem() : base() { }
 

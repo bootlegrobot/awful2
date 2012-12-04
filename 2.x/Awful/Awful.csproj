@@ -119,6 +119,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppDataModel.cs" />
+    <Compile Include="Commands\BackgroundWorkerCommand.cs" />
+    <Compile Include="Commands\ThreadCommands.cs" />
     <Compile Include="Common\ActionCommand.cs" />
     <Compile Include="Common\Constants.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -126,10 +128,12 @@
       <DependentUpon>Constants.resx</DependentUpon>
     </Compile>
     <Compile Include="Common\Converters.cs" />
+    <Compile Include="Common\ObservableSet.cs" />
     <Compile Include="Common\RadContextMenuProvider.cs" />
     <Compile Include="Controls\AppendingThreadListControl.xaml.cs">
       <DependentUpon>AppendingThreadListControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ContextMenus.cs" />
     <Compile Include="Controls\ForumListControl.xaml.cs">
       <DependentUpon>ForumListControl.xaml</DependentUpon>
     </Compile>
@@ -142,6 +146,7 @@
     <Compile Include="DataSource\ForumDataSource.cs" />
     <Compile Include="DataSource\MainDataSource.cs" />
     <Compile Include="Helpers\ForumItemTemplateSelector.cs" />
+    <Compile Include="Helpers\PinnedItemsManager.cs" />
     <Compile Include="HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>

@@ -102,10 +102,9 @@
                                                ItemsSource="{Binding Items}"
                                                ItemTemplate="{StaticResource ThreadListItemWithIconTemplate}"
                                                ItemTap="ThreadListBox_ItemTap"
-                                               DataVirtualizationMode="OnDemandAutomatic"
+                                               DataVirtualizationMode="Automatic"
                                                RefreshRequested="ThreadListBox_RefreshRequested"
                                                IsPullToRefreshEnabled="True"
-                                               EmptyContent="tap the screen to reload"
-                                               DataRequested="ThreadListBox_DataRequested" />
+                                               EmptyContent="tap the screen to reload" />
     </Grid>
 </UserControl>

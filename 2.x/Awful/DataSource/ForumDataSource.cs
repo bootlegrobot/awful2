@@ -13,7 +13,7 @@ using System.Windows.Shapes;
 
 namespace Awful.Data
 {
-    public class ForumDataModel : SampleDataItem, ICommand
+    public class ForumDataModel : CommonDataItem, ICommand
     {
         private const string DEFAULT_GROUP = "DEFAULT";
 

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Windows;
+using System.Windows.Input;
 
 namespace Awful.ViewModels
 {
@@ -12,6 +15,18 @@ namespace Awful.ViewModels
         {
             get { return this._thread; }
             set { SetProperty(ref _thread, value, "Thread"); }
+        }
+
+        private ICommand _threadBookmarkCommand;
+        public ICommand ThreadBookmarkCommand
+        {
+            get
+            {
+                if (_threadBookmarkCommand == null)
+                    _threadBookmarkCommand = new Commands.ToggleBookmarkCommand();
+
+                return _threadBookmarkCommand;
+            }
         }
 
         private Data.ThreadPageDataProxy _proxy;

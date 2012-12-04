@@ -29,7 +29,7 @@ namespace Awful.Controls
         {
             var item = e.Item.AssociatedDataItem.Value as ThreadDataSource;
             var frame = App.Current.RootVisual as PhoneApplicationFrame;
-            item.NavigateToThreadView(frame.Navigate, 0);
+            item.NavigateToThreadView(frame.Navigate);
         }
 
         bool refreshRequested;
@@ -40,6 +40,7 @@ namespace Awful.Controls
             if (listmodel != null)
             {
                 refreshRequested = true;
+                this.BusyIndicator.Visibility = System.Windows.Visibility.Collapsed;
                 listmodel.DataLoaded += OnDataLoaded;
                 listmodel.Refresh();
             }
@@ -53,7 +54,16 @@ namespace Awful.Controls
             {
                 refreshRequested = false;
                 this.ThreadListBox.StopPullToRefreshLoading(true);
+                this.BusyIndicator.Visibility = System.Windows.Visibility.Visible;
             }
+        }
+
+        private void ThreadListBox_DataRequested(object sender, EventArgs e)
+        {
+            object context = (sender as FrameworkElement).DataContext;
+            var listmodel = context as ViewModels.PagedListViewModel<ThreadDataSource>;
+            if (listmodel != null)
+                listmodel.AppendNextPage();
         }
     }
 }

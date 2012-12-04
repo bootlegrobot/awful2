@@ -230,7 +230,8 @@
                                                   BorderThickness="3"
                                                   VerticalAlignment="Top"
                                                   RestStateImageSource="/Assets/AppBar/appbar.favs.rest.png"
-                                                  Click="ToggleThreadBookmark" />
+                                                  Command="{Binding ThreadBookmarkCommand}"
+                                                  CommandParameter="{Binding Thread}"/>
             </Grid>
             <telerikPrimitives:RadPaginationControl x:Name="ThreadViewPagination"
                                                     VerticalAlignment="Top"

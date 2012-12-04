@@ -45,7 +45,7 @@
                         </viewmodel:HomePageSectionTemplateSelector.ForumListTemplate>
                         <viewmodel:HomePageSectionTemplateSelector.BookmarkListTemplate>
                             <DataTemplate>
-                                <local:AppendingThreadListControl DataContext="{Binding}" />
+                                <local:ThreadListControl DataContext="{Binding}" />
                             </DataTemplate>
                         </viewmodel:HomePageSectionTemplateSelector.BookmarkListTemplate>
                         <viewmodel:HomePageSectionTemplateSelector.PinnedListTemplate>

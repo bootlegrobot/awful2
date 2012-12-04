@@ -14,7 +14,7 @@ using Awful.Data;
 
 namespace Awful.ViewModels
 {
-    public class ThreadPageNavViewModel : Data.SampleDataCommon
+    public class ThreadPageNavViewModel : Data.CommonDataObject
     {
         public ThreadPageNavViewModel() { }
 

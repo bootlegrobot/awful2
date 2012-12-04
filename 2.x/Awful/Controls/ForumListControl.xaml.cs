@@ -101,7 +101,6 @@ namespace Awful.Controls
                 viewmodel.DataLoaded += OnViewmodelDataLoaded;
                 viewmodel.Refresh();
             }
-
         }
 
         void OnViewmodelDataLoaded(object sender, EventArgs e)

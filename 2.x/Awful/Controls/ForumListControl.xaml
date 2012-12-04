@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:helpers="clr-namespace:Awful.Helpers"
+             xmlns:controls="clr-namespace:Awful.Controls"
              xmlns:telerikData="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Data"
              xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
              xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
@@ -20,6 +21,9 @@
 
         <DataTemplate x:Key="SingleForumItemTemplate">
             <Border MinHeight="125">
+                <telerikPrimitives:RadContextMenu.ContextMenu>
+                    <controls:ForumContextMenu />
+                </telerikPrimitives:RadContextMenu.ContextMenu>
                 <Grid MinWidth="300"
                       Margin="{StaticResource PhoneTouchTargetOverhang}"
                       VerticalAlignment="Center">
@@ -107,6 +111,9 @@
 
         <DataTemplate x:Key="SubForumItemTemplate">
             <Border MinHeight="125">
+                <telerikPrimitives:RadContextMenu.ContextMenu>
+                    <controls:ForumContextMenu />
+                </telerikPrimitives:RadContextMenu.ContextMenu>
                 <Grid Margin="{StaticResource PhoneTouchTargetOverhang}"
                       VerticalAlignment="Center">
                     <Grid.ColumnDefinitions>
@@ -171,6 +178,9 @@
 
         <DataTemplate x:Key="MultiForumItemTemplate">
             <Border MinHeight="125">
+                <telerikPrimitives:RadContextMenu.ContextMenu>
+                    <controls:ForumContextMenu />
+                </telerikPrimitives:RadContextMenu.ContextMenu>
                 <Grid MinWidth="300"
                       Margin="{StaticResource PhoneTouchTargetOverhang}"
                       VerticalAlignment="Center">

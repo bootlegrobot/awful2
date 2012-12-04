@@ -230,11 +230,6 @@ namespace Awful
                 this.ApplicationBar.IsVisible = false;
         }
 
-        private void ToggleThreadBookmark(object sender, System.Windows.RoutedEventArgs e)
-        {
-        	// TODO: Add event handler implementation here.
-        }
-
         private void GoToLastPage(object sender, EventArgs e)
         {
             this.GoToIndex(this.viewmodel.Items.Count - 1);

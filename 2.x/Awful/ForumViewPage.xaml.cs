@@ -24,13 +24,7 @@ namespace Awful
             InitializeComponent();
             Loaded += ForumViewPage_Loaded;
             viewmodel = new ViewModels.ForumPageViewModel();
-            viewmodel.DataLoaded += OnDataLoaded;
             this.DataContext = viewmodel;
-        }
-
-        private void OnDataLoaded(object sender, EventArgs e)
-        {
-            HideRefreshControl();
         }
 
         private void ForumViewPage_Loaded(object sender, RoutedEventArgs e)
@@ -53,6 +47,12 @@ namespace Awful
             base.OnNavigatingFrom(e);
         }
 
+        /*
+        private void OnDataLoaded(object sender, EventArgs e)
+        {
+            HideRefreshControl();
+        }
+          
         private void HideRefreshControl()
         {
             this.ThreadListBox.StopPullToRefreshLoading(true);
@@ -73,5 +73,6 @@ namespace Awful
         {
             viewmodel.AppendNextPage();
         }
+        */
     }
 }

@@ -18,7 +18,7 @@ using System.Collections.ObjectModel;
 
 namespace Awful.Data
 {
-    public class ThreadDataModel : SampleDataItem, IEquatable<ThreadDataModel>
+    public class ThreadDataModel : CommonDataItem, IEquatable<ThreadDataModel>
     {
         private string _threadID;
         private ThreadMetadata _metadata;
@@ -194,7 +194,7 @@ namespace Awful.Data
         }
     }
 
-    public class ThreadPagePostDataModel : Data.SampleDataItem
+    public class ThreadPagePostDataModel : Data.CommonDataItem
     {
         public ThreadPagePostDataModel(ThreadPostMetadata metadata)
         {
@@ -219,7 +219,7 @@ namespace Awful.Data
         }
     }
 
-    public class ThreadPageDataModel : SampleDataItem
+    public class ThreadPageDataModel : CommonDataItem
     {
         public ThreadPageDataModel(ThreadMetadata data, int index)
         {

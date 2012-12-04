@@ -48,14 +48,16 @@ namespace Awful.ViewModels
             this.CurrentIndex = currentPage - 1;
         }
 
-        protected override IEnumerable<Data.ThreadDataSource> LoadDataWork(int index)
+        protected override IEnumerable<Data.ThreadDataSource> LoadDataPage(int index)
         {
             IEnumerable<Data.ThreadDataSource> threads = null;
             var pageSource = _threads as Data.ForumThreadCollection;
+
             
             if (pageSource != null)
             {
-                var page = LoadThreadsFromPage(pageSource.ForumID, index + 1);
+                pageSource.ForumID = Forum.ForumID;
+                var page = LoadThreadsFromPage(Forum.ForumID, index + 1);
                 if (page != null)
                     threads = page;
             }

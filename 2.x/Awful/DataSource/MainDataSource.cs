@@ -124,6 +124,20 @@ namespace Awful.Data
             set { SetProperty(ref _threadTable, value, "ForumThreads"); }
         }
 
+        private PinnedItemsCollection _pins;
+        [DataMember]
+        public PinnedItemsCollection Pins
+        {
+            get
+            {
+                if (_pins == null)
+                    _pins = new PinnedItemsCollection();
+                return _pins;
+            }
+
+            set { SetProperty(ref _pins, value, "Pins"); }
+        }
+
         #endregion
 
         public ForumDataSource FindForumByID(string forumId)
@@ -172,27 +186,13 @@ namespace Awful.Data
     }
 
     [DataContract]
-    public class UserDataSource : SampleDataCommon
+    public class UserDataSource : CommonDataObject
     {
         public UserDataSource() : base() { }
 
         public UserDataSource(UserMetadata metadata)
         {
             SetMetadata(metadata);
-        }
-
-        private ObservableCollection<string> _pinned;
-        [DataMember]
-        public ObservableCollection<string> PinnedForumIds
-        {
-            get 
-            {
-                if (this._pinned == null)
-                    this._pinned = new ObservableCollection<string>();
-
-                return this._pinned; 
-            }
-            set { SetProperty(ref this._pinned, value, "PinnedForumIds"); }
         }
 
         private UserMetadata _metadata;
@@ -213,7 +213,7 @@ namespace Awful.Data
     }
 
     [CollectionDataContract]
-    public class UserBookmarks : ObservableCollection<ThreadDataSource>
+    public class UserBookmarks : ObservableSet<ThreadDataSource>
     {
         public UserBookmarks() : base() { CollectionChanged += UserBookmarks_CollectionChanged; }
 
@@ -235,7 +235,7 @@ namespace Awful.Data
     #region Forum related
 
     [DataContract]
-    public class ForumDataSource : SampleDataCommon, ICommand
+    public class ForumDataSource : CommonDataObject, ICommand, IPinnable
     {
         public ForumDataSource() : base() { }
         public ForumDataSource(ForumMetadata data)
@@ -251,7 +251,10 @@ namespace Awful.Data
         public bool IsPinned
         {
             get { return this._isPinned; }
-            set { SetProperty(ref _isPinned, value, "IsPinned"); }
+            set 
+            { 
+                SetProperty(ref _isPinned, value, "IsPinned"); 
+            }
         }
 
         [IgnoreDataMember]
@@ -367,7 +370,7 @@ namespace Awful.Data
     }
 
     [CollectionDataContract]
-    public class ForumCollection : ObservableCollection<ForumDataSource>
+    public class ForumCollection : ObservableSet<ForumDataSource>
     {
         public ForumCollection() : base() { }
         public ForumCollection(IEnumerable<ForumDataSource> source) : base(source) { }
@@ -510,7 +513,43 @@ namespace Awful.Data
     }
 
     [CollectionDataContract]
-    public class ForumThreadCollection : ObservableCollection<ThreadDataSource>
+    public class PinnedItemsCollection : ObservableSet<IPinnable>
+    {
+        public PinnedItemsCollection() : base() 
+        {
+            CollectionChanged += PinnedItemsCollection_CollectionChanged;
+        }
+
+        public PinnedItemsCollection(IEnumerable<IPinnable> items)
+            : base(items)
+        {
+            CollectionChanged += PinnedItemsCollection_CollectionChanged;
+        }
+
+        private void PinnedItemsCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                    foreach (var item in e.NewItems)
+                        (item as IPinnable).IsPinned = true;
+                    break;
+
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                    foreach (var item in e.OldItems)
+                        (item as IPinnable).IsPinned = false;
+                    break;
+            }
+        }
+        
+        public override int GetHashCode(IPinnable obj)
+        {
+            return obj.UniqueId.GetHashCode();
+        }
+    }
+
+    [CollectionDataContract]
+    public class ForumThreadCollection : ObservableSet<ThreadDataSource>
     {
         public static List<ThreadDataSource> CreateThreadSources(ForumPageMetadata page, ForumMetadata forum)
         {
@@ -527,6 +566,11 @@ namespace Awful.Data
         public ForumThreadCollection() : base() 
         {
             CollectionChanged += ForumThreadCollection_CollectionChanged;
+        }
+
+        public override int GetHashCode(ThreadDataSource obj)
+        {
+            return obj.ThreadID.GetHashCode();
         }
 
         private void ForumThreadCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -573,7 +617,7 @@ namespace Awful.Data
     #region Thread related
 
     [DataContract]
-    public class ThreadDataSource : SampleDataCommon
+    public class ThreadDataSource : CommonDataObject
     {
         public ThreadDataSource(ThreadMetadata data)
             : base()
@@ -778,7 +822,7 @@ namespace Awful.Data
     }
 
     [DataContract]
-    public class ThreadPageDataObject : SampleDataCommon, ThreadPageDataSource
+    public class ThreadPageDataObject : CommonDataObject, ThreadPageDataSource
     {
         public ThreadPageDataObject(ThreadPageMetadata data)
             : base()
@@ -1015,7 +1059,7 @@ namespace Awful.Data
     }
 
     [DataContract]
-    public class ThreadPostSource : SampleDataCommon
+    public class ThreadPostSource : CommonDataObject
     {
         public ThreadPostSource(ThreadPostMetadata data)
             : base()

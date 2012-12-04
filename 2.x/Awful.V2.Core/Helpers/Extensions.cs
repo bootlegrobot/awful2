@@ -272,6 +272,23 @@ namespace Awful
             return FetchThreadPage(page.ThreadID, page.PageNumber);
         }
 
+        public static string Quote(this ThreadPostMetadata post)
+        {
+            return ThreadTasks.Quote(post);
+        }
+
+        public static IThreadPostRequest BeginReply(this ThreadMetadata thread)
+        {
+            var request = new ThreadReplyRequest(thread);
+            return request;
+        }
+
+        public static IThreadPostRequest BeginEdit(this ThreadPostMetadata post)
+        {
+            var request = new ThreadPostEditRequest(post);
+            return request;
+        }
+
         #endregion
 
         #region Forum Extensions
@@ -474,6 +491,16 @@ namespace Awful
         {
             return AwfulWebRequest.ActiveUser.Equals(user) &&
                 AwfulWebRequest.CanAuthenticate;
+        }
+
+        public static bool AddToUserBookmarks(this UserMetadata user, ThreadMetadata thread)
+        {
+            return ThreadTasks.AddBookmark(thread);
+        }
+
+        public static bool RemoveFromUserBookmarks(this UserMetadata user, ThreadMetadata thread)
+        {
+            return ThreadTasks.RemoveBookmark(thread);
         }
 
         public static void Logout(this UserMetadata user)

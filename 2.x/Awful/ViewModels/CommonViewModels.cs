@@ -102,8 +102,8 @@ namespace Awful.ViewModels
         {
             ThreadPool.QueueUserWorkItem((state) =>
             {
-                var forums = LoadDataWork();
-                Deployment.Current.Dispatcher.BeginInvoke(() => { completed(forums); });
+                var items = LoadDataWork();
+                Deployment.Current.Dispatcher.BeginInvoke(() => { completed(items); });
 
             }, null);
         }
@@ -154,9 +154,9 @@ namespace Awful.ViewModels
             set { SetProperty(ref _currentIndex, value, "CurrentIndex"); }
         }
 
-        protected override IEnumerable<T> LoadDataWork() { return LoadDataWork(0); }
+        protected override IEnumerable<T> LoadDataWork() { return LoadDataPage(0); }
 
-        protected abstract IEnumerable<T> LoadDataWork(int index);
+        protected abstract IEnumerable<T> LoadDataPage(int index);
 
         public void LoadFirstPage()
         {
@@ -178,11 +178,11 @@ namespace Awful.ViewModels
         {
             ThreadPool.QueueUserWorkItem((state) =>
             {
-                var forums = LoadDataWork(index);
-                if (forums != null)
+                var page = LoadDataPage(index);
+                if (page != null)
                     _currentIndex = index;
 
-                Deployment.Current.Dispatcher.BeginInvoke(() => { completed(forums); });
+                Deployment.Current.Dispatcher.BeginInvoke(() => { completed(page); });
 
             }, null);
         }

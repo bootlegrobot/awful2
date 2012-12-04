@@ -43,7 +43,7 @@ namespace Awful.ViewModels
         }
     }
 
-    public class HomePageSection : Data.SampleDataCommon, IDataLoadable
+    public class HomePageSection : Data.CommonDataObject, IDataLoadable
     {
         public HomePageSection() : base() { }
         public HomePageSection(string title)
@@ -93,7 +93,6 @@ namespace Awful.ViewModels
         }
     }
 
-
     public class ForumSectionViewModel : ListViewModel<Data.ForumDataSource>, IDataLoadable
     {
         private Data.MainDataSource _source;
@@ -139,69 +138,40 @@ namespace Awful.ViewModels
             if (forums != null)
             {
                 result = forums.Select(forum => new Data.ForumDataSource(forum));
-                result.Where(forum => user.PinnedForumIds.Contains(forum.ForumID))
-                    .Apply(forum => forum.IsPinned = true);
             }
             return result;
         }
     }
 
-    public class PinnedSectionViewModel : ListViewModel<Data.ForumDataSource>, IDataLoadable
+    public class PinnedSectionViewModel : ListViewModel<Data.IPinnable>, IDataLoadable
     {
         private Data.MainDataSource _source;
 
-        public PinnedSectionViewModel(Data.MainDataSource source) : base() 
+        public PinnedSectionViewModel(Data.MainDataSource source) : base(source.Pins) 
         {
             _source = source;
-            Items.CollectionChanged += Items_CollectionChanged;
+            PinnedItemsManager.PinnedStatusChanged += PinnedItemsManager_PinnedStatusChanged;
+        }
+
+        private void PinnedItemsManager_PinnedStatusChanged(object sender, PinnedItemEventArgs e)
+        {
+            if (e.Item.IsPinned)
+                _source.Pins.Add(e.Item);
+            else
+                _source.Pins.Remove(e.Item);
         }
 
         public void UpdatePins(IEnumerable<Data.ForumDataSource> pins)
         {
-            Items.CollectionChanged -= Items_CollectionChanged;
-            
-            Items.Clear();
-            Items = new ObservableCollection<Data.ForumDataSource>(pins);
-            
-            Items.CollectionChanged += Items_CollectionChanged;
-        }
-
-        private void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
+            foreach (var pin in pins)
             {
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                    {
-                        foreach (var item in e.NewItems)
-                        {
-                            var user = _source.CurrentUser;
-                            var forum = item as Data.ForumDataSource;
-                            forum.IsPinned = true;
-
-                            if (!user.PinnedForumIds.Contains(forum.ForumID))
-                                user.PinnedForumIds.Add(forum.ForumID);
-                        }
-                    }
-                    break;
-
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
-                    {
-                        foreach (var item in e.OldItems)
-                        {
-                            var user = _source.CurrentUser;
-                            var forum = item as Data.ForumDataSource;
-                            forum.IsPinned = false;
-
-                            user.PinnedForumIds.Remove(forum.ForumID);
-                        }
-                    }
-                    break;
+                _source.Pins.ReplaceItem(pin);
             }
         }
 
-        protected override IEnumerable<Data.ForumDataSource> LoadDataWork()
+        protected override IEnumerable<Data.IPinnable> LoadDataWork()
         {
-            return new List<Data.ForumDataSource>();
+            return new List<Data.IPinnable>();
         }
     }
 
