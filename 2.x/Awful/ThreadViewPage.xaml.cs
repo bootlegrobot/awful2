@@ -270,6 +270,9 @@ namespace Awful
                 this.ApplicationBar = PageNavBar;
 
             this._currentOrientation = this.Orientation;
+
+            if (!this.IsFullscreenActive)
+                this.IsFullscreenActive = App.Model.DefaultThreadView == AppDataModel.ThreadViewMode.Fullscreen;
         }
 
         private void OpenEditWindow(object sender, ThreadPostRequestEventArgs e)

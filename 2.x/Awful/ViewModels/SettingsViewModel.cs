@@ -11,6 +11,7 @@ namespace Awful.ViewModels
     {
         private AppDataModel appModel;
         private List<AwfulDebugger.Level> _levels = null;
+        private List<AppDataModel.ThreadViewMode> _modes = null;
       
         public SettingsViewModel()
         {
@@ -45,6 +46,32 @@ namespace Awful.ViewModels
             }
         }
 
+        public List<AppDataModel.ThreadViewMode> ViewModes
+        {
+            get
+            {
+                if (_modes == null)
+                {
+                    _modes = new List<AppDataModel.ThreadViewMode>()
+                    {
+                        AppDataModel.ThreadViewMode.Header,
+                        AppDataModel.ThreadViewMode.Fullscreen
+                    };
+                }
+
+                return _modes;
+            }
+        }
+
+        public AppDataModel.ThreadViewMode SelectedViewMode
+        {
+            get { return appModel.DefaultThreadView; }
+            set
+            {
+                appModel.DefaultThreadView = value;
+                OnPropertyChanged("SelectedViewMode");
+            }
+        }
 
         public bool ContentFilterEnabled
         {

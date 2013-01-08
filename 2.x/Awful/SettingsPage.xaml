@@ -46,7 +46,20 @@
           <telerikPrimitives:RadToggleSwitch x:Name="ContentFilterSwitch"
                                              Header="Content Filter"
                                              IsChecked="{Binding ContentFilterEnabled, Mode=TwoWay}"/>
-          <telerikInput:RadListPicker x:Name="DebugLevelPicker"
+            
+                    <telerikInput:RadListPicker x:Name="DefaultThreadViewPicker"
+                                      Header="default thread view"
+                                      ItemsSource="{Binding ViewModes}"
+                                      SelectedItem="{Binding SelectedViewMode, Mode=TwoWay}"
+                                      SelectionMode="Single">
+                        
+                        <telerikInput:RadListPicker.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" />
+                            </DataTemplate>
+                        </telerikInput:RadListPicker.ItemTemplate>
+                    </telerikInput:RadListPicker>
+                    <telerikInput:RadListPicker x:Name="DebugLevelPicker"
                                       Header="debug level"
                                       ItemsSource="{Binding DebugItems}"
                                       SelectedItem="{Binding SelectedDebugLevel, Mode=TwoWay}"

@@ -88,6 +88,30 @@ namespace Awful
             ThemeManager.Instance.SetCurrentTheme(this.CurrentTheme);
         }
 
+        public enum ThreadViewMode
+        {
+            Header = 0,
+            Fullscreen
+        };
+
+        private const int THREADVIEW_DEFAULT = 0;
+        public const string THREADVIEW_KEY = "DefaultThreadView";
+        public ThreadViewMode DefaultThreadView
+        {
+            get 
+            {
+                int value = GetValueOrDefault<int>(THREADVIEW_KEY, THREADVIEW_DEFAULT);
+                return (ThreadViewMode)value;
+            }
+
+            set
+            {
+                int toInt = (int)value;
+                AddOrUpdateValue(THREADVIEW_KEY, value);
+                NotifyPropertyChanged("DefaultThreadView");
+            }
+        }
+
         private const int FONTSIZE_DEFAULT = 12;
         private const string FONTSIZE_KEY = "ContentFontSize";
         public int ContentFontSize
