@@ -80,19 +80,18 @@
     </Reference>
     <Reference Include="Telerik.Windows.BackgroundAgentTools, Version=2012.3.1016.2040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\awful\lib\private\Telerik.Windows.BackgroundAgentTools.dll</HintPath>
+      <HintPath>..\..\lib\private\Telerik.Windows.BackgroundAgentTools.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.Windows.Behaviors, Version=2012.3.1016.2040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\awful\lib\private\Telerik.Windows.Behaviors.dll</HintPath>
+      <HintPath>..\..\lib\private\Telerik.Windows.Behaviors.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.Windows.Controls.Chart, Version=2012.3.1016.2040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\private\Telerik.Windows.Controls.Chart.dll</HintPath>
     </Reference>
-    <Reference Include="Telerik.Windows.Controls.Data, Version=2012.3.1016.2040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\awful\lib\private\Telerik.Windows.Controls.Data.dll</HintPath>
+    <Reference Include="Telerik.Windows.Controls.Data">
+      <HintPath>..\..\lib\private\Telerik.Windows.Controls.Data.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.Windows.Controls.DataVisualization, Version=2012.3.1016.2040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
