@@ -10,6 +10,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Navigation;
+using Awful.Helpers;
 
 namespace Awful.Data
 {
@@ -23,18 +24,21 @@ namespace Awful.Data
         static MainDataSource() 
         { 
             Instance = new MainDataSource(); 
-            AwfulWebClient.LoginRequired += AwfulWebClient_LoginRequired;
-            AwfulLoginClient.LoginSuccessful += AwfulLoginClient_LoginSuccessful;
         }
 
         public MainDataSource()
         {
             LastUpdated = null;
+            AwfulWebClient.LoginRequired += AwfulWebClient_LoginRequired;
+            AwfulLoginClient.LoginSuccessful += AwfulLoginClient_LoginSuccessful;
         }
 
         private static void AwfulLoginClient_LoginSuccessful(object sender, LoginEventArgs e)
         {
-            Instance.CurrentUser = new UserDataSource(e.User);
+            AwfulDebugger.AddLog(sender, AwfulDebugger.Level.Info, "Login was successful! Saving user cookies to iso storage...");
+            var user = new UserDataSource(e.User);
+            user.SaveToFile("user.xml");
+            Instance.CurrentUser = user;
         }
 
         private static void AwfulWebClient_LoginRequired(object sender, LoginRequiredEventArgs e)
@@ -42,15 +46,17 @@ namespace Awful.Data
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 if (Instance.CurrentUser.CanLogIn)
+                {
+                    AwfulDebugger.AddLog(sender, AwfulDebugger.Level.Info, "Sending credentials to the WebClient...");
                     e.SetUserAndProceed(Instance.CurrentUser.Metadata);
-                
+                }
+
                 else
                 {
                     // TODO: Create settings page that has a login interface -- no need to restart the app.
                     // Notify users at this point that they need to head to settings and login from there.
 
-                    StringBuilder builder = new StringBuilder();
-                    builder.Append("You must login first before continuing.");
+                    AwfulDebugger.AddLog(sender, AwfulDebugger.Level.Info, "User is unabled to login with these credentials.");
                     e.Cancel = true;
                 }
 
@@ -67,7 +73,7 @@ namespace Awful.Data
         public bool IsActive { get { return this.LastUpdated.HasValue; } }
 
         private UserDataSource _currentUser;
-        [DataMember]
+        [IgnoreDataMember]
         public UserDataSource CurrentUser
         {
             get
@@ -82,7 +88,7 @@ namespace Awful.Data
         }
         
         private ForumCollection _forums;
-        [DataMember]
+        [IgnoreDataMember]
         public ForumCollection Forums
         {
             get 
@@ -96,7 +102,7 @@ namespace Awful.Data
         }
 
         private UserBookmarks _bookmarks;
-        [DataMember]
+        [IgnoreDataMember]
         public UserBookmarks Bookmarks
         {
             get 
@@ -110,14 +116,14 @@ namespace Awful.Data
             set { SetProperty(ref _bookmarks, value, "Bookmarks"); }
         }
 
-        private ForumThreadsByID _threadTable;
-        [DataMember]
-        public ForumThreadsByID ThreadTable
+        private ThreadTable _threadTable;
+        [IgnoreDataMember]
+        public ThreadTable ThreadTable
         {
             get 
             {
                 if (this._threadTable == null)
-                    this._threadTable = new ForumThreadsByID();
+                    this._threadTable = new ThreadTable();
 
                 return _threadTable; 
             }
@@ -125,7 +131,7 @@ namespace Awful.Data
         }
 
         private PinnedItemsCollection _pins;
-        [DataMember]
+        [IgnoreDataMember]
         public PinnedItemsCollection Pins
         {
             get
@@ -165,11 +171,14 @@ namespace Awful.Data
             return threads;
         }
 
-        public ThreadDataSource FindThreadByID(string threadId, string forumId)
+        public ThreadDataSource FindThreadByID(string threadId)
         {
-            var threads = FindForumThreadsByID(forumId);
-            var thread = threads.Where(t => t.ThreadID.Equals(threadId)).FirstOrDefault();
-            return thread;
+            var threads = this.ThreadTable.Values
+                .SelectMany(thread => thread)
+                .Concat(this.Bookmarks);
+
+            var selected = threads.Where(t => t.ThreadID.Equals(threadId)).FirstOrDefault();
+            return selected;
         }
 
         public void SaveToIsoStorage(string filename)
@@ -242,10 +251,22 @@ namespace Awful.Data
             : base()
         {
             SetMetadata(data);
-			SetImage("http://fi.somethingawful.com/forumicons/ylls.png");
         }
 
         #region properties
+
+        private ForumLayout _layout;
+        public ForumLayout Layout
+        {
+            get 
+            {
+                if (_layout == null)
+                    _layout = ThemeManager.Instance.GetForumLayoutById(ForumID);
+
+                return _layout; 
+            }
+            set { SetProperty(ref _layout, value, "Layout"); }
+        }
 
         private bool _isPinned;
         [DataMember]
@@ -277,7 +298,7 @@ namespace Awful.Data
         }
 
         private List<ForumDataSource> _subforums;
-        [DataMember]
+        [IgnoreDataMember]
         public List<ForumDataSource> Subforums
         {
             get
@@ -376,176 +397,62 @@ namespace Awful.Data
         public ForumCollection() : base() { }
         public ForumCollection(IEnumerable<ForumDataSource> source) : base(source) { }
 
-        private static ForumDataSource OrganizeItems(IEnumerator<ForumMetadata> enumerator,
-            IList<ForumDataSource> list,
-            ForumDataSource parent,
-            int? level,
-            int weightStep)
+        internal static IEnumerable<ForumDataSource> GroupForums(IEnumerable<ForumDataSource> forums)
         {
-            ForumDataSource ancestor = null;
-
-            while (enumerator.MoveNext())
-            {
-                var currentLevel = enumerator.Current.LevelCount;
-                var item = new ForumDataSource(enumerator.Current);
-                level = level.GetValueOrDefault(currentLevel);
-
-                if (parent == null)
-                    parent = item;
-
-                // set the weight of the item here. this will be used for sorting later.
-                item.Weight = parent.Weight + weightStep;
-
-                // if the current item is a sibling, add to the list.
-                if (level.Value == currentLevel)
-                {
-                    list.Add(item);
-                    parent = item;
-                }
-
-                // if the item is a descendant of the previous item.
-                else if (currentLevel > level)
-                {
-                    // add the item as a child of the parent.
-                    parent.Subforums.Add(item);
-                    //parent.AddAsSubforum(item);
-
-                    // set child's group to that of the parent.
-                    item.Data.ForumGroup = parent.Data.ForumGroup;
-
-                    // add future children to this item until we reach a sibling.
-                    // the weight of this items should fall within an order of 1.
-                    var sibling = OrganizeItems(enumerator, parent.Subforums, item, currentLevel, 1);
-                    list.Add(sibling);
-                    parent = sibling;
-                }
-
-                // if the item is an ancestor
-                else
-                {
-                    ancestor = item;
-                    break;
-                }
-            }
-
-            return ancestor;
-        }
-
-        internal static IEnumerable<ForumDataSource> FormatItems(IEnumerable<ForumDataSource> forums)
-        {
-            if (forums == null)
-                throw new ArgumentNullException("forum collection must not be null.");
-
-            List<ForumDataSource> result = new List<ForumDataSource>(forums.Count());
-
+            var list = new List<ForumDataSource>();
             var enumerator = forums.GetEnumerator();
-            OrganizeItems(enumerator, result, null, null, 10);
-            CollapseSubforums(result);
-            return result;
-        }
-
-        private static ForumDataSource OrganizeItems(IEnumerator<ForumDataSource> enumerator,
-            IList<ForumDataSource> list,
-            ForumDataSource parent,
-            int? level,
-            int weightStep)
-        {
-            ForumDataSource ancestor = null;
+            ForumDataSource parent = null;
+            double weight = 0;
 
             while (enumerator.MoveNext())
             {
-                var currentLevel = enumerator.Current.Data.LevelCount;
-                var item = enumerator.Current;
-                level = level.GetValueOrDefault(currentLevel);
-
-                if (parent == null)
-                    parent = item;
-
-                // set the weight of the item here. this will be used for sorting later.
-                item.Weight = parent.Weight + weightStep;
-
-                // if the current item is a sibling, add to the list.
-                if (level.Value == currentLevel)
+                ForumDataSource current = enumerator.Current;
+                if (parent == null ||
+                    parent.Data.LevelCount == current.Data.LevelCount)
                 {
-                    list.Add(item);
-                    parent = item;
+                    list.Add(current);
+                    current.Subforums.Add(current);
+                    parent = current;
+                    weight = weight + 100;
+                    current.Weight = weight;
                 }
 
-                // if the item is a descendant of the previous item.
-                else if (currentLevel > level)
-                {
-                    // add the item as a child of the parent.
-                    parent.Subforums.Add(item);
-                    //parent.AddAsSubforum(item);
-
-                    // set child's group to that of the parent.
-                    item.Data.ForumGroup = parent.Data.ForumGroup;
-
-                    // add future children to this item until we reach a sibling.
-                    // the weight of this items should fall within an order of 1.
-                    var sibling = OrganizeItems(enumerator, parent.Subforums, item, currentLevel, 1);
-                    list.Add(sibling);
-                    parent = sibling;
-                }
-
-                // if the item is an ancestor
                 else
                 {
-                    ancestor = item;
-                    break;
+                    weight = weight + 1;
+                    current.Weight = weight;
+                    parent.Subforums.Add(current);
                 }
+               
+
             }
-
-            return ancestor;
-        }
-
-        private static void CollapseSubforums(List<ForumDataSource> result)
-        {
-            foreach (var forum in result)
-            {
-                var children = forum.Subforums.SelectMany(f => f.Subforums)
-                    .Concat(forum.Subforums);
-
-                var subforums = children.ToList();
-                forum.Subforums.Clear();
-                forum.Subforums.AddRange(subforums);
-            }
+            return list;
         }
     }
 
     [CollectionDataContract]
-    public class PinnedItemsCollection : ObservableSet<IPinnable>
+    public class PinnedItemsCollection : ObservableSet<string>
     {
         public PinnedItemsCollection() : base() 
         {
             CollectionChanged += PinnedItemsCollection_CollectionChanged;
         }
 
-        public PinnedItemsCollection(IEnumerable<IPinnable> items)
+        public PinnedItemsCollection(IEnumerable<string> items)
             : base(items)
         {
             CollectionChanged += PinnedItemsCollection_CollectionChanged;
         }
 
-        private void PinnedItemsCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void PinnedItemsCollection_CollectionChanged(object sender, 
+            System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            switch (e.Action)
-            {
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                    foreach (var item in e.NewItems)
-                        (item as IPinnable).IsPinned = true;
-                    break;
 
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.OldItems)
-                        (item as IPinnable).IsPinned = false;
-                    break;
-            }
         }
         
-        public override int GetHashCode(IPinnable obj)
+        public override int GetHashCode(string obj)
         {
-            return obj.UniqueId.GetHashCode();
+            return obj.GetHashCode();
         }
     }
 
@@ -611,7 +518,7 @@ namespace Awful.Data
         KeyName     = "forumId", 
         ValueName   = "threads"
         )]
-    public class ForumThreadsByID : Dictionary<string, ForumThreadCollection> { }
+    public class ThreadTable : Dictionary<string, ForumThreadCollection> { }
 
     #endregion
 
@@ -680,8 +587,8 @@ namespace Awful.Data
             set;
         }
 
-        private double _itemOpacity;
-        [IgnoreDataMember]
+        private double _itemOpacity = Convert.ToDouble(Constants.THREAD_DEFAULT_ITEM_OPACITY);
+        [DataMember]
         public double ItemOpacity
         {
             get { return this._itemOpacity; }
@@ -716,11 +623,11 @@ namespace Awful.Data
         {
             this._data = data;
             this.Title  = data.Title;
-            this.Subtitle  = FormatSubtext1(data);
-            this.Description  = FormatSubtext2(data);
             this.IsSticky = data.IsSticky;
             this.ThreadID = data.ThreadID;
             this.PageCount = data.PageCount;
+            this.Subtitle = FormatSubtext1(data);
+            this.Description = FormatSubtext2(data);
 
             FormatRatingView(data);
             FormatImage(data.IconUri);
@@ -773,17 +680,24 @@ namespace Awful.Data
 
         private string FormatSubtext2(ThreadMetadata metadata)
         {
-            ShowPostCount = !metadata.IsNew;
+            //ShowPostCount = !metadata.IsNew;
+            ShowPostCount = true;
 
             if (metadata.IsNew)
-                return string.Empty;
+            {
+                return string.Format("{0} {1}",
+                    PageCount,
+                    PageCount == 1 ?
+                    "page" :
+                    "pages");
+            }
 
             else if (metadata.NewPostCount == ThreadMetadata.NO_UNREAD_POSTS_POSTCOUNT)
                 return "no new posts";
-            
+
             else if (metadata.NewPostCount == 1)
                 return "1 new post";
-            
+
             else
                 return string.Format("{0} new posts", metadata.NewPostCount);
         }
@@ -803,7 +717,7 @@ namespace Awful.Data
                 tokens = filename.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                 filename = tokens[0];
                 this.Tag = filename;
-                this.SetImage("Assets/ThreadIcon/" + filename + ".png");
+                this.SetImage("/Assets/ThreadIcons/" + filename + ".png");
             }
         }
     }
@@ -820,6 +734,10 @@ namespace Awful.Data
         ThreadPageDataSource Refresh();
         event EventHandler ThreadPageUpdating;
         event EventHandler ThreadPageUpdated;
+        event EventHandler ThreadPageFailed;
+        void QuotePostAsync(int postIndex, Action<string> quote);
+        void MarkPostAsReadAsync(int postIndex, Action<bool> success);
+        void EditPostAsync(int postIndex, Action<IThreadPostRequest> request);
     }
 
     [DataContract]
@@ -909,6 +827,7 @@ namespace Awful.Data
 
         public event EventHandler ThreadPageUpdating;
         public event EventHandler ThreadPageUpdated;
+        public event EventHandler ThreadPageFailed;
 
         public virtual ThreadPageDataSource Refresh()
         {
@@ -922,6 +841,36 @@ namespace Awful.Data
 
             return result;
         }
+
+        public void QuotePostAsync(int postIndex, Action<string> quote)
+        {
+            ThreadPool.QueueUserWorkItem((state) =>
+            {
+                var post = Posts[postIndex];
+                var postQuote = post.Data.Quote();
+                Deployment.Current.Dispatcher.BeginInvoke(() => { quote(postQuote); });
+            }, null);
+        }
+
+        public void MarkPostAsReadAsync(int postIndex, Action<bool> success)
+        {
+            ThreadPool.QueueUserWorkItem((state) =>
+                {
+                    var post = Posts[postIndex];
+                    var marked = post.Data.MarkAsRead();
+                    Deployment.Current.Dispatcher.BeginInvoke(() => { success(marked); });
+                });
+        }
+
+        public void EditPostAsync(int postIndex, Action<IThreadPostRequest> request)
+        {
+            ThreadPool.QueueUserWorkItem((state) =>
+                {
+                    var post = Posts[postIndex];
+                    var postRequest = post.Data.BeginEdit();
+                    Deployment.Current.Dispatcher.BeginInvoke(() => { request(postRequest); });
+                });
+        }
     }
 
     public sealed class ThreadPageDataProxy : Common.BindableBase, ThreadPageDataSource
@@ -932,6 +881,8 @@ namespace Awful.Data
         {
             _page = new ThreadPageDataObject(metadata);
         }
+
+        public ThreadPageDataProxy(ThreadPageDataObject obj) { _page = obj; }
 
         public ThreadPageMetadata Data
         {
@@ -1026,14 +977,38 @@ namespace Awful.Data
 
         private void LoadPage(object source)
         {
-            var page = (source as ThreadPageDataSource).Refresh();
-            if (page != null)
-                this._page = page;
-            OnThreadPageUpdated(this);
+            ThreadPageDataSource page = null;
+            try 
+            { 
+                page = (source as ThreadPageDataSource).Refresh();
+                
+                if (page != null)
+                    this._page = page;
+
+                OnThreadPageUpdated(this);
+
+            }
+            catch (Exception ex) 
+            {
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex);
+                OnThreadPageUpdated(null);
+            }
         }
 
         public event EventHandler ThreadPageUpdating;
         public event EventHandler ThreadPageUpdated;
+        public event EventHandler ThreadPageFailed;
+
+        private void OnThreadPageFailed(ThreadPageDataSource source)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                if (ThreadPageFailed != null)
+                {
+                    ThreadPageFailed(source, EventArgs.Empty);
+                }
+            });
+        }
 
         private void OnThreadPageUpdating(ThreadPageDataSource source)
         {
@@ -1056,6 +1031,21 @@ namespace Awful.Data
                     NotifyAllPropertiesChanged();
                 }
             });
+        }
+
+        public void QuotePostAsync(int postIndex, Action<string> quote)
+        {
+            _page.QuotePostAsync(postIndex, quote);
+        }
+
+        public void MarkPostAsReadAsync(int postIndex, Action<bool> success)
+        {
+            _page.MarkPostAsReadAsync(postIndex, success);
+        }
+
+        public void EditPostAsync(int postIndex, Action<IThreadPostRequest> request)
+        {
+            _page.EditPostAsync(postIndex, request);
         }
     }
 

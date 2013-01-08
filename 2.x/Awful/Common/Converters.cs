@@ -51,6 +51,55 @@ namespace Awful.Common
 
     #endregion
 
+    public class ContentFilterConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null)
+                return string.Empty;
+
+            string text = value.ToString();
+			string filtered = text;
+			
+			if (Helpers.ContentFilter.IsContentFilterEnabled)
+            	filtered = Helpers.ContentFilter.Censor(text);
+			
+            return filtered;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class LowercaseConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return value.ToString().ToLower();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class UppercaseConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return value.ToString().ToUpper();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class AssetRetriever : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -74,4 +123,41 @@ namespace Awful.Common
         }
     }
 
+    public class ForumLayoutRetriever : DependencyObject, IValueConverter
+    {
+        public static readonly DependencyProperty ThemeManagerProperty = DependencyProperty.Register(
+            "ThemeManager", typeof(Helpers.ThemeManager), typeof(ForumLayoutRetriever), new PropertyMetadata(null));
+
+        public Helpers.ThemeManager ThemeManager
+        {
+            get { return GetValue(ThemeManagerProperty) as Helpers.ThemeManager; }
+            set { SetValue(ThemeManagerProperty, value); }
+        }
+
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (ThemeManager == null)
+                throw new NullReferenceException("ThemeManager must not be null.");
+
+            if (value is Data.ForumDataSource)
+            {
+                Data.ForumDataSource forum = value as Data.ForumDataSource;
+                if (forum.Layout == null)
+                {
+                    var layout = ThemeManager.GetForumLayoutById(forum.ForumID);
+                    forum.Layout = layout;
+                }
+
+                return forum.Layout;
+            }
+
+            else
+                return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

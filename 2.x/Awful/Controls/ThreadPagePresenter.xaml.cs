@@ -23,6 +23,7 @@ namespace Awful.Controls
             this.PageManager.Loading += new EventHandler(OnPageLoading);
             this.PageManager.Loaded += new EventHandler(OnPageLoaded);
             this.PageManager.ReadyForContent += new EventHandler(OnReadyForContent);
+            this.PageManager.PostSelected += new EventHandler(OnPostSelected);
         }
 
         private RadAnimation FadeInAnimation
@@ -35,6 +36,7 @@ namespace Awful.Controls
             get { return this.Resources["FadeOutAnimation"] as RadAnimation; }
         }
 
+        private bool _allowZoom;
         private ThreadPageManager PageManager;
         private Data.ThreadPageDataSource PageData;
 		
@@ -71,8 +73,12 @@ namespace Awful.Controls
             	{
                     this.PageManager.ClearHtml();
                 	PageData = AttachPageData(item as Data.ThreadPageDataSource);
-                    if (PageData.Html == null)
+                    if (string.IsNullOrEmpty(PageData.Html))
+                    {
+                        this.IsLoading = true;
                         PageData.Refresh();
+                    }
+
                     else if (PageManager.IsReady)
                         PageManager.LoadHtml(PageData.Html);
             	}
@@ -84,7 +90,7 @@ namespace Awful.Controls
             if (PageData != null)
             {
                 PageData.ThreadPageUpdated += OnThreadPageUpdated;
-                PageData.ThreadPageUpdating += OnThreadPageUpdating;
+                PageData.ThreadPageUpdating += OnThreadPageUpdating;    
             }
 
             data.ThreadPageUpdated += OnThreadPageUpdated;
@@ -99,6 +105,12 @@ namespace Awful.Controls
 
         private void OnThreadPageUpdated(object sender, EventArgs e)
         {
+            if (sender == null)
+            {
+                MessageBox.Show("Could not load the requested page. Please try again.", ":(", MessageBoxButton.OK);
+                this.IsLoading = false;
+            }
+
             if (PageManager.IsReady)
                 PageManager.LoadHtml(PageData.Html);
         }
@@ -112,7 +124,7 @@ namespace Awful.Controls
 
         public static readonly DependencyProperty IsLoadingProperty =
             DependencyProperty.Register("IsLoading", typeof(bool), typeof(ThreadPagePresenter),
-            new PropertyMetadata(true, (o, a) => { (o as ThreadPagePresenter).OnIsLoadingPropertyChanged((bool)a.NewValue); }));
+            new PropertyMetadata(false, (o, a) => { (o as ThreadPagePresenter).OnIsLoadingPropertyChanged((bool)a.NewValue); }));
 
         public bool IsLoading
         {
@@ -138,6 +150,7 @@ namespace Awful.Controls
             if (newValue)
             {
                 this.ThreadPageLoadingBar.IsIndeterminate = true;
+                this.ThreadPageLoadingBar.Visibility = System.Windows.Visibility.Visible;
                 RadAnimationManager.StopIfRunning(this.ThreadPageView, this.FadeInAnimation);
                 RadAnimationManager.Play(this.ThreadPageView, this.FadeOutAnimation);
                 this.OnPageLoading();
@@ -146,7 +159,7 @@ namespace Awful.Controls
             else
             {
                 this.ThreadPageLoadingBar.IsIndeterminate = false;
-                
+                this.ThreadPageLoadingBar.Visibility = System.Windows.Visibility.Collapsed;
                 RadAnimationManager.StopIfRunning(this.ThreadPageView, this.FadeOutAnimation);
                 RadAnimationManager.Play(this.ThreadPageView, this.FadeInAnimation);
                 this.OnPageLoaded();
@@ -160,16 +173,13 @@ namespace Awful.Controls
             this.PageManager.ScrollToPost(post);
         }
 
-		public void ShowPostMenu(int postIndex)
+		public void ShowPostMenu(int postNumber)
 		{
-            this.MenuProvider.ShowPostMenu();
+            int index = postNumber - 1;
+            var post = this.PageData.Posts[index];
+            this.MenuProvider.ShowPostMenu(post);
 		}
-		
-		public void ShowImageMenu(string imageUrl)
-		{
-            this.MenuProvider.ShowImageMenu();
-		}
-
+	
         private void ProcessPagePosts(IEnumerable<Data.ThreadPostSource> source)
         {
             try
@@ -202,52 +212,12 @@ namespace Awful.Controls
                 this.PageManager.LoadHtml(PageData.Html);
         }
 
+        private void OnPostSelected(object sender, EventArgs e)
+        {
+            this.ShowPostMenu(this.PageManager.SelectedPostIndex);
+        }
+
         #region Context Menu Handlers
-
-        private void EditSelectedPost(object sender, ContextMenuItemSelectedEventArgs e)
-        {
-
-        }
-
-        private void QuoteSelectedPost(object sender, ContextMenuItemSelectedEventArgs e)
-        {
-            /*
-            PageData.QuoteAsync(PageManager.SelectedPostIndex, quote =>
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (quote != null)
-                        {
-                            Clipboard.SetText(quote);
-                            MessageBox.Show("Quote added to clipboard.", ":)", MessageBoxButton.OK);
-                        }
-                        else
-                            MessageBox.Show("Quote failed.", ":(", MessageBoxButton.OK);
-                    });
-                });
-             */
-        }
-
-        private void MarkSelectedPostAsRead(object sender, ContextMenuItemSelectedEventArgs e)
-        {
-            /*
-            PageData.MarkPostAsReadAsync(PageManager.SelectedPostIndex, marked =>
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (marked)
-                            MessageBox.Show("Mark successful.", ":)", MessageBoxButton.OK);
-                        else
-                            MessageBox.Show("Mark failed.", ":(", MessageBoxButton.OK);
-                    });
-                });
-             */
-        }
-
-        private void ShowOnlyPostsFromSelectedAuthor(object sender, ContextMenuItemSelectedEventArgs e)
-        {
-
-        }
 
         private void OpenSelectedImageInWebBrowser(object sender, ContextMenuItemSelectedEventArgs e)
         {
@@ -269,6 +239,9 @@ namespace Awful.Controls
 
         private void ZoomText(object sender, PinchGestureEventArgs e)
         {
+            if (!_allowZoom)
+                return;
+
             // ratio = start / finish
             var ratio = e.DistanceRatio;
             
@@ -278,6 +251,20 @@ namespace Awful.Controls
             else
                 PageManager.ZoomOut();
         }
+
+        private void BeginTextZoom(object sender, PinchStartedGestureEventArgs e)
+        {
+            // allow only horizontal pinches
+            var angle = Math.Abs(e.Angle);
+            _allowZoom = ((angle >= 80) && (angle <= 100)) ||
+                ((angle <= 290) && (angle >= 250));
+        }
+
+        public void Refresh()
+        {
+            this.PageData.Refresh();
+        }
+
     }
 
     public class ThreadPageContextMenuProvider : Common.RadContextMenuProvider
@@ -285,8 +272,13 @@ namespace Awful.Controls
         private RadContextMenu _post;
         public RadContextMenu PostMenu
         {
-            get { return _post; }
-            set { SetProperty(ref _post, value, "PostMenu"); }
+            get
+            {
+                if (_post == null)
+                    _post = ConfigurePostMenu(new RadContextMenu());
+
+                return _post;
+            }
         }
 
         private RadContextMenu _image;
@@ -296,10 +288,62 @@ namespace Awful.Controls
             set { SetProperty(ref _image, value, "ImageMenu"); }
         }
 
-        public void ShowPostMenu()
+        private RadContextMenu _link;
+        public RadContextMenu LinkMenu
+        {
+            get
+            {
+                if (_link == null)
+                    _link = CreateLinkMenu(new RadContextMenu());
+
+                return _link;
+            }
+        }
+
+        private RadContextMenuItem viewOnSA;
+        private RadContextMenuItem viewOnWeb;
+
+        private RadContextMenu CreateLinkMenu(RadContextMenu radContextMenu)
+        {
+            var saCommand = new Commands.ViewSAThreadCommand();
+            var webCommand = new Commands.OpenWebBrowserCommand();
+
+            viewOnSA = new RadContextMenuItem() { Content = "open in Awful!", Command = saCommand };
+            viewOnWeb = new RadContextMenuItem() { Content = "open in web browser", Command = webCommand };
+
+            radContextMenu.Items.Add(viewOnSA);
+            radContextMenu.Items.Add(viewOnWeb);
+
+            return radContextMenu;
+        }
+
+        public void ShowLinkMenu(string url)
+        {
+            try
+            {
+                var uri = new Uri(url, UriKind.Absolute);
+                if (this.Menu != null)
+                    this.Menu.IsOpen = false;
+
+                foreach (var item in LinkMenu.Items)
+                    (item as RadContextMenuItem).CommandParameter = uri;
+
+                this.Menu = LinkMenu;
+                this.Menu.IsOpen = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format("Could not navigate to '{0}'", url), ":(", MessageBoxButton.OK);
+            }
+        }
+
+        public void ShowPostMenu(Data.ThreadPostSource post)
         {
             if (this.Menu != null)
                 this.Menu.IsOpen = false;
+
+            foreach (var item in PostMenu.Items)
+                (item as RadContextMenuItem).CommandParameter = post;
 
             this.Menu = PostMenu;
             this.Menu.IsOpen = true;
@@ -314,5 +358,27 @@ namespace Awful.Controls
             this.Menu.IsOpen = true;
         }
 
+        private RadContextMenuItem quoteMenu;
+        private RadContextMenuItem editMenu;
+        private RadContextMenuItem markMenu;
+
+        private RadContextMenu ConfigurePostMenu(RadContextMenu postMenu)
+        {
+            var quote = new Commands.QuotePostToClipboardCommand();
+            var edit = new Commands.EditPostCommand();
+            var mark = new Commands.MarkPostAsReadCommand();
+
+            quoteMenu = new RadContextMenuItem() { Content = "quote", Command = quote };
+            editMenu = new RadContextMenuItem() { Content = "edit", Command = edit };
+            markMenu = new RadContextMenuItem() { Content = "mark as read", Command = mark };
+
+            postMenu.Items.Add(editMenu);
+            postMenu.Items.Add(quoteMenu);
+            postMenu.Items.Add(markMenu);
+
+            postMenu.IsFadeEnabled = false;
+            postMenu.IsZoomEnabled = false;
+            return postMenu;
+        }
     }
 }

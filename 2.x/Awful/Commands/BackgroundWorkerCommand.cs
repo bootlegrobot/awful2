@@ -7,8 +7,15 @@ using System.Windows.Input;
 
 namespace Awful.Commands
 {
-    public abstract class BackgroundWorkerCommand<T> : ICommand
+    public abstract class BackgroundWorkerCommand<T> : Common.BindableBase, ICommand
     {
+        private bool _isRunning;
+        public bool IsRunning
+        {
+            get { return _isRunning; }
+            protected set { SetProperty(ref _isRunning, value, "IsRunning"); }
+        }
+
         private BackgroundWorker _worker;
         private BackgroundWorker Worker
         {
@@ -27,17 +34,32 @@ namespace Awful.Commands
 
         private void OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            PostWork(e);
+            OnCanExecuteChanged();
+
+            if (e.Cancelled)
+                OnCancel();
+
+            else if (e.Error != null)
+                OnError(e.Error);
+            else
+                OnSuccess(e.Result);
         }
 
         private void OnWorkerDoWork(object sender, DoWorkEventArgs e)
         {
-            DoWork(e);
+            T parameter = (T)e.Argument;
+            e.Result = DoWork(parameter);
+
+            if (Worker.CancellationPending)
+                e.Cancel = true;
         }
 
-        protected abstract void DoWork(DoWorkEventArgs e);
-        protected abstract void PostWork(RunWorkerCompletedEventArgs e);
-        protected abstract bool PreWork(T item);
+        protected abstract object DoWork(T parameter);
+        protected abstract void OnError(Exception ex);
+        protected abstract void OnCancel();
+        protected abstract void OnSuccess(object arg);
+
+        protected abstract bool PreCondition(T item);
 
         protected virtual BackgroundWorker CreateBackgroundWorker()
         {
@@ -46,14 +68,27 @@ namespace Awful.Commands
 
         public virtual bool CanExecute(object parameter)
         {
-            return parameter is T;
+            return parameter is T && !this.Worker.IsBusy;
         }
 
+        public void Reset() { if (!this.Worker.IsBusy) { this.IsRunning = false; } }
+
         public event EventHandler CanExecuteChanged;
+        protected virtual void OnCanExecuteChanged()
+        {
+            if (CanExecuteChanged != null)
+                CanExecuteChanged(this, EventArgs.Empty);
+        }
+
         public void Execute(object parameter)
         {
-            if (CanExecute(parameter) && PreWork((T)parameter) && !this.Worker.IsBusy)
+            if (CanExecute(parameter)
+                && PreCondition((T)parameter))
+            {
+                this.IsRunning = true;
                 Worker.RunWorkerAsync(parameter);
+                OnCanExecuteChanged();
+            }
         }
     }
 }

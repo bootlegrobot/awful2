@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using System.ComponentModel;
 
 namespace Awful.ViewModels
 {
@@ -22,12 +23,15 @@ namespace Awful.ViewModels
         Clear
     }
 
+    public delegate void ListItemsDelegate<T>(IEnumerable<T> items);
+
     public abstract class ListViewModel<T> : Common.BindableBase, ICommand, IDataLoadable
     {
         public ListViewModel(ObservableCollection<T> collection)
         {
             this._items = collection;
             collection.CollectionChanged += NotifyCollectionChanged;
+            ProcessItems = UpdateItems;
         }
 
         public ListViewModel() : this(new ObservableCollection<T>()) { }
@@ -35,6 +39,24 @@ namespace Awful.ViewModels
         public event EventHandler DataLoaded;
 
         #region properties
+
+        protected ListItemsDelegate<T> ProcessItems
+        {
+            get;
+            set;
+        }
+
+        private BackgroundWorker _worker;
+        protected BackgroundWorker Worker
+        {
+            get
+            {
+                if (_worker == null)
+                    _worker = CreateBackgroundWorker();
+
+                return _worker;
+            }
+        }
 
         public bool IsDataLoaded
         {
@@ -56,10 +78,71 @@ namespace Awful.ViewModels
         public ObservableCollection<T> Items
         {
             get { return _items; }
-            set { UpdateItems(value); }
+            set { UpdateItemCollection(value); }
+        }
+
+        private string _status;
+        public string Status
+        {
+            get { return _status; }
+            private set { SetProperty(ref _status, value, "Status"); }
         }
 
         #endregion
+
+        protected virtual BackgroundWorker CreateBackgroundWorker()
+        {
+            var worker = new BackgroundWorker();
+            worker.WorkerReportsProgress = true;
+            worker.WorkerSupportsCancellation = true;
+            worker.DoWork += new DoWorkEventHandler(OnDoWork);
+            worker.ProgressChanged += new ProgressChangedEventHandler(OnProgressChanged);
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(OnWorkCompleted);
+            return worker;
+        }
+
+        private void OnWorkCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                OnCancel();
+                OnDataLoaded();
+            }
+
+            else if (e.Error != null)
+            {
+                OnError(e.Error);
+                OnDataLoaded();
+            }
+
+            else
+            {
+                IEnumerable<T> items = e.Result as IEnumerable<T>;
+                ProcessItems(items);
+            }
+        }
+
+        protected abstract void OnError(Exception exception);
+        protected abstract void OnCancel();
+
+        protected void UpdateStatus(string message)
+        {
+            try { Worker.ReportProgress(-1, message); }
+            catch (InvalidOperationException) { }
+        }
+
+        private void OnProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            string message = e.UserState as string;
+            this.Status = message;
+        }
+
+        protected virtual void OnDoWork(object sender, DoWorkEventArgs e)
+        {
+            e.Result = LoadDataInBackground();
+            if (Worker.CancellationPending)
+                e.Cancel = true;
+        }
 
         protected virtual void OnDataLoaded()
         {
@@ -72,7 +155,7 @@ namespace Awful.ViewModels
             OnPropertyChanged("Items");
         }
 
-        private void UpdateItems(ObservableCollection<T> items)
+        private void UpdateItemCollection(ObservableCollection<T> items)
         {
             if (this._items != null)
                 this._items.CollectionChanged -= NotifyCollectionChanged;
@@ -85,10 +168,14 @@ namespace Awful.ViewModels
         /// <summary>
         /// Creates and adds a few ItemViewModel objects into the Items collection.
         /// </summary>
-        public virtual void LoadData()
+        public void LoadData()
         {
-            this.IsRunning = true;
-            LoadDataAsync(ProcessData);
+            if (!Worker.IsBusy)
+            {
+                this.IsRunning = true;
+                this.ProcessItems = this.UpdateItems;
+                LoadDataAsync();
+            }
         }
 
         public virtual void Refresh()
@@ -96,24 +183,22 @@ namespace Awful.ViewModels
             this.LoadData();
         }
 
-        protected abstract IEnumerable<T> LoadDataWork();
+        protected abstract IEnumerable<T> LoadDataInBackground();
 
-        protected virtual void LoadDataAsync(Action<IEnumerable<T>> completed)
+        protected virtual void LoadDataAsync()
         {
-            ThreadPool.QueueUserWorkItem((state) =>
-            {
-                var items = LoadDataWork();
-                Deployment.Current.Dispatcher.BeginInvoke(() => { completed(items); });
-
-            }, null);
+            Worker.RunWorkerAsync();
         }
 
-        protected virtual void ProcessData(IEnumerable<T> items)
+        protected virtual void UpdateItems(IEnumerable<T> items)
         {
-            this.Items.Clear();
+            if (items != null)
+            {
+                this.Items.Clear();
 
-            foreach (var item in items)
-                this.Items.Add(item);
+                foreach (var item in items)
+                    this.Items.Add(item);
+            }
 
             this.IsRunning = false;
             OnDataLoaded();
@@ -154,40 +239,45 @@ namespace Awful.ViewModels
             set { SetProperty(ref _currentIndex, value, "CurrentIndex"); }
         }
 
-        protected override IEnumerable<T> LoadDataWork() { return LoadDataPage(0); }
-
-        protected abstract IEnumerable<T> LoadDataPage(int index);
+        protected override IEnumerable<T> LoadDataInBackground() { return LoadPageInBackground(0); }
+        protected abstract IEnumerable<T> LoadPageInBackground(int index);
 
         public void LoadFirstPage()
         {
-            this.LoadData();
+            this.Refresh();
         }
 
         public virtual void AppendNextPage()
         {
-            this.IsRunning = true;
-            LoadDataAsync(CurrentIndex + 1, AppendData);
-        }
-
-        protected override void LoadDataAsync(Action<IEnumerable<T>> completed)
-        {
-            LoadDataAsync(0, completed);
-        }
-
-        protected virtual void LoadDataAsync(int index, Action<IEnumerable<T>> completed)
-        {
-            ThreadPool.QueueUserWorkItem((state) =>
+            if (!Worker.IsBusy)
             {
-                var page = LoadDataPage(index);
-                if (page != null)
-                    _currentIndex = index;
-
-                Deployment.Current.Dispatcher.BeginInvoke(() => { completed(page); });
-
-            }, null);
+                this.IsRunning = true;
+                ProcessItems = AppendItems;
+                LoadPageAsync(CurrentIndex + 1);
+            }
         }
 
-        protected virtual void AppendData(IEnumerable<T> items)
+        protected override void LoadDataAsync()
+        {
+            LoadPageAsync(0);
+        }
+
+        protected override void OnDoWork(object sender, DoWorkEventArgs e)
+        {
+            int index = (int)e.Argument;
+            var page = LoadPageInBackground(index);
+            if (page != null)
+                _currentIndex = index;
+
+            e.Result = page;
+        }
+
+        protected void LoadPageAsync(int index)
+        {
+            Worker.RunWorkerAsync(index);
+        }
+
+        protected virtual void AppendItems(IEnumerable<T> items)
         {
             if (items != null)
             {

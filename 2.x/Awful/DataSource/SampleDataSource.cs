@@ -47,7 +47,7 @@ namespace Awful.Data
     [DataContract]
     public abstract class CommonDataObject : Awful.Common.BindableBase, IUnique
     {
-        private static Uri _baseUri = new Uri("ms-appx:///");
+        //private static Uri _baseUri = new Uri("ms-appx:///");
 
         public CommonDataObject(String uniqueId, String title, String subtitle, String imagePath, String description)
         {
@@ -102,7 +102,7 @@ namespace Awful.Data
             {
                 if (this._image == null && this._imagePath != null)
                 {
-                    this._image = new BitmapImage(new Uri(CommonDataObject._baseUri, this._imagePath));
+                    this._image = new BitmapImage(new Uri(this._imagePath, UriKind.RelativeOrAbsolute));
                 }
                 return this._image;
             }

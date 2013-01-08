@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Linq;
 using HtmlAgilityPack;
+using System.Net;
 
 namespace Awful
 {
     public static class PostParser
     {
+        private const string POST_ID_ATTRIBUTE = "id";
+
         public static ThreadPostMetadata ParsePost(HtmlNode postNode)
         {
             ThreadPostMetadata post = new ThreadPostMetadata()
@@ -160,6 +163,8 @@ namespace Awful
             {
                 // make sure the string is in the right format so the uri class can parse correctly.
                 var nodeValue = seenUrlNode.GetAttributeValue("href", "");
+                post.MarkPostUri = new Uri(string.Format("http://forums.somethingawful.com{0}", 
+                    HttpUtility.HtmlDecode(nodeValue)), UriKind.Absolute);
                 int index = -1;
                 string indexValue = nodeValue.Split('&').LastOrDefault();
                 if (indexValue != null)
@@ -176,15 +181,13 @@ namespace Awful
 
         private static ThreadPostMetadata ParsePostID(this ThreadPostMetadata post, HtmlNode postNode)
         {
-            var id = postNode.DescendantsAndSelf()
-              .Where(node => node.GetAttributeValue("class", "").Equals("post"))
-              .FirstOrDefault();
+            string idValue = postNode.GetAttributeValue(POST_ID_ATTRIBUTE, "");
 
             string result = null;
 
-            if (id != null)
+            if (idValue != null)
             {
-                string postID = id.GetAttributeValue("id", "").Replace("post", "");
+                string postID = idValue.Replace("post", "");
                 result = postID;
             }
 

@@ -27,10 +27,7 @@ namespace Awful
 
             this._browser = browser;
             this._threadMenu = threadMenu;
-            this._threadMenu.PostMenu.Closed += PostMenu_Closed;
-            this._threadMenu.ImageMenu.Closed += ImageMenu_Closed;
             this.IsReady = false;
-            this.FontSize = 16;
         }
 
         // javascript callback strings
@@ -39,7 +36,9 @@ namespace Awful
         private const string JS_HTML_LOADING_CALLBACK = "htmlloading";
         private const string JS_PAGE_STYLE_SET_CALLBACK = "styleset";
         private const string JS_POST_SELECTED_CALLBACK = "post";
+        private const string JS_ERROR_CALLBACK = "error";
         private const string JS_IMAGE_SELECTED_CALLBACK = "image";
+        private const string JS_LINK_SELECTED_CALLBACK = "a";
 
         // javascript function names and constants
         private const string JS_CLEAR_HTML = "clearHtml";
@@ -55,14 +54,15 @@ namespace Awful
         private ThreadPageContextMenuProvider _threadMenu;
         public bool IsReady { get; private set; }
         public bool IsLoaded { get; private set; }
-        public int SelectedPostIndex { get; set; }
-        public string SelectedImageUrl { get; set; }
-        public int FontSize { get; private set; }
+        public int SelectedPostIndex { get; private set; }
+        public string SelectedImageUrl { get; private set; }
+        public string SelectedLinkUrl { get; private set; }
 
         public event EventHandler ReadyForContent;
         public event EventHandler Loading;
         public event EventHandler Loaded;
         public event EventHandler PostListRequested;
+        public event EventHandler PostSelected;
 
         public void LoadHtml(string html)
         {
@@ -110,7 +110,7 @@ namespace Awful
             string chrome = ToHtmlColor(chromeColor);
 
             this._browser.InvokeScript(JS_SET_STYLES_FUNCTION, fg, bg, accent, chrome, font);
-            this.FontSize = fontSize;
+            App.Model.ContentFontSize = fontSize;
         }
 
         private string ToHtmlColor(Color color)
@@ -127,6 +127,8 @@ namespace Awful
             this._eventManager.Add(JS_PAGE_STYLE_SET_CALLBACK, OnPageStyleSet);
             this._eventManager.Add(JS_POST_SELECTED_CALLBACK, OnPostSelected);
             this._eventManager.Add(JS_IMAGE_SELECTED_CALLBACK, OnImageSelected);
+            this._eventManager.Add(JS_LINK_SELECTED_CALLBACK, OnLinkSelected);
+            this._eventManager.Add(JS_ERROR_CALLBACK, OnErrorGenerated);
         }
 
         private void AttachBrowser(WebBrowser browser)
@@ -152,12 +154,22 @@ namespace Awful
             browser.NavigationFailed -= new System.Windows.Navigation.NavigationFailedEventHandler(PageBrowser_NavigationFailed);
         }
 
-      
+
+        private void OnPostSelected()
+        {
+            if (PostSelected != null)
+                PostSelected(this, EventArgs.Empty);
+        }
 
         private void OnPostListRequested()
         {
             if (PostListRequested != null)
                 PostListRequested(this, null);
+        }
+
+        private void OnErrorGenerated(string response)
+        {
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, response);
         }
 
         private void OnPageContentLoaded(string response)
@@ -166,7 +178,7 @@ namespace Awful
             SetPageStyle((Color)Application.Current.Resources["PhoneForegroundColor"],
                 (Color)Application.Current.Resources["PhoneBackgroundColor"],
                 (Color)Application.Current.Resources["PhoneAccentColor"],
-                FontSize);
+                App.Model.ContentFontSize);
         }
 
         private void OnPageContentLoading(string response)
@@ -194,6 +206,19 @@ namespace Awful
             }
         }
 
+        private void OnLinkSelected(string response)
+        {
+            // expecting a format of 'link##$$##<link url>'
+            // example: link##$$##http://www.contoso.com
+            // example #2 link##$$##http://forums.somethingawful.com/showthread.php?threadid=3030303
+
+            var delim = JS_ARG_DELIMITER.ToCharArray();
+            string url = response.Split(delim, StringSplitOptions.RemoveEmptyEntries).Last();
+
+            this.SelectedLinkUrl = url;
+            _threadMenu.ShowLinkMenu(url);
+        }
+
         private void OnImageSelected(string response)
         {
             // expecting a format of 'image##$$##<image url>'
@@ -201,7 +226,7 @@ namespace Awful
 
             var delim = JS_ARG_DELIMITER.ToCharArray();
             string index = response.Split(delim, StringSplitOptions.RemoveEmptyEntries).Last();
-            MessageBox.Show("The link is " + index + "!");
+            
             this.SelectedImageUrl = index;
             _threadMenu.ShowImageMenu();
         }
@@ -213,8 +238,9 @@ namespace Awful
 
             var delim = JS_ARG_DELIMITER.ToCharArray();
             string index = response.Split(delim, StringSplitOptions.RemoveEmptyEntries).Last();
-            MessageBox.Show("The index is " + index + "!");
-            _threadMenu.ShowPostMenu();
+            
+            this.SelectedPostIndex = Convert.ToInt32(index);
+            OnPostSelected();
         }
 
         private void ManageScriptAction(string action)
@@ -228,17 +254,14 @@ namespace Awful
                 var tokens = action.Split(delim, StringSplitOptions.RemoveEmptyEntries);
                 if (this._eventManager.ContainsKey(tokens[0]))
                     this._eventManager[tokens[0]](action);
+                else
+                {
+                    AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, action);
+#if DEBUG
+                    MessageBox.Show(action, "debug: script action", MessageBoxButton.OK);
+#endif
+                }
             }
-        }
-
-        void ImageMenu_Closed(object sender, EventArgs e)
-        {
-            //this.SelectedImageUrl = null;
-        }
-
-        void PostMenu_Closed(object sender, EventArgs e)
-        {
-            //this.SelectedPostIndex = -1;
         }
 
         #region Web Browser events
@@ -281,10 +304,10 @@ namespace Awful
         {
             if (IsReady)
             {
-                int fontSize = this.FontSize - 2;
-                // Set styles
+                int fontSize = App.Model.ContentFontSize - 2;
+                // zoom out
                 this._browser.InvokeScript(JS_SET_FONTSIZE_FUNCTION, fontSize.ToString());
-                this.FontSize = fontSize;
+                App.Model.ContentFontSize = fontSize;
             }
         }
 
@@ -292,10 +315,10 @@ namespace Awful
         {
             if (IsReady)
             {
-                int fontSize = this.FontSize + 2;
-                // Set styles
+                int fontSize = App.Model.ContentFontSize + 2;
+                // zoom in
                 this._browser.InvokeScript(JS_SET_FONTSIZE_FUNCTION, fontSize.ToString());
-                this.FontSize = fontSize;
+                App.Model.ContentFontSize = fontSize;
             }
         }
     }

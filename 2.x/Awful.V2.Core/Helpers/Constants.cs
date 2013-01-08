@@ -43,6 +43,9 @@ namespace Awful
         public const string LOGIN_PAGE_URI = "account.php";
         public const string LOGIN_OPTIONS = "action=login&username={0}&password={1}";
         public const string LASTREAD_FLAG = "seen1";
+        public const string LOG_DIRECTORY = "log";
+        public const string LOG_TIMESTAMP_FORMAT = "yyyy.MM.dd.HHmm";
+        public const string LOG_FILE_FORMAT = "yyyy.MM.dd";
        
         // N
         public const string NEWPOST_GIF_URL = "http://fi.somethingawful.com/style/posticon-new.gif";

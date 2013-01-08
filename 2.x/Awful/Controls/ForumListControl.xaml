@@ -5,398 +5,234 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:helpers="clr-namespace:Awful.Helpers"
              xmlns:controls="clr-namespace:Awful.Controls"
+             xmlns:telerikCore="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Core"
              xmlns:telerikData="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Data"
              xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
              xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
              mc:Ignorable="d"
              FontFamily="{StaticResource PhoneFontFamilyNormal}"
              FontSize="{StaticResource PhoneFontSizeNormal}"
-             Foreground="{StaticResource PhoneForegroundBrush}"
+             Foreground="{Binding CurrentTheme.ForegroundBrush, Source={StaticResource AwfulThemeManager}}"
              d:DesignHeight="480"
              d:DesignWidth="480">
 
-    <UserControl.Resources>
+  <UserControl.Resources>
 
-        <CollectionViewSource x:Key="itemsViewSource" />
+    <CollectionViewSource x:Key="itemsViewSource" />
+	
+	<DataTemplate x:Key="EmptyListContentTemplate">
+		<TextBlock Style="{StaticResource EmptyListContentStyle}"
+				   Text="{Binding}"
+				   Tap="RefreshEmptyList"/>
+	</DataTemplate>
 
-        <DataTemplate x:Key="SingleForumItemTemplate">
-            <Border MinHeight="125">
-                <telerikPrimitives:RadContextMenu.ContextMenu>
-                    <controls:ForumContextMenu />
-                </telerikPrimitives:RadContextMenu.ContextMenu>
-                <Grid MinWidth="300"
-                      Margin="{StaticResource PhoneTouchTargetOverhang}"
-                      VerticalAlignment="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
+    <!-- The basic item template for forums that fall under the main forum within the expansion list. -->
 
-                    <Border x:Name="ExpandButtonBorder"
-                            BorderBrush="{StaticResource PhoneBorderBrush}"
-                            BorderThickness="1"
-                            HorizontalAlignment="Left"
-                            Height="64"
-                            VerticalAlignment="Top"
-                            Width="64"
-                            Background="{StaticResource PhoneChromeBrush}"
-                            Margin="0,12,0,0">
-                        <Grid>
-                            <Button Opacity="0"
-                                    Command="{Binding Command}"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"
-                                    Padding="0"
-                                    Style="{StaticResource UnstyledButton}"
-                                    Canvas.ZIndex="100" />
+    <DataTemplate x:Key="ForumItemTemplate">
+      <Border BorderBrush="{Binding CurrentTheme.BackgroundBrush, Source={StaticResource AwfulThemeManager}}"
+              BorderThickness="0,1,0,1">
+        <Grid x:Name="templateGrid"
+              Margin="{StaticResource PhoneTouchTargetOverhang}"
+              telerikCore:InteractionEffectManager.IsInteractionEnabled="True"
+              MinHeight="100">
 
-                            <Rectangle x:Name="OuterCircleGlyph"
-                                       Margin="0"
-                                       Fill="{Binding BackgroundColor}">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="/Awful;component/Assets/Glyph/outer_circle.png"
-                                                Stretch="Uniform" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                            <Rectangle x:Name="MiddleCircleGlyph"
-                                       Margin="0"
-                                       Fill="{Binding MiddleColor}"
-                                       Stretch="Uniform">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="Awful;component/Assets/Glyph/middle_circle.png" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                            <Rectangle x:Name="InnerCircleGlyph"
-                                       Margin="0"
-                                       Fill="{Binding InnerColor}">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="Awful;component/Assets/Glyph/inner_circle.png"
-                                                Stretch="Uniform" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                            <Rectangle x:Name="InnerSquareGlyph"
-                                       Margin="0"
-                                       Fill="#7F000000">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="Awful;component/Assets/Glyph/inner_square.png"
-                                                Stretch="Uniform" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Grid>
-                    </Border>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
 
-                    <StackPanel x:Name="TextPanel"
-                                IsHitTestVisible="False"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Margin="{Binding BorderThickness, ElementName=LayoutBorder}"
-                                Grid.Column="1">
-                        <TextBlock x:Name="TitleText"
-                                   Text="{Binding Title}"
-                                   TextWrapping="Wrap"
-                                   TextTrimming="WordEllipsis"
-                                   Style="{StaticResource PhoneTextTitle2Style}" />
-                        <TextBlock x:Name="SubtitleText"
-                                   TextWrapping="Wrap"
-                                   Text="{Binding Subtitle}"
-                                   Style="{StaticResource PhoneTextSubtleStyle}" />
-                        <TextBlock x:Name="DescriptionText"
-                                   Text="{Binding Description}"
-                                   Style="{StaticResource PhoneTextSmallStyle}"
-                                   Foreground="{StaticResource PhoneAccentBrush}" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-        </DataTemplate>
+          <telerikPrimitives:RadContextMenu.ContextMenu>
+            <controls:ForumContextMenu />
+          </telerikPrimitives:RadContextMenu.ContextMenu>
 
-        <DataTemplate x:Key="SubForumItemTemplate">
-            <Border MinHeight="125">
-                <telerikPrimitives:RadContextMenu.ContextMenu>
-                    <controls:ForumContextMenu />
-                </telerikPrimitives:RadContextMenu.ContextMenu>
-                <Grid Margin="{StaticResource PhoneTouchTargetOverhang}"
-                      VerticalAlignment="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
+          <Rectangle x:Name="AccentGlyph"
+                     Height="25"
+                     Width="25"
+                     Fill="{StaticResource PhoneAccentBrush}"
+                     VerticalAlignment="Center" />
 
-                    <StackPanel x:Name="TextPanel"
-                                IsHitTestVisible="False"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Margin="{Binding BorderThickness, ElementName=LayoutBorder}"
-                                Grid.Column="1">
-                        <TextBlock x:Name="TitleText"
-                                   Text="{Binding Title}"
-                                   TextWrapping="Wrap"
-                                   TextTrimming="WordEllipsis"
-                                   Style="{StaticResource PhoneTextTitle2Style}" />
-                        <TextBlock x:Name="SubtitleText"
-                                   TextWrapping="Wrap"
-                                   Text="{Binding Subtitle}"
-                                   Style="{StaticResource PhoneTextSubtleStyle}" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-        </DataTemplate>
+          <StackPanel x:Name="TextPanel"
+                      Grid.Column="1"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Center"
+                      Margin="12,0,0,0">
+            <TextBlock Text="{Binding Title, Converter={StaticResource contentFilter}}"
+                       TextWrapping="Wrap"
+                       TextTrimming="WordEllipsis"
+                       MaxHeight="{Binding MinHeight, ElementName=templateGrid}"
+                       Style="{StaticResource PhoneTextTitle2Style}"
+                       x:Name="TitleText"
+                       Margin="0,0,12,0"
+                       HorizontalAlignment="Left" />
+            <TextBlock Text="{Binding Subtitle}"
+                       TextWrapping="Wrap"
+                       Style="{StaticResource PhoneTextSubtleStyle}"
+                       Visibility="Collapsed"
+                       x:Name="SubtitleText"
+                       Margin="0,0,12,0"
+                       HorizontalAlignment="Left" />
+            <TextBlock Text="{Binding Description}"
+                       Style="{StaticResource PhoneTextSmallStyle}"
+                       Visibility="Collapsed"
+                       x:Name="DescriptionText"
+                       Margin="0,0,12,0"
+                       HorizontalAlignment="Left"
+                       Foreground="{StaticResource PhoneAccentBrush}" />
+          </StackPanel>
 
-        <!-- The ItemTemplate describes the template for all items once the expansion
+        </Grid>
+
+      </Border>
+
+    </DataTemplate>
+
+    <!--  The item template for main forums. Theses are the forums at the root of the forum list.
+          Users are expected to tap on these items to reveal the expander list. -->
+
+    <DataTemplate x:Key="MainForumItemTemplate">
+      <Border Margin="0,0,0,12"
+              DataContext="{Binding Layout}">
+        <Grid Height="100"
+              HorizontalAlignment="Stretch"
+              Background="{Binding PrimaryColor}">
+
+          <Image x:Name="ForumIcon"
+                 HorizontalAlignment="Left"
+                 Stretch="None"
+                 Source="{Binding Image}" />
+          <Border x:Name="InnerBorder"
+                  BorderThickness="2">
+            <Border.BorderBrush>
+              <SolidColorBrush Color="#3FFFFFFF" />
+            </Border.BorderBrush>
+            <TextBlock x:Name="TitleText"
+                       TextAlignment="Right"
+                       HorizontalAlignment="Right"
+                       Text="{Binding Nickname}"
+                       Foreground="White"
+                       Style="{StaticResource PhoneTextLargeStyle}"
+                       FontFamily="Segoe WP Black"
+                       VerticalAlignment="Center"
+                       FontSize="48" />
+          </Border>
+
+        </Grid>
+      </Border>
+    </DataTemplate>
+
+    <!-- The ItemTemplate describes the template for all items once the expansion
                                  has occured. In the sample, it's the template for all 3 of Anne Wallace's
                                  emails in her conversation, where it displays the sender and the first line
                                  of the message in the accent color. -->
 
-        <DataTemplate x:Key="ExpanderViewItemListTemplate">
-            <telerikPrimitives:RadDataBoundListBox ItemsSource="{Binding Items}"
-                                                   Margin="12,0,0,12"
-                                                   ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                                   ItemTap="ForumItemSelector_ItemTap"
-                                                   Background="{StaticResource PhoneChromeBrush}">
-                <telerikPrimitives:RadDataBoundListBox.CacheMode>
-                    <BitmapCache />
-                </telerikPrimitives:RadDataBoundListBox.CacheMode>
-                <telerikPrimitives:RadDataBoundListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Border BorderBrush="{StaticResource PhoneAccentBrush}"
-                                    BorderThickness="5,0,0,0" />
-                            <ContentControl Content="{Binding}"
-                                            Margin="5,0,0,0"
-                                            Grid.Column="1"
-                                            HorizontalContentAlignment="Stretch"
-                                            VerticalContentAlignment="Center"
-                                            ContentTemplate="{StaticResource SubForumItemTemplate}" />
-                        </Grid>
-                    </DataTemplate>
-                </telerikPrimitives:RadDataBoundListBox.ItemTemplate>
-            </telerikPrimitives:RadDataBoundListBox>
-        </DataTemplate>
-
-        <DataTemplate x:Key="MultiForumItemTemplate">
-            <Border MinHeight="125">
-                <telerikPrimitives:RadContextMenu.ContextMenu>
-                    <controls:ForumContextMenu />
-                </telerikPrimitives:RadContextMenu.ContextMenu>
-                <Grid MinWidth="300"
-                      Margin="{StaticResource PhoneTouchTargetOverhang}"
-                      VerticalAlignment="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-
-                    <Border x:Name="ExpandButtonBorder"
-                            BorderBrush="{StaticResource PhoneBorderBrush}"
-                            BorderThickness="1"
-                            HorizontalAlignment="Left"
-                            Height="64"
-                            VerticalAlignment="Top"
-                            Width="64"
-                            Background="{StaticResource PhoneChromeBrush}"
-                            Margin="0,12,0,0">
-                        <Grid>
-                            <Button Opacity="0"
-                                    Command="{Binding Command}"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"
-                                    Padding="0"
-                                    Style="{StaticResource UnstyledButton}"
-                                    Canvas.ZIndex="100" />
-
-                            <Rectangle x:Name="OuterCircleGlyph"
-                                       Margin="0"
-                                       Fill="{Binding BackgroundColor}">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="/Awful;component/Assets/Glyph/outer_circle.png"
-                                                Stretch="Uniform" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                            <Rectangle x:Name="MiddleCircleGlyph"
-                                       Margin="0"
-                                       Fill="{Binding MiddleColor}"
-                                       Stretch="Uniform">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="Awful;component/Assets/Glyph/middle_circle.png" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                            <Rectangle x:Name="InnerCircleGlyph"
-                                       Margin="0"
-                                       Fill="{Binding InnerColor}">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="Awful;component/Assets/Glyph/inner_circle.png"
-                                                Stretch="Uniform" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                            <Rectangle x:Name="InnerSquareGlyph"
-                                       Margin="0"
-                                       Fill="#7F000000">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="Awful;component/Assets/Glyph/inner_square.png"
-                                                Stretch="Uniform" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Grid>
-                    </Border>
-
-                    <StackPanel x:Name="TextPanel"
-                                IsHitTestVisible="False"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Margin="{Binding BorderThickness, ElementName=LayoutBorder}"
-                                Grid.Column="1">
-                        <TextBlock x:Name="TitleText"
-                                   Text="{Binding Title}"
-                                   TextWrapping="Wrap"
-                                   TextTrimming="WordEllipsis"
-                                   Style="{StaticResource PhoneTextTitle2Style}" />
-                        <TextBlock x:Name="SubtitleText"
-                                   TextWrapping="Wrap"
-                                   Text="{Binding Subtitle}"
-                                   Style="{StaticResource PhoneTextSubtleStyle}" />
-                        <TextBlock x:Name="DescriptionText"
-                                   Text="{Binding ItemsDescription}"
-                                   Style="{StaticResource PhoneTextSmallStyle}"
-                                   Foreground="{StaticResource PhoneAccentBrush}" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-        </DataTemplate>
-
-        <DataTemplate x:Key="ForumGroupHeader">
-            <Border Background="{StaticResource PhoneAccentBrush}"
-                    HorizontalAlignment="Stretch">
-                <TextBlock Text="{Binding}"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Bottom"
-                           Margin="6,12"
-                           FontSize="{StaticResource PhoneFontSizeExtraLarge}"
-                           FontFamily="{StaticResource PhoneFontFamilySemiLight}" />
-            </Border>
-        </DataTemplate>
-
-		 <helpers:ForumItemTemplateSelector x:Key="ItemTemplateSelector"
-			 SingleForumTemplate="{StaticResource SingleForumItemTemplate}">
-                        <helpers:ForumItemTemplateSelector.MultiForumTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <telerikPrimitives:RadExpanderControl Content="{Binding}"
-                                                                          ContentTemplate="{StaticResource MultiForumItemTemplate}"
-                                                                          ExpandableContent="{Binding}"
-                                                                          IsExpanded="{Binding ShowItems}"
-                                                                          ExpandableContentTemplate="{StaticResource ExpanderViewItemListTemplate}">
-                                        <telerikPrimitives:RadExpanderControl.AnimatedIndicatorContentTemplate>
-                                            <DataTemplate />
-                                        </telerikPrimitives:RadExpanderControl.AnimatedIndicatorContentTemplate>
-                                    </telerikPrimitives:RadExpanderControl>
-                                </Grid>
-
-                            </DataTemplate>
-                        </helpers:ForumItemTemplateSelector.MultiForumTemplate>
-               
-     </helpers:ForumItemTemplateSelector>
-
-    <DataTemplate x:Key="ForumDataTemplate">
-      <StackPanel x:Name="TextPanel"
-                  IsHitTestVisible="False"
-                  HorizontalAlignment="Right"
-                  VerticalAlignment="Center">
-        <TextBlock Text="{Binding Title}"
-                   TextWrapping="Wrap"
-                   TextAlignment="Right"
-                   TextTrimming="WordEllipsis"
-                   MaxHeight="70"
-                   Style="{StaticResource PhoneTextTitle3Style}"
-                   x:Name="TitleText"
-                   Margin="0,0,12,0"
-                   HorizontalAlignment="Right" />
-        <TextBlock Text="{Binding Subtitle}"
-                   TextWrapping="Wrap"
-                   TextAlignment="Right"
-                   Style="{StaticResource PhoneTextSubtleStyle}"
-                   Visibility="Collapsed"
-                   x:Name="SubtitleText"
-                   Margin="0,0,12,0"
-                   HorizontalAlignment="Right" />
-        <TextBlock Text="{Binding Description}"
-                   TextAlignment="Right"
-                   Style="{StaticResource PhoneTextSmallStyle}"
-                   Visibility="Collapsed"
-                   x:Name="DescriptionText"
-                   Margin="0,0,12,0"
-                   HorizontalAlignment="Right"
-                   Foreground="{StaticResource PhoneAccentBrush}" />
-      </StackPanel>
+    <DataTemplate x:Key="MainForumExpandedListTemplate">
+      <telerikPrimitives:RadDataBoundListBox ItemsSource="{Binding Items}"
+                                             Margin="0,0,0,12"
+                                             ItemTap="ForumItemSelector_ItemTap"
+                                             ItemTemplate="{StaticResource ForumItemTemplate}"
+                                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                             telerikCore:InteractionEffectManager.IsInteractionEnabled="True"
+                                             Background="{StaticResource PhoneChromeBrush}">
+      </telerikPrimitives:RadDataBoundListBox>
     </DataTemplate>
 
-    <DataTemplate x:Key="OddForumItemTemplate">
-      <controls:ForumItemControl Content="{Binding}"
-                                 ContentTemplate="{StaticResource ForumDataTemplate}"
-                                 GlyphHeight="100"
-                                 SkewX="10"
-                                 Background="{StaticResource PhoneAccentBrush}">
-        <controls:ForumItemControl.GlyphBrush>
-          <LinearGradientBrush EndPoint="0.5,1"
-                               StartPoint="0.5,0">
-            <GradientStop Color="{StaticResource PhoneSemitransparentColor}"
-                          Offset="1" />
-            <GradientStop Color="{StaticResource PhoneAccentColor}"
-                          Offset="0.6" />
-          </LinearGradientBrush>
-        </controls:ForumItemControl.GlyphBrush>
-      </controls:ForumItemControl>
+    <!-- The forum group header (i.e. 'Discussion', 'Community', etc.) -->
+
+    <DataTemplate x:Key="ForumGroupHeader">
+      <Border Background="{StaticResource PhoneAccentBrush}"
+              HorizontalAlignment="Stretch"
+              Margin="0,0,0,12">
+        <TextBlock Text="{Binding}"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Bottom"
+                   Margin="12,6"
+                   FontSize="{StaticResource PhoneFontSizeLarge}" />
+      </Border>
     </DataTemplate>
 
-    <DataTemplate x:Key="EvenForumItemTemplate">
-      <controls:ForumItemControl Content="{Binding}"
-                                 SkewX="-10"
-                                 SkewRight="-9,0,0,0"
-                                 GlyphHeight="100"
-                                 ContentTemplate="{StaticResource ForumDataTemplate}"
-                                 Background="{StaticResource PhoneAccentBrush}">
-        <controls:ForumItemControl.GlyphBrush>
-          <LinearGradientBrush EndPoint="0.5,1"
-                               StartPoint="0.5,0">
-            <GradientStop Color="{StaticResource PhoneSemitransparentColor}"
-                          Offset="0.3" />
-            <GradientStop Color="{StaticResource PhoneAccentColor}"
-                          Offset="1" />
-          </LinearGradientBrush>
-        </controls:ForumItemControl.GlyphBrush>
-      </controls:ForumItemControl>
+    <DataTemplate x:Key="ForumStickyHeader">
+      <Border Background="{StaticResource PhoneAccentBrush}"
+              BorderThickness="0,0,0,2"
+              BorderBrush="{StaticResource PhoneBackgroundBrush}"
+              HorizontalAlignment="Stretch">
+        <TextBlock Text="{Binding}"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Bottom"
+                   Margin="12,6"
+                   FontSize="{StaticResource PhoneFontSizeLarge}" />
+      </Border>
     </DataTemplate>
 
   </UserControl.Resources>
 
-    <Grid x:Name="LayoutRoot" d:DataContext="{Binding Source={StaticResource SampleForumSource}}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+  <Grid x:Name="LayoutRoot"
+        d:DataContext="{d:DesignData /SampleData/SampleMainDataSource.xaml}">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
 
-        <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel"
-              Grid.Row="1"
-              Margin="0">
-            <toolkit:PerformanceProgressBar IsIndeterminate="{Binding IsRunning}"
-                                            HorizontalAlignment="Stretch"
-                                            VerticalAlignment="Top" />
+    <!--ContentPanel - place additional content here-->
+    <Grid x:Name="ContentPanel"
+          Grid.Row="1"
+          Margin="0">
+      <toolkit:PerformanceProgressBar IsIndeterminate="{Binding IsRunning}"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Top" />
 
-            <telerikData:RadJumpList x:Name="ForumItemSelector"
-                                     ItemTap="ForumItemSelector_ItemTap"
-                                     ItemsSource="{Binding Items}"
-                                     IsPullToRefreshEnabled="True"
-                                     RefreshRequested="OnRefreshRequested"
-                                     GroupHeaderTemplate="{StaticResource ForumGroupHeader}" HorizontalContentAlignment="Stretch">
-				<telerikData:RadJumpList.ItemTemplateSelector>
-					<helpers:OddEvenTemplateSelector OddTemplate="{StaticResource OddForumItemTemplate}"
-						EvenTemplate="{StaticResource EvenForumItemTemplate}"/>
-				</telerikData:RadJumpList.ItemTemplateSelector>
-              
-            </telerikData:RadJumpList>
-        </Grid>
+
+      <telerikData:RadJumpList x:Name="ForumItemSelector"
+                               Visibility="Visible"
+                               IsStickyHeaderEnabled="True"
+                               ItemsSource="{Binding Items}"
+                               IsPullToRefreshEnabled="True"
+                               RefreshRequested="OnRefreshRequested"
+                               StickyHeaderTemplate="{StaticResource ForumStickyHeader}"
+                               EmptyContent="{Binding Status}"
+							   EmptyContentTemplate="{StaticResource EmptyListContentTemplate}"
+							   EmptyContentDisplayMode="Always"
+                               GroupHeaderTemplate="{StaticResource ForumGroupHeader}"
+                               HorizontalContentAlignment="Stretch">
+        <telerikData:RadJumpList.VirtualizationStrategyDefinition>
+          <telerikPrimitives:StackVirtualizationStrategyDefinition Orientation="Vertical" />
+        </telerikData:RadJumpList.VirtualizationStrategyDefinition>
+        <telerikData:RadJumpList.ItemTemplate>
+          <DataTemplate>
+            <telerikPrimitives:RadExpanderControl Content="{Binding}"
+                                                  ExpandedStateContent="{Binding}"
+                                                  ExpandedStateContentTemplate="{StaticResource MainForumItemTemplate}"
+                                                  ContentTemplate="{StaticResource MainForumItemTemplate}"
+                                                  ExpandableContent="{Binding}"
+                                                  ExpandableContentTemplate="{StaticResource MainForumExpandedListTemplate}">
+
+              <telerikPrimitives:RadExpanderControl.AnimatedIndicatorContentTemplate>
+                <DataTemplate>
+                  <Grid />
+                </DataTemplate>
+              </telerikPrimitives:RadExpanderControl.AnimatedIndicatorContentTemplate>
+            </telerikPrimitives:RadExpanderControl>
+          </DataTemplate>
+        </telerikData:RadJumpList.ItemTemplate>
+      </telerikData:RadJumpList>
+
+      <telerikPrimitives:RadDataBoundListBox x:Name="UngroupedForumItemSelector"
+                                             Visibility="Collapsed"
+                                             ItemsSource="{Binding Items}"
+                                             EmptyContent="{Binding Status}"
+											 EmptyContentTemplate="{StaticResource EmptyListContentTemplate}"
+											 EmptyContentDisplayMode="Always"
+                                             ItemTemplate="{StaticResource ForumItemTemplate}"
+                                             HorizontalContentAlignment="Stretch"
+                                             ItemTap="ForumItemSelector_ItemTap">
+        <telerikPrimitives:RadDataBoundListBox.ItemContainerStyle>
+          <Style TargetType="telerikPrimitives:RadDataBoundListBoxItem"
+                 BasedOn="{StaticResource RadDataBoundListBoxItemStyle}">
+            <Setter Property="Background"
+                    Value="{StaticResource PhoneChromeBrush}" />
+          </Style>
+        </telerikPrimitives:RadDataBoundListBox.ItemContainerStyle>
+      </telerikPrimitives:RadDataBoundListBox>
+
     </Grid>
+  </Grid>
 </UserControl>

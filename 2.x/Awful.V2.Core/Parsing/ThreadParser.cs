@@ -8,6 +8,8 @@ namespace Awful
 {
     public static class ThreadParser
     {
+        private const string THREAD_ID_ATTRIBUTE = "id";
+
         public static ThreadMetadata ParseThread(HtmlNode node)
         {
             ThreadMetadata thread = new ThreadMetadata()
@@ -259,11 +261,7 @@ namespace Awful
 
         private static ThreadMetadata ParseThreadID(this ThreadMetadata thread, HtmlNode node)
         {
-            var threadIDNode = node.DescendantsAndSelf()
-                 .Where(value => value.GetAttributeValue("id", "") != null)
-                 .FirstOrDefault();
-
-            string id = threadIDNode.GetAttributeValue("id", "").Trim();
+            string id = node.GetAttributeValue(THREAD_ID_ATTRIBUTE, "").Trim();
             id = id.Replace("thread", "");
 
             thread.ThreadID = id;

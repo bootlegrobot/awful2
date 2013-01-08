@@ -29,6 +29,18 @@ namespace Awful
         /// </summary>
         public static string Password { get; private set; }
 
+        /// <summary>
+        /// Will simulate timeouts (i.e. throw exceptions on html requests) according
+        /// to the the frequency specified by SimulateTimeoutChance.
+        /// </summary>
+        public static bool SimulateTimeout { get; set; }
+
+        /// <summary>
+        /// The probability, as a percentage, that web requests will throw a timeout
+        /// exception; only works when SimulateTimeout is true.
+        /// </summary>
+        public static int SimulateTimeoutChance { get; set; }
+
         private delegate HtmlDocument FetchHtmlDelegate(string url, int timeout);
 
         private static LoginRequiredEventArgs OnLoginRequired(AwfulWebClient client)
@@ -45,6 +57,7 @@ namespace Awful
 
         private void Authenticate()
         {
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "START Authenticate");
             // first, check iso storage for cookies.
             // TODO: the above.
 
@@ -53,6 +66,8 @@ namespace Awful
             int tries = 0;
             while (!AwfulWebRequest.CanAuthenticate && tries < 3)
             {
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Authentication failed, attempting to try again...");
+
                 var loginArgs = OnLoginRequired(this);
                 if (loginArgs == null)
                     throw new Exception("You need to attach an event listener for login required!");
@@ -60,10 +75,15 @@ namespace Awful
                 loginArgs.Signal.WaitOne();
 
                 if (loginArgs.Ignore)
+                {
+                    AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Ignoring authentication request. Moving on...");
                     return;
+                }
 
                 else if (!loginArgs.Cancel)
                 {
+                    AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "User has input credentials; retrying...");
+
                     Username = loginArgs.Username;
                     Password = loginArgs.Password;
                     AwfulWebRequest.SetCookieJar(login.Authenticate(Username, Password));
@@ -78,6 +98,8 @@ namespace Awful
             // after too many tries throw the white flag.
             if (tries > 3)
                 throw new Exception("User failed to authenticate.");
+
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "END Authenticate()");
         }
 
 		/// <summary>
@@ -89,7 +111,26 @@ namespace Awful
         /// <returns>A HtmlDocument representing the raw html.</returns>
         public HtmlDocument FetchHtml(string url, int timeout = DefaultTimeoutInMilliseconds)
         {
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, string.Format("START FetchHtml({0}, {1})", url, timeout));
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Performing authentication check...");
+            
             Authenticate();
+            
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Authentication check complete.");
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, string.Format("Requesting html from url '{0}'...", url));
+
+            if (SimulateTimeout)
+            {
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "SimulateTimeout = true.");
+                Random random = new Random();
+                int value = random.Next(1, 100);
+                if (value <= SimulateTimeoutChance)
+                {
+                    AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Timeout generated.");
+                    throw new TimeoutException("Artificial timeout generated!");
+                }
+            }
+
             var request = AwfulWebRequest.CreateGetRequest(url);
             var signal = new AutoResetEvent(false);
             var result = request.BeginGetResponse(callback => ProcessResponse(callback, signal), request);
@@ -99,8 +140,17 @@ namespace Awful
                 throw new TimeoutException();
             
             string html = this.ProcessResponse(request.EndGetResponse(result));
+
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Html result:");
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, html);
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "End Html.");
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info,  "Request complete.");
+
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
+
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, string.Format("END FetchHtml({0}, {1})", url, timeout));
+
             return doc;
         }
 
@@ -115,14 +165,21 @@ namespace Awful
         public IAsyncResult BeginFetchHtml(string url, AsyncCallback callback, 
             int timeout = DefaultTimeoutInMilliseconds)
         {
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, string.Format("START BeginFetchHtml({0}, {1})", url, timeout));
             FetchHtmlDelegate fetch = FetchHtml;
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, string.Format("END BeginFetchHtml({0}, {1})", url, timeout));
+
             return fetch.BeginInvoke(url, timeout, callback, this);
         }
 
         public HtmlDocument EndFetchHtml(IAsyncResult result)
         {
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "START EndFetchHtml()");
+            
             FetchHtmlDelegate fetch = (result.AsyncState as AwfulWebClient).FetchHtml;
             var doc = fetch.EndInvoke(result);
+
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "END EndFetchHtml()");
             return doc;
         }
 
@@ -130,12 +187,17 @@ namespace Awful
 
         private string ProcessResponse(WebResponse response)
         {
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "START ProcessResponse()");
+
             string html = string.Empty;
             using (var stream = new StreamReader(response.GetResponseStream(), 
                 Encoding.GetEncoding(CoreConstants.WEB_RESPONSE_ENCODING)))
             {
                 html = stream.ReadToEnd();
             }
+
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "END ProcessResponse()");
+
             return html;
         }
     }

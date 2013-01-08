@@ -96,39 +96,52 @@ namespace Awful
 
         public static bool SaveToFile<T>(this T item, string filePath)
         {
+            AwfulDebugger.AddLog(item, AwfulDebugger.Level.Debug, "START SaveToFile()");
+            AwfulDebugger.AddLog(item, AwfulDebugger.Level.Debug, "Filepath: " + filePath);
+
             bool result = false;
             try
             {
+                AwfulDebugger.AddLog(item, AwfulDebugger.Level.Debug, "Getting application user store...");
                 var storage = IsolatedStorageFile.GetUserStoreForApplication();
                 if (storage.BuildPath(filePath))
                 {
-                    DataContractSerializer dcs = new DataContractSerializer(typeof(T));
+                    AwfulDebugger.AddLog(item, AwfulDebugger.Level.Debug, "Creating DataContractSerializer...");
+                    DataContractSerializer dcs = new DataContractSerializer(item.GetType());
                     using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(filePath,
                         System.IO.FileMode.Create, System.IO.FileAccess.Write, storage))
                     {
+                        AwfulDebugger.AddLog(item, AwfulDebugger.Level.Debug, "Writing serlialized object to filestream...");
                         dcs.WriteObject(fileStream, item);
                         result = true;
+                        AwfulDebugger.AddLog(item, AwfulDebugger.Level.Debug, "Write complete.");
+                        AwfulDebugger.AddLog(item, AwfulDebugger.Level.Info, "Save successful!");
                     }
                 }
             }
             catch (Exception ex)
             {
+                AwfulDebugger.AddLog(item, AwfulDebugger.Level.Info, "Save failed.");
+                AwfulDebugger.AddLog(item, AwfulDebugger.Level.Critical, ex);
+                result = false;
 #if DEBUG
                 throw ex;
 #endif
-
-                Debug.WriteLine(ex.Message);
-                result = false;
             }
 
+            AwfulDebugger.AddLog(item, AwfulDebugger.Level.Debug, "END SaveToFile()");
             return result;
         }
 
         public static T LoadFromFile<T>(string file)
         {
+            AwfulDebugger.AddLog(file, AwfulDebugger.Level.Debug, "START LoadFromFile()");
+            AwfulDebugger.AddLog(file, AwfulDebugger.Level.Info, string.Format("Loading file '{0}' of type '{1}' from storage...", file, typeof(T)));
+ 
             T result = default(T);
             try
             {
+                AwfulDebugger.AddLog(file, AwfulDebugger.Level.Debug, "Getting application user store...");
                 var storage = IsolatedStorageFile.GetUserStoreForApplication();
                 if (!storage.FileExists(file))
                     return result;
@@ -137,15 +150,20 @@ namespace Awful
                 using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(file,
                     System.IO.FileMode.Open, System.IO.FileAccess.Read, storage))
                 {
-                    result = (T)dcs.ReadObject(fileStream);        
+                    AwfulDebugger.AddLog(file, AwfulDebugger.Level.Debug, "Reading serlialized object from filestream...");
+                    result = (T)dcs.ReadObject(fileStream);
+                    AwfulDebugger.AddLog(file, AwfulDebugger.Level.Debug, "Read complete.");
+                    AwfulDebugger.AddLog(file, AwfulDebugger.Level.Info, "Load successful!");
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                AwfulDebugger.AddLog(file, AwfulDebugger.Level.Critical, ex);
+                AwfulDebugger.AddLog(file, AwfulDebugger.Level.Info, "Load failed.");
                 result = default(T);
             }
 
+            AwfulDebugger.AddLog(file, AwfulDebugger.Level.Debug, "END LoadFile()");
             return result;
         }
     }
@@ -237,6 +255,9 @@ namespace Awful
 
         public static string PageUrl(this ThreadMetadata data, int page = -1)
         {
+            if (string.IsNullOrEmpty(data.ThreadID))
+                throw new ArgumentException("PageUrl: Cannot generate url with null or empty threadId.");
+
             StringBuilder url = new StringBuilder();
             url.AppendFormat("http://forums.somethingawful.com/displaythread.php?threadid={0}", data.ThreadID);
             if (page == -1)
@@ -249,6 +270,9 @@ namespace Awful
 
         private static ThreadPageMetadata FetchThreadPage(string threadId, int pageNumber)
         {
+            if (string.IsNullOrEmpty(threadId))
+                throw new ArgumentException("FetchThreadPage: Cannot fetch thread page with null or empty threadId.");
+
             // example string: http://forums.somethingawful.com/showthread.php?noseen=0&threadid=3439182&pagenumber=69
             var url = new StringBuilder();
             // http://forums.somethingawful.com/showthread.php
@@ -275,6 +299,11 @@ namespace Awful
         public static string Quote(this ThreadPostMetadata post)
         {
             return ThreadTasks.Quote(post);
+        }
+
+        public static bool MarkAsRead(this ThreadPostMetadata post)
+        {
+            return ThreadTasks.MarkAsLastRead(post);
         }
 
         public static IThreadPostRequest BeginReply(this ThreadMetadata thread)

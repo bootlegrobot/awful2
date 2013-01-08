@@ -39,7 +39,6 @@ td {
 	font-size:x-large;
 	text-align:left;
 	margin-left:12px;
-	color:white;
 }
 	
 .text_subtlestyle {
@@ -104,7 +103,7 @@ td {
 }
 
 .quote-text {
-    font-family:'Segoe WP Semibold';
+    font-family:'Segoe WP';
     font-size:100%;
 }
 

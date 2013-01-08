@@ -14,17 +14,22 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
-    shell:SystemTray.IsVisible="True">
+                            d:DesignHeight="800"
+                            d:DesignWidth="480">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <Grid x:Name="LayoutRoot">
+    	<Grid.Background>
+    		<ImageBrush Stretch="Fill" ImageSource="/SplashScreenImage.jpg"/>
+    	</Grid.Background>
      
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Margin="12,0,12,0">
             
             <StackPanel x:Name="LoginPanel"
                         Visibility="Collapsed"
-                        VerticalAlignment="Center">
+                        VerticalAlignment="Center" 
+                        Margin="0,120,0,0">
 
                 <toolkit:PerformanceProgressBar x:Name="LoadingBar"
                                                 IsIndeterminate="{Binding IsBusy}" />

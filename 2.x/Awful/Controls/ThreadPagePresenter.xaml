@@ -27,34 +27,22 @@
                                       EndOpacity="0"
                                       Duration="0:0:0.2" />
 
-        <controls:ThreadPageContextMenuProvider x:Key="ThreadContextMenu">
-            <controls:ThreadPageContextMenuProvider.PostMenu>
-                <telerikPrimitives:RadContextMenu IsFadeEnabled="False"
-                                                  IsZoomEnabled="False">
-                    <telerikPrimitives:RadContextMenuItem Content="edit..."
-                                                          Tapped="EditSelectedPost"/>
-                    <telerikPrimitives:RadContextMenuItem Content="quote"
-                                                          Tapped="QuoteSelectedPost"/>
-                    <telerikPrimitives:RadContextMenuItem Content="mark post as read..."
-                                                          Tapped="MarkSelectedPostAsRead"/>
-                    <telerikPrimitives:RadContextMenuItem Content="show posts from this author"
-                                                          Tapped="ShowOnlyPostsFromSelectedAuthor"/>
-                </telerikPrimitives:RadContextMenu>
-            </controls:ThreadPageContextMenuProvider.PostMenu>
-            <controls:ThreadPageContextMenuProvider.ImageMenu>
-                <telerikPrimitives:RadContextMenu IsFadeEnabled="False"
-                                                  IsZoomEnabled="False">
-                    <telerikPrimitives:RadContextMenuItem Content="open in web browser"
-                                                          Tapped="OpenSelectedImageInWebBrowser"/>
-                </telerikPrimitives:RadContextMenu>
-            </controls:ThreadPageContextMenuProvider.ImageMenu>
-        </controls:ThreadPageContextMenuProvider>
+    <controls:ThreadPageContextMenuProvider x:Key="ThreadContextMenu">
+      <controls:ThreadPageContextMenuProvider.ImageMenu>
+        <telerikPrimitives:RadContextMenu IsFadeEnabled="False"
+                                          IsZoomEnabled="False">
+          <telerikPrimitives:RadContextMenuItem Content="open in web browser"
+                                                Tapped="OpenSelectedImageInWebBrowser" />
+        </telerikPrimitives:RadContextMenu>
+      </controls:ThreadPageContextMenuProvider.ImageMenu>
+    </controls:ThreadPageContextMenuProvider>
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot"
           telerikPrimitives:RadContextMenu.ContextMenu="{Binding Menu, Source={StaticResource ThreadContextMenu}}">
         <toolkit:GestureService.GestureListener>
-            <toolkit:GestureListener PinchCompleted="ZoomText"  />
+            <toolkit:GestureListener PinchCompleted="ZoomText"
+                                     PinchStarted="BeginTextZoom"/>
         </toolkit:GestureService.GestureListener>
         <phone:WebBrowser x:Name="ThreadPageView"
                           Opacity="0"

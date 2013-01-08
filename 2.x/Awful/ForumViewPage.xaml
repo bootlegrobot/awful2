@@ -14,97 +14,23 @@
                             d:DesignHeight="768"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
-                            Foreground="{StaticResource PhoneForegroundBrush}"
+                            Background="{Binding CurrentTheme.BackgroundBrush, Source={StaticResource AwfulThemeManager}}"
+                            Foreground="{Binding CurrentTheme.ForegroundBrush, Source={StaticResource AwfulThemeManager}}"
                             SupportedOrientations="Portrait"
                             Orientation="Portrait"
                             shell:SystemTray.IsVisible="True">
     <phone:PhoneApplicationPage.Resources>
-        <DataTemplate x:Key="ThreadListItemWithIconTemplate">
-            <Grid Margin="{StaticResource PhoneTouchTargetOverhang}"
-                  VerticalAlignment="Top"
-                  MinHeight="100">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid Margin="0,5,0,0">
-                    <Border x:Name="ThreadIconBorder"
-                            Width="100"
-                            BorderThickness="2"
-                            BorderBrush="{StaticResource PhoneBorderBrush}"
-                            Height="100"
-                            VerticalAlignment="Top">
-                        <Grid>
-                            <TextBlock Text="{Binding Tag}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       TextAlignment="Center"
-                                       Style="{StaticResource PhoneTextAccentStyle}" />
-                            <Image Source="{Binding Image}"
-                                   Canvas.ZIndex="10"
-                                   Stretch="UniformToFill"
-                                   AutomationProperties.Name="{Binding Tag}" />
-                        </Grid>
-                        
-                    </Border>
-                    <Grid x:Name="ThreadRaitingPanel"
-                          HorizontalAlignment="Left"
-                          Height="50"
-                          VerticalAlignment="Top"
-                          Visibility="{Binding ShowRating, Converter={StaticResource collapseOnFalseConverter}}"
-                          Width="50">
-                        <Path x:Name="ThreadRatingEarmarkGlyph"
-                              Data="M0.001575,0.000788 L49.9862,-0.075052 L0.001152,49.8804 z"
-                              Fill="{Binding RatingColor, Converter={StaticResource assetRetriever}}"
-                              Stretch="Fill"
-                              UseLayoutRounding="False" />
-                        <TextBlock x:Name="ThreadRatingText"
-                                   HorizontalAlignment="Left"
-                                   TextWrapping="Wrap"
-                                   Text="{Binding Rating}"
-                                   VerticalAlignment="Top"
-                                   Margin="6,3,0,0"
-                                   Style="{StaticResource PhoneTextSubtleStyle}"
-                                   Foreground="#99000000" />
-                    </Grid>
-                </Grid>
-                <StackPanel Grid.Column="1"
-                            VerticalAlignment="Top"
-                            Margin="0">
-                    <TextBlock x:Name="TitleText"
-                               Text="{Binding Title}"
-                               TextWrapping="Wrap"
-                               Style="{StaticResource PhoneTextTitle3Style}"
-                               TextTrimming="WordEllipsis"
-                               MaxHeight="95" />
-                    <TextBlock x:Name="SubtitleText"
-                               Text="{Binding Subtitle}"
-                               Style="{StaticResource PhoneTextSubtleStyle}" />
-                    <TextBlock x:Name="DescriptionText"
-                               Text="{Binding Description}"
-                               Visibility="{Binding ShowPostCount, Converter={StaticResource collapseOnFalseConverter}}"
-                               MaxHeight="60"
-                               Padding="0"
-                               Style="{StaticResource PhoneTextAccentStyle}" />
-                    <TextBlock x:Name="StickyText"
-                               TextWrapping="Wrap"
-                               Text="Stickied"
-                               Visibility="{Binding IsSticky, Converter={StaticResource collapseOnFalseConverter}}"
-                               Style="{StaticResource PhoneTextSubtleStyle}"
-                               Foreground="#99FFE400" />
-                </StackPanel>
-            </Grid>
-        </DataTemplate>
+      
     </phone:PhoneApplicationPage.Resources>
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot"
           Background="Transparent">
         <!--Pivot Control-->
-        <controls:Pivot Title="{Binding Title}">
+        <controls:Pivot Title="{Binding Title, Converter={StaticResource contentFilter}}">
             <!--Pivot item one-->
             <controls:PivotItem x:Name="ThreadListPivot"
-                                Header="read"
+                                Header="threads"
                                 Margin="{StaticResource DefaultPivotItemMargin}">
                 <Grid>
                     <!--
@@ -114,7 +40,7 @@
                                                     VerticalAlignment="Top" />
                     
                     <telerikPrimitives:RadDataBoundListBox x:Name="ThreadListBox"
-                                                           ItemsSource="{Binding Items}"
+                                                            ItemsSource="{Binding Items}"
                                                            ItemTemplate="{StaticResource ThreadListItemWithIconTemplate}"
                                                            ItemTap="ThreadListBox_ItemTap"
                                                            DataVirtualizationMode="OnDemandAutomatic"
@@ -124,14 +50,16 @@
                                                            DataRequested="ThreadListBox_DataRequested"/>
                     -->
 
-                    <local:AppendingThreadListControl DataContext="{Binding}" />
+                    <local:ThreadListControl DataContext="{Binding}" VirtualizationMode="OnDemandAutomatic"/>
                 </Grid>
             </controls:PivotItem>
 
             <!--Pivot item two-->
+            <!--
             <controls:PivotItem x:Name="PostThreadPivot"
                                 Header="post"
-                                DataContext="{Binding NewThread}">
+                                DataContext="{Binding NewThread}"
+                                Visibility="Collapsed">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -177,6 +105,7 @@
                     </ScrollViewer>
                 </Grid>
             </controls:PivotItem>
+           -->
         </controls:Pivot>
     </Grid>
 

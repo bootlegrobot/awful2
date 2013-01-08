@@ -8,6 +8,18 @@ namespace Awful
 {
     public static class ThreadPageParser
     {
+        private const string THREAD_POST_HTML_ELEMENT = "table";
+        private const string THREAD_POST_HTML_ATTRIBUTE = "class";
+        private const string THREAD_POST_HTML_VALUE = "post ";
+
+        private const string THREAD_PAGE_NUMBER_ELEMENT_1 = "select";
+        private const string THREAD_PAGE_NUMBER_ATTRIBUTE_1 = "data-url";
+        private const string THREAD_PAGE_NUMBER_VALUE_1 = "showthread.php";
+        private const string THREAD_PAGE_NUMBER_ELEMENT_2 = "option";
+        private const string THREAD_PAGE_NUMBER_ATTRIBUTE_2 = "selected";
+        private const string THREAD_PAGE_NUMBER_VALUE_2 = "selected";
+        private const string THREAD_PAGE_NUMBER_ATTRIBUTE_3 = "value";
+
         public static ThreadPageMetadata ParseThreadPage(string threadID)
         {
             ThreadPageMetadata data = null;
@@ -30,40 +42,26 @@ namespace Awful
 
         private static ThreadPageMetadata ProcessThreadPage(HtmlNode top)
         {
-            /// Logger.AddEntry("AwfulThreadPage - Parsing HTML for posts...");
+            AwfulDebugger.AddLog(top,  AwfulDebugger.Level.Debug, "Parsing HTML for posts...");
 
             // first, let's generate data about the thread
             ThreadPageMetadata page = ProcessParent(top);
 
-            // now, let's parse page number
-            int pageNumber = -1;
-            var currentPageNode = top.Descendants("span")
-                .Where(node => node.GetAttributeValue("class", "").Equals("curpage"))
-                .FirstOrDefault();
-
-            if (currentPageNode != null) { int.TryParse(currentPageNode.InnerText, out pageNumber); }
-
-            // set page number
-            page.PageNumber = pageNumber;
-
-
             // parse other thread page data
-            var maxPagesNode = top.Descendants("div")
-               .Where(node => node.GetAttributeValue("class", "").Equals("pages top"))
-               .FirstOrDefault();
+            ParsePageNumberAndMaxPages(page, top);
+            ParsePostTable(page, top);
+         
+            return page;
+        }
 
-            if (maxPagesNode != null)
-            {
-                int totalPages = ParseMaxPagesNode(maxPagesNode);
-                page.LastPage = totalPages;
-
-                ///Logger.AddEntry(string.Format("AwfulThreadPage - maxPagesNode found: {0}", totalPages));
-            }
-
+        private static ThreadPageMetadata ParsePostTable(ThreadPageMetadata page, HtmlNode top)
+        {
             if (page.Posts == null) { page.Posts = new List<ThreadPostMetadata>(); }
 
-            var postArray = top.Descendants("table")
-                .Where(tables => tables.GetAttributeValue("class", "").Equals("post"))
+            AwfulDebugger.AddLog(top, AwfulDebugger.Level.Debug, "Parsing post data...");
+
+            var postArray = top.Descendants(THREAD_POST_HTML_ELEMENT)
+                .Where(tables => tables.GetAttributeValue(THREAD_POST_HTML_ATTRIBUTE, "").Equals(THREAD_POST_HTML_VALUE))
                 .ToArray();
 
             int index = 1;
@@ -75,6 +73,53 @@ namespace Awful
                 page.Posts.Add(post);
                 index++;
             }
+
+            // check if there is at least one post on the page. If not, there was a parsing error.
+            if (page.Posts.Count == 0)
+                throw new Exception("Parse Error: Could not parse the posts on this page.");
+
+            AwfulDebugger.AddLog(top, AwfulDebugger.Level.Debug, "Thread page parsing complete.");
+
+            return page;
+        }
+
+        private static ThreadPageMetadata ParsePageNumberAndMaxPages(ThreadPageMetadata page, HtmlNode top)
+        {
+            // now, let's parse page number
+            AwfulDebugger.AddLog(top, AwfulDebugger.Level.Debug, "Parsing page number...");
+
+            int pageNumber = -1;
+            int lastPage = -1;
+
+            var currentPageNode = top.Descendants(THREAD_PAGE_NUMBER_ELEMENT_1)
+                .Where(node => node.GetAttributeValue(THREAD_PAGE_NUMBER_ATTRIBUTE_1, "").Contains(THREAD_PAGE_NUMBER_VALUE_1))
+                .FirstOrDefault();
+
+            if (currentPageNode != null)
+            {
+                var currentPageOptions = currentPageNode.Descendants(THREAD_PAGE_NUMBER_ELEMENT_2);
+
+                var currentPageOption = currentPageOptions    
+                    .Where(node => node.GetAttributeValue(THREAD_PAGE_NUMBER_ATTRIBUTE_2, "").Equals(THREAD_PAGE_NUMBER_VALUE_2))
+                    .FirstOrDefault();
+
+                AwfulDebugger.AddLog(top, AwfulDebugger.Level.Debug, "Parsing total number of pages...");
+
+                var lastPageOption = currentPageOptions.LastOrDefault();
+
+                if (currentPageOption != null)
+                    int.TryParse(currentPageOption.GetAttributeValue(THREAD_PAGE_NUMBER_ATTRIBUTE_3, ""), out pageNumber);
+
+                if (lastPageOption != null)
+                    int.TryParse(lastPageOption.GetAttributeValue(THREAD_PAGE_NUMBER_ATTRIBUTE_3, ""), out lastPage);
+            }
+
+            else
+                AwfulDebugger.AddLog(top, AwfulDebugger.Level.Debug, "Page number parsing failed.");
+
+            // set page number
+            page.PageNumber = pageNumber;
+            page.LastPage = lastPage;
 
             return page;
         }
@@ -97,26 +142,6 @@ namespace Awful
             }
 
             return page;
-        }
-
-        private static int ParseMaxPagesNode(HtmlNode maxPagesNode)
-        {
-            // should look something like "Pages ([numbers])"...
-            string text = maxPagesNode.InnerText;
-            var tokens = text.Split(' ');
-
-            // tokens should be ["Pages"], ["(<Last Page Number>)"], ...
-            string pageToken = tokens[1];
-
-            // remove garbage characters
-            pageToken = pageToken.Replace("(", "");
-            pageToken = pageToken.Replace(")", "");
-            pageToken = pageToken.Replace(":", "");
-
-            // extract page number
-            int result = 1;
-            Int32.TryParse(pageToken, out result);
-            return result == 0 ? 1 : result;
         }
     }
 }

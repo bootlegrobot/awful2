@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2009/deployment" AppPlatformVersion="7.1">
-  <App xmlns="" ProductID="{6a06d663-b59a-474e-b8e2-badf733c74cd}" Title="Awful" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Awful author" Description="Sample description" Publisher="Awful">
+  <App xmlns="" ProductID="{6a06d663-b59a-474e-b8e2-badf733c74cd}" Title="Awful!! (Beta)" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Awful author" Description="Sample description" Publisher="Awful">
     <IconPath IsRelative="true" IsResource="false">ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_IDENTITY_DEVICE" />
@@ -17,7 +17,7 @@
         <TemplateType5>
           <BackgroundImageURI IsRelative="true" IsResource="false">Background.png</BackgroundImageURI>
           <Count>0</Count>
-          <Title>Awful</Title>
+          <Title>Awful!! (Beta)</Title>
         </TemplateType5>
       </PrimaryToken>
     </Tokens>

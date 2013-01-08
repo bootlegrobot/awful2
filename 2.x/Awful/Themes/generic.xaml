@@ -93,5 +93,331 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style x:Key="RadDataBoundListBoxItemStyle" TargetType="telerikPrimitives:RadDataBoundListBoxItem">
+    	<Setter Property="Background" Value="Transparent"/>
+    	<Setter Property="BorderThickness" Value="0"/>
+    	<Setter Property="BorderBrush" Value="Transparent"/>
+    	<Setter Property="Padding" Value="0"/>
+    	<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+    	<Setter Property="VerticalContentAlignment" Value="Stretch"/>
+    	<Setter Property="CacheMode" Value="BitmapCache"/>
+    	<Setter Property="Template">
+    		<Setter.Value>
+    			<ControlTemplate TargetType="telerikPrimitives:RadDataBoundListBoxItem">
+    				<Border x:Name="LayoutRoot" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" RenderTransformOrigin="0.5, 0.5" VerticalAlignment="{TemplateBinding VerticalAlignment}">
+    					<Border.RenderTransform>
+    						<ScaleTransform x:Name="RootScale"/>
+    					</Border.RenderTransform>
+    					<VisualStateManager.VisualStateGroups>
+    						<VisualStateGroup x:Name="CommonStates">
+    							<VisualState x:Name="Normal"/>
+    							<VisualState x:Name="MouseOver"/>
+    							<VisualState x:Name="Disabled">
+    								<Storyboard>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="LayoutRoot">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource TransparentBrush}"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<DoubleAnimation Duration="0" To=".5" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PART_ContainerHolder"/>
+    								</Storyboard>
+    							</VisualState>
+    						</VisualStateGroup>
+    						<VisualStateGroup x:Name="SelectionStates">
+    							<VisualState x:Name="Unselected"/>
+    							<VisualState x:Name="Selected">
+    								<Storyboard>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="PART_ContainerHolder">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneAccentBrush}"/>
+    									</ObjectAnimationUsingKeyFrames>
+    								</Storyboard>
+    							</VisualState>
+    						</VisualStateGroup>
+    						<VisualStateGroup x:Name="CheckBoxStates">
+    							<VisualState x:Name="CheckBoxNotVisibleVertical">
+    								<Storyboard>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0">
+    											<DiscreteObjectKeyFrame.Value>
+    												<Thickness>0, 0, 0, 0</Thickness>
+    											</DiscreteObjectKeyFrame.Value>
+    										</DiscreteObjectKeyFrame>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0">
+    											<DiscreteObjectKeyFrame.Value>
+    												<Thickness>0, 0, 0, 0</Thickness>
+    											</DiscreteObjectKeyFrame.Value>
+    										</DiscreteObjectKeyFrame>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Row)" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Row)" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+    									</ObjectAnimationUsingKeyFrames>
+    								</Storyboard>
+    							</VisualState>
+    							<VisualState x:Name="CheckBoxNotVisibleHorizontal">
+    								<Storyboard>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0">
+    											<DiscreteObjectKeyFrame.Value>
+    												<Thickness>0, 0, 0, 0</Thickness>
+    											</DiscreteObjectKeyFrame.Value>
+    										</DiscreteObjectKeyFrame>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0">
+    											<DiscreteObjectKeyFrame.Value>
+    												<Thickness>0, 0, 0, 0</Thickness>
+    											</DiscreteObjectKeyFrame.Value>
+    										</DiscreteObjectKeyFrame>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Row)" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Row)" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    								</Storyboard>
+    							</VisualState>
+    							<VisualState x:Name="CheckBoxNotVisibleVerticalSpace">
+    								<Storyboard>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0">
+    											<DiscreteObjectKeyFrame.Value>
+    												<Thickness>0, 0, 0, 0</Thickness>
+    											</DiscreteObjectKeyFrame.Value>
+    										</DiscreteObjectKeyFrame>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0">
+    											<DiscreteObjectKeyFrame.Value>
+    												<Thickness>24, 0, 0, 0</Thickness>
+    											</DiscreteObjectKeyFrame.Value>
+    										</DiscreteObjectKeyFrame>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Row)" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Row)" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+    									</ObjectAnimationUsingKeyFrames>
+    								</Storyboard>
+    							</VisualState>
+    							<VisualState x:Name="CheckBoxNotVisibleHorizontalSpace">
+    								<Storyboard>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0">
+    											<DiscreteObjectKeyFrame.Value>
+    												<Thickness>0, 0, 0, 0</Thickness>
+    											</DiscreteObjectKeyFrame.Value>
+    										</DiscreteObjectKeyFrame>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0">
+    											<DiscreteObjectKeyFrame.Value>
+    												<Thickness>0, 24, 0, 0</Thickness>
+    											</DiscreteObjectKeyFrame.Value>
+    										</DiscreteObjectKeyFrame>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Row)" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Row)" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    								</Storyboard>
+    							</VisualState>
+    							<VisualState x:Name="CheckBoxVisibleVertical">
+    								<Storyboard>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0">
+    											<DiscreteObjectKeyFrame.Value>
+    												<Thickness>24, 0, 24, 0</Thickness>
+    											</DiscreteObjectKeyFrame.Value>
+    										</DiscreteObjectKeyFrame>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Row)" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Row)" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0">
+    											<DiscreteObjectKeyFrame.Value>
+    												<Thickness>0, 0, 0, 0</Thickness>
+    											</DiscreteObjectKeyFrame.Value>
+    										</DiscreteObjectKeyFrame>
+    									</ObjectAnimationUsingKeyFrames>
+    								</Storyboard>
+    							</VisualState>
+    							<VisualState x:Name="CheckBoxVisibleHorizontal">
+    								<Storyboard>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0">
+    											<DiscreteObjectKeyFrame.Value>
+    												<Thickness>0, 24, 0, 24</Thickness>
+    											</DiscreteObjectKeyFrame.Value>
+    										</DiscreteObjectKeyFrame>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Row)" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Row)" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0">
+    											<DiscreteObjectKeyFrame.Value>
+    												<Thickness>0, 0, 0, 0</Thickness>
+    											</DiscreteObjectKeyFrame.Value>
+    										</DiscreteObjectKeyFrame>
+    									</ObjectAnimationUsingKeyFrames>
+    								</Storyboard>
+    							</VisualState>
+    							<VisualState x:Name="CheckBoxVisibleOverlay">
+    								<Storyboard>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Row)" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="PART_CheckBoxLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Row)" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+    									</ObjectAnimationUsingKeyFrames>
+    									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="PART_ContainerLayout">
+    										<DiscreteObjectKeyFrame KeyTime="0">
+    											<DiscreteObjectKeyFrame.Value>
+    												<Thickness>0, 0, 0, 0</Thickness>
+    											</DiscreteObjectKeyFrame.Value>
+    										</DiscreteObjectKeyFrame>
+    									</ObjectAnimationUsingKeyFrames>
+    								</Storyboard>
+    							</VisualState>
+    						</VisualStateGroup>
+    						<VisualStateGroup x:Name="ItemReorderStates">
+    							<VisualState x:Name="ItemNotOrdered">
+    								<Storyboard>
+    									<DoubleAnimation To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="LayoutRoot">
+    										<DoubleAnimation.EasingFunction>
+    											<CubicEase EasingMode="EaseOut"/>
+    										</DoubleAnimation.EasingFunction>
+    									</DoubleAnimation>
+    									<DoubleAnimation To="1" Storyboard.TargetProperty="ScaleX" Storyboard.TargetName="RootScale">
+    										<DoubleAnimation.EasingFunction>
+    											<CubicEase EasingMode="EaseOut"/>
+    										</DoubleAnimation.EasingFunction>
+    									</DoubleAnimation>
+    									<DoubleAnimation To="1" Storyboard.TargetProperty="ScaleY" Storyboard.TargetName="RootScale">
+    										<DoubleAnimation.EasingFunction>
+    											<CubicEase EasingMode="EaseOut"/>
+    										</DoubleAnimation.EasingFunction>
+    									</DoubleAnimation>
+    								</Storyboard>
+    							</VisualState>
+    							<VisualState x:Name="ItemOrdered">
+    								<Storyboard Duration="0:0:1">
+    									<DoubleAnimation To="0.45" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="LayoutRoot">
+    										<DoubleAnimation.EasingFunction>
+    											<CubicEase EasingMode="EaseOut"/>
+    										</DoubleAnimation.EasingFunction>
+    									</DoubleAnimation>
+    									<DoubleAnimation To="0.92" Storyboard.TargetProperty="ScaleX" Storyboard.TargetName="RootScale">
+    										<DoubleAnimation.EasingFunction>
+    											<CubicEase EasingMode="EaseOut"/>
+    										</DoubleAnimation.EasingFunction>
+    									</DoubleAnimation>
+    									<DoubleAnimation To="0.92" Storyboard.TargetProperty="ScaleY" Storyboard.TargetName="RootScale">
+    										<DoubleAnimation.EasingFunction>
+    											<CubicEase EasingMode="EaseOut"/>
+    										</DoubleAnimation.EasingFunction>
+    									</DoubleAnimation>
+    								</Storyboard>
+    							</VisualState>
+    						</VisualStateGroup>
+    					</VisualStateManager.VisualStateGroups>
+    					<Grid x:Name="PART_ContainerCheckBoxLayout" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    						<Grid.ColumnDefinitions>
+    							<ColumnDefinition Width="Auto"/>
+    							<ColumnDefinition/>
+    						</Grid.ColumnDefinitions>
+    						<Grid.RowDefinitions>
+    							<RowDefinition Height="Auto"/>
+    							<RowDefinition/>
+    						</Grid.RowDefinitions>
+    						<Grid x:Name="PART_ContainerLayout" Grid.Column="1">
+    							<ContentControl x:Name="PART_ContainerHolder" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="Stretch" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="Stretch" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+    						</Grid>
+    						<Grid x:Name="PART_CheckBoxLayout" Grid.Column="0" Visibility="Collapsed">
+    							<telerikPrimitives:ItemCheckBox x:Name="PART_CheckBox" IsHitTestVisible="False"/>
+    						</Grid>
+    					</Grid>
+    				</Border>
+    			</ControlTemplate>
+    		</Setter.Value>
+    	</Setter>
+    </Style>
 
 </ResourceDictionary>

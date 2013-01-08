@@ -6,6 +6,12 @@
                     xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
                     xmlns:Controls="clr-namespace:Awful.Controls"
                     mc:Ignorable="d">
+	
+	<Style x:Key="EmptyListContentStyle" BasedOn="{StaticResource PhoneTextSubtleStyle}" TargetType="TextBlock">
+		<Setter Property="FontSize" Value="{StaticResource PhoneFontSizeLarge}"/>
+		<Setter Property="TextWrapping" Value="Wrap"/>
+	</Style>
+	
     <DataTemplate x:Key="Standard200IconItemTemplate">
         <Grid Height="200"
               Background="{StaticResource PhoneAccentBrush}"
@@ -649,6 +655,7 @@
             </Grid>
         </Border>
     </DataTemplate>
+    <Thickness x:Key="DefaultTitlePanelMargin">12,17,0,12</Thickness>
   
     <!-- Resource dictionary entries should be defined here. -->
 

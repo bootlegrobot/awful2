@@ -27,7 +27,7 @@ namespace Awful
         private void viewmodel_LoginFailed(object sender, EventArgs e)
         {
             // Maybe throw a login failed message here.
-            MessageBox.Show("Login failed. Please try again.", ":(", MessageBoxButton.OK);
+            //MessageBox.Show("Login failed. Please try again.", ":(", MessageBoxButton.OK);
         }
 
         private void viewmodel_LoginSuccess(object sender, EventArgs e)

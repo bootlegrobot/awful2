@@ -9,6 +9,8 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Awful.Common;
 using System.Runtime.Serialization;
+using System.Windows.Media;
+using Telerik.Windows.Controls;
 
 namespace Awful
 {
@@ -17,13 +19,38 @@ namespace Awful
         public ThreadViewPage()
         {
             InitializeComponent();
-            Loaded += ThreadViewPage_Loaded;
             viewmodel = new ViewModels.ThreadViewModel();
+            SetThreadNavCommands(viewmodel);
+            Commands.EditPostCommand.EditRequested += new ThreadPostRequestEventHandler(OpenEditWindow);
+            Loaded += ThreadViewPage_Loaded;
         }
 
         private ViewModels.ThreadViewModel viewmodel;
+        public ViewModels.ThreadViewModel Viewmodel { get { return viewmodel; } }
+
+        private ViewModels.RatingViewModel RatingViewModel
+        {
+            get { return this.Resources["ratingViewModel"] as ViewModels.RatingViewModel; }
+        }
+
+        public string SavedDraft { get; set; }
+
         private Controls.ThreadPagePresenter pagePresenter;
         private ThreadViewPageState state;
+        private bool _pageLocked = true;
+        private PageOrientation _currentOrientation;
+
+        private IThreadPostRequest _currentRequest;
+        private IThreadPostRequest CurrentRequest
+        {
+            get
+            {
+                if (_currentRequest == null)
+                    _currentRequest = viewmodel.Thread.Data.BeginReply();
+
+                return _currentRequest;
+            }
+        }
 
         private IApplicationBar PageNavBar
         {
@@ -44,6 +71,71 @@ namespace Awful
         {
             get { return this.ThreadViewPostListPanel.Visibility == System.Windows.Visibility.Visible; }
         }
+		
+		private bool _isFullscreenActive = false;
+		private bool IsFullscreenActive
+		{
+			get { return this._isFullscreenActive; }
+			set
+			{
+				_isFullscreenActive = value;
+				if (value)
+				{
+                    this.PostJumpButtonPanel.Opacity = 0.3;
+					this.TitlePanel.Visibility = System.Windows.Visibility.Collapsed;
+					//this.TitleText.Visibility = System.Windows.Visibility.Collapsed;
+				}
+				else
+				{
+                    this.PostJumpButtonPanel.Opacity = 1.0;
+					this.TitlePanel.Visibility = System.Windows.Visibility.Visible;
+					//this.TitleText.Visibility = System.Windows.Visibility.Visible;
+				}
+			}
+		}
+
+        private void SetThreadNavCommands(ViewModels.ThreadViewModel viewmodel)
+        {
+            viewmodel.FirstPageCommand = new ActionCommand((state) =>
+            {
+                GoToFirstPage(null, null);
+                this.ModalWindow.IsOpen = false;
+            });
+
+            viewmodel.LastPageCommand = new ActionCommand((state) =>
+            {
+                GoToLastPage(null, null);
+                this.ModalWindow.IsOpen = false;
+            });
+
+            viewmodel.CustomPageCommand = new ActionCommand((state) =>
+            {
+                int page = -1;
+                if (!int.TryParse(state.ToString(), out page))
+                    GoToIndex(0);
+                else
+                    GoToIndex(page - 1);
+                this.ModalWindow.IsOpen = false;
+            });
+        }
+
+        protected override void OnOrientationChanged(OrientationChangedEventArgs e)
+        {
+            if (this._pageLocked)
+            {
+                var portrait = this._currentOrientation.IsPortrait();
+                this.SupportedOrientations = portrait ?
+                    SupportedPageOrientation.Portrait :
+                    SupportedPageOrientation.Landscape;
+            }
+
+            else
+            {
+                this.SupportedOrientations = SupportedPageOrientation.PortraitOrLandscape;
+                this._currentOrientation = e.Orientation;
+                base.OnOrientationChanged(e);
+            }
+        }
 
         public void GoToIndex(int index = -1)
         {
@@ -55,8 +147,14 @@ namespace Awful
                 index = lastRead - 1;
             }
 
-            var item = this.viewmodel.Items[index];
-            GoToPage(item);
+            var pageProvider = this.ThreadViewPagination.PageProvider;
+            if (pageProvider != null)
+                pageProvider.CurrentIndex = index;
+            else
+            {
+                var item = this.viewmodel.Items[index];
+                GoToPage(item);
+            }
         }
 
         private void GoToPage(Data.ThreadPageDataSource item)
@@ -75,15 +173,26 @@ namespace Awful
                 e.Cancel = true;
             }
 
+            else if (this.IsReplyViewActive)
+            {
+                this.HideThreadReplyPanel(null, null);
+                e.Cancel = true;
+            }
+
             base.OnBackKeyPress(e);
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            
+
             if (!e.IsNavigationInitiator)
+            {
+                // reset the rating viewmodel -- make sure we have no lingering loading bars
+                RatingViewModel.Reset();
+                // load state from iso store
                 BuildStateFromIsoStore();
+            }
             else
                 BuildStateFromNavigationQuery();
         }
@@ -93,7 +202,7 @@ namespace Awful
             base.OnNavigatingFrom(e);
             if (!e.IsNavigationInitiator)
             {
-                state.Save(this.viewmodel.SelectedItem);
+                state.Save(this);
             }
 
             else
@@ -124,7 +233,7 @@ namespace Awful
 
         private void BuildStateFromNavigationQuery()
         {
-            int currentPage = -1;
+            int currentIndex = -1;
             string threadId = null;
             string forumId = null;
 
@@ -140,17 +249,17 @@ namespace Awful
             {
                 int pageNumber;
                 int.TryParse(NavigationContext.QueryString["Page"], out pageNumber);
-                currentPage = pageNumber;
+                currentIndex = pageNumber - 1;
             }
 
             this.state = new ThreadViewPageState();
             state.ThreadID = threadId;
             state.ForumID = forumId;
-            state.PageNumber = currentPage;
+            state.PageNumber = currentIndex + 1;
 
-            this.viewmodel.UpdateModel(threadId, forumId, currentPage);
+            this.viewmodel.UpdateModel(threadId, currentIndex);
             this.DataContext = viewmodel;
-            this.GoToIndex(currentPage);
+            this.GoToIndex(currentIndex);
         }
 
         void ThreadViewPage_Loaded(object sender, RoutedEventArgs e)
@@ -159,6 +268,19 @@ namespace Awful
                 this.ApplicationBar = ReplyBar;
             else
                 this.ApplicationBar = PageNavBar;
+
+            this._currentOrientation = this.Orientation;
+        }
+
+        private void OpenEditWindow(object sender, ThreadPostRequestEventArgs e)
+        {
+            var request = e.Request;
+            if (request != null)
+            {
+                this.ThreadReplyTextBox.Text = request.Content;
+                this._currentRequest = request;
+                this.ShowThreadReplyPanel(null, null);
+            }
         }
 
         private void ClosePostList(object sender, System.Windows.RoutedEventArgs e)
@@ -168,12 +290,7 @@ namespace Awful
             if (this.ApplicationBar != null)
                 this.ApplicationBar.IsVisible = true;
         }
-
-        private void UpdateTextCount(object sender, System.Windows.Input.TextCompositionEventArgs e)
-        {
-        	// TODO: Add event handler implementation here.
-        }
-            
+       
         private void HideThreadReplyPanel(object sender, System.EventArgs e)
         {
         	// TODO: Add event handler implementation here.
@@ -182,6 +299,8 @@ namespace Awful
                 this.ApplicationBar = this.PageNavBar;
                 this.ThreadReplyPanel.Visibility = System.Windows.Visibility.Collapsed;
                 this.ThreadViewPanel.Visibility = System.Windows.Visibility.Visible;
+                this.PostJumpButtonPanel.Visibility = System.Windows.Visibility.Visible;
+                this.IsFullscreenActive = this.IsFullscreenActive;
             }
         }
 
@@ -192,9 +311,17 @@ namespace Awful
             {
                 this.ThreadViewPanel.Visibility = System.Windows.Visibility.Collapsed;
                 this.ThreadReplyPanel.Visibility = System.Windows.Visibility.Visible;
+                this.PostJumpButtonPanel.Visibility = System.Windows.Visibility.Collapsed;
+
+                // cancel edit option
+                var menu = this.ReplyBar.MenuItems[2] as IApplicationBarMenuItem;
+                if (CurrentRequest.RequestType == PostRequestType.Edit)
+                    menu.IsEnabled = false;
+                else
+                    menu.IsEnabled = true;
+
                 this.ApplicationBar = this.ReplyBar;
             }
-
         }
 
         private void ShowTagWindow(object sender, System.EventArgs e)
@@ -210,11 +337,45 @@ namespace Awful
         private void SendReply(object sender, System.EventArgs e)
         {
         	// TODO: Add event handler implementation here.
+            bool sendEdit = this.CurrentRequest.RequestType == PostRequestType.Edit;
+            string confirmMessage = null;
+            
+            if (sendEdit)
+            {
+                confirmMessage = "edit post?";
+            }
+
+            else
+                confirmMessage = "send reply?";
+
+            var response = MessageBox.Show(confirmMessage, ":o", MessageBoxButton.OKCancel);
+            if (response == MessageBoxResult.OK)
+            {
+                this.CurrentRequest.Content = this.ThreadReplyTextBox.Text.Trim();
+                SendReplyOrEdit(this.CurrentRequest);
+            }
+
+            CancelEditRequest(null, null);
+        }
+
+        private void SendReplyOrEdit(IThreadPostRequest request)
+        {
+            if (request != null)
+                ViewModels.ThreadViewModel.SendRequestAsync(request, success =>
+                    NotifyUserOfResult(success));
+        }
+
+        private void NotifyUserOfResult(bool success)
+        {
+            string message = success ? "request successful!" : "request failed.";
+            string caption = success ? ":)" : ":(";
+            MessageBox.Show(message, caption, MessageBoxButton.OK);
         }
 
         private void ClearAllReplyText(object sender, System.EventArgs e)
         {
         	// TODO: Add event handler implementation here.
+            this.ThreadReplyTextBox.Text = string.Empty;
         }
 
         private void TogglePageOrientationLock(object sender, System.EventArgs e)
@@ -224,10 +385,25 @@ namespace Awful
 
         private void ShowPostList(object sender, System.Windows.Input.GestureEventArgs e)
         {
-        	// TODO: Add event handler implementation here.
+            // TODO: Add event handler implementation here.
             this.ThreadViewPostListPanel.Visibility = System.Windows.Visibility.Visible;
             if (this.ApplicationBar != null)
                 this.ApplicationBar.IsVisible = false;
+        }
+		
+		private void ShowRatingControl(object sender, System.EventArgs e)
+        {
+            // Ensure Page nav is hidden
+            this.ThreadNavControl.Visibility = System.Windows.Visibility.Collapsed;
+            // Ensure Rating control is visible
+            this.ThreadRatingControl.Visibility = System.Windows.Visibility.Visible;
+            // Set viewmodel thread property to current thread
+            this.RatingViewModel.Thread = this.viewmodel.Thread;
+            // Set viewmodel post action to closing the modal window
+            this.RatingViewModel.SetPostRatingAction(success => { this.ModalWindow.IsOpen = false; });
+
+            // Show modal window
+            this.ModalWindow.IsOpen = true;
         }
 
         private void GoToLastPage(object sender, EventArgs e)
@@ -238,6 +414,41 @@ namespace Awful
         private void GoToFirstPage(object sender, EventArgs e)
         {
             this.GoToIndex(0);
+		}
+		
+		private void ToggleBookmark(object sender, EventArgs e)
+        {
+            this.viewmodel.ThreadBookmarkCommand.Execute(this.viewmodel.Thread);
+        }
+		
+		private void TogglePageLock(object sender, EventArgs e)
+        {
+            this._pageLocked = !this._pageLocked;
+            if (this._pageLocked)
+                MessageBox.Show("view locked.", ":)", MessageBoxButton.OK);
+            else
+                MessageBox.Show("view unlocked.", ":)", MessageBoxButton.OK);
+        }
+		
+		private void ToggleFullscreen(object sender, EventArgs e)
+        {
+            this.IsFullscreenActive = !this.IsFullscreenActive;
+        }
+		
+		private void ShowPageNav(object sender, EventArgs e)
+        {
+            // Ensure Rating control is hidden
+            this.ThreadRatingControl.Visibility = System.Windows.Visibility.Collapsed;
+            // Ensure Nav control is visible
+            this.ThreadNavControl.Visibility = System.Windows.Visibility.Visible;
+
+            // Set Commands
+            this.ThreadNavControl.FirstPageCommand = viewmodel.FirstPageCommand;
+            this.ThreadNavControl.LastPageCommand = viewmodel.LastPageCommand;
+            this.ThreadNavControl.CustomPageCommand = viewmodel.CustomPageCommand;
+            this.ThreadNavControl.ThreadSource = viewmodel.Thread;
+
+            this.ModalWindow.IsOpen = true;
         }
 
         private void ScrollToPost(object sender, Telerik.Windows.Controls.ListBoxItemTapEventArgs e)
@@ -253,6 +464,31 @@ namespace Awful
         {
             this.pagePresenter = sender as Controls.ThreadPagePresenter;
         }
+
+        private void RefreshCurrentPage(object sender, EventArgs e)
+        {
+            this.pagePresenter.Refresh();
+        }
+
+        private void CancelEditRequest(object sender, EventArgs e)
+        {
+            this.ThreadReplyTextBox.Text = string.Empty;
+            this._currentRequest = null;
+            this.HideThreadReplyPanel(null, null);
+        }
+
+        private void UpdateTextCount(object sender, TextChangedEventArgs e)
+        {
+            this.ReplyTextCount.Text = this.ThreadReplyTextBox.Text.Length.ToString();
+        }
+
+        private void SaveReplyDraft(object sender, EventArgs e)
+        {
+            this.SavedDraft = this.ThreadReplyTextBox.Text.Trim();
+            MessageBox.Show("Message saved to drafts.", ":)", MessageBoxButton.OK);
+        }
+
+        
     }
 
     [DataContract]
@@ -273,9 +509,13 @@ namespace Awful
         public string Title { get; set; }
         [DataMember]
         public int PageCount { get; set; }
+        [DataMember]
+        public string Draft { get; set; }
 
-        public void Save(Data.ThreadPageDataSource source)
+        public void Save(ThreadViewPage page)
         {
+
+            var source = page.Viewmodel.SelectedItem;
             var data = source.Data;
 
             PageCount = data.LastPage;
@@ -284,9 +524,14 @@ namespace Awful
             PageNumber = source.PageNumber;
             Html = source.Html;
             Posts = source.Posts;
+
+            Draft = page.SavedDraft;
+
             bool saved = this.SaveToFile(SAVE_FILE);
 
+#if DEBUG
             MessageBox.Show("state saved: " + saved);
+#endif
         }
 
         public static ThreadViewPageState Load()

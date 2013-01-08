@@ -1,14 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using System.IO.IsolatedStorage;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,24 +7,21 @@ using Awful.Common;
 using Telerik.Windows.Controls;
 using Awful.Data;
 using System.Text;
+using KollaSoft;
+using Awful.Helpers;
 
 namespace Awful
 {
-    public class AppDataModel
+    public class AppDataModel : Settings
     {
-        static AppDataModel()
-        {
-           
-        }
-
-        private void AwfulLoginClient_LoginSuccessful(object sender, LoginEventArgs e)
-        {
-            var user = new UserDataSource(e.User);
-            MainDataSource.Instance.CurrentUser = user;
-        }
-       
         public void Init()
         {
+
+#if DEBUG
+            AwfulDebugger.DebugLevel = AwfulDebugger.Level.Debug;
+            AwfulWebClient.SimulateTimeout = true;
+            AwfulWebClient.SimulateTimeoutChance = 1;  // chance to timeout on requests
+#endif
             LoadResourceFilesIntoIsoStore();
             LoadStateFromIsoStorage();
         }
@@ -41,13 +29,36 @@ namespace Awful
         public void LoadStateFromIsoStorage()
         {
             if (!MainDataSource.Instance.IsActive)
-                MainDataSource.LoadInstanceFromIsoStorage("main.xml");
+            {
+                UserDataSource user = CoreExtensions.LoadFromFile<UserDataSource>("user.xml");
+                PinnedItemsCollection pins = CoreExtensions.LoadFromFile<PinnedItemsCollection>("pins.xml");
+                ForumCollection forums = CoreExtensions.LoadFromFile<ForumCollection>("forums.xml");
+                UserBookmarks bookmarks = CoreExtensions.LoadFromFile<UserBookmarks>("bookmarks.xml");
+                ThreadTable threads = CoreExtensions.LoadFromFile<ThreadTable>("threads.xml");
+                
+                MainDataSource.Instance.CurrentUser = user;
+                MainDataSource.Instance.Pins = pins;
+                MainDataSource.Instance.Forums = forums;
+                MainDataSource.Instance.Bookmarks = bookmarks;
+                MainDataSource.Instance.ThreadTable = threads;
+            }
         }
 
         public void SaveStateToIsoStorage()
         {
-            MainDataSource.Instance.LastUpdated = DateTime.Now;
-            MainDataSource.Instance.SaveToIsoStorage("main.xml");
+            try
+            {
+                MainDataSource.Instance.Pins.SaveToFile("pins.xml");
+                MainDataSource.Instance.Bookmarks.SaveToFile("bookmarks.xml");
+                MainDataSource.Instance.ThreadTable.SaveToFile("threads.xml");
+                MainDataSource.Instance.Forums.SaveToFile("forums.xml");
+            }
+
+            catch (Exception ex) { AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex); }
+            finally
+            {
+                AwfulDebugger.SaveAndDispose();
+            }
         }
 
         private void LoadResourceFilesIntoIsoStore()
@@ -67,6 +78,78 @@ namespace Awful
                var success = CoreExtensions.CopyResourceFileToIsoStore(key, dictionary[key]);
                if (!success)
                    throw new Exception("Could not save resources to storage!");
+            }
+        }
+
+        public override void LoadSettings()
+        {
+            AwfulDebugger.DebugLevel = this.DebugLevel;
+            ContentFilter.IsContentFilterEnabled = this.IsContentFilterEnabled;
+            ThemeManager.Instance.SetCurrentTheme(this.CurrentTheme);
+        }
+
+        private const int FONTSIZE_DEFAULT = 12;
+        private const string FONTSIZE_KEY = "ContentFontSize";
+        public int ContentFontSize
+        {
+            get { return GetValueOrDefault<int>(FONTSIZE_KEY, FONTSIZE_DEFAULT); }
+            set
+            {
+                AddOrUpdateValue(FONTSIZE_KEY, value);
+                NotifyPropertyChanged("ContentFontSize");
+            }
+        }
+
+        private const bool HIDETHREADICON_DEFAULT = true;
+        private const string HIDETHREADICON_KEY = "HideThreadIcons";
+        public bool HideThreadIcons
+        {
+            get { return GetValueOrDefault<bool>(HIDETHREADICON_KEY, HIDETHREADICON_DEFAULT); }
+            set
+            {
+                AddOrUpdateValue(HIDETHREADICON_KEY, value);
+                NotifyPropertyChanged("HideThreadIcons");
+            }
+        }
+
+        private const bool CONTENTFILTERENABLED_DEFAULT = true;
+        private const string CONTENTFILTERENABLED_KEY = "IsContentFilterEnabled";
+        public bool IsContentFilterEnabled
+        {
+            get { return GetValueOrDefault<bool>(CONTENTFILTERENABLED_KEY, CONTENTFILTERENABLED_DEFAULT); }
+            set
+            {
+                AddOrUpdateValue(CONTENTFILTERENABLED_KEY, value);
+                Helpers.ContentFilter.IsContentFilterEnabled = value;
+                HideThreadIcons = value;
+
+                NotifyPropertyChanged("IsContentFilterEnabled");
+            }
+        }
+
+        private const AwfulDebugger.Level DEBUGLEVEL_DEFAULT = AwfulDebugger.Level.Info;
+        private const string DEBUGLEVEL_KEY = "DebugLevel";
+        public AwfulDebugger.Level DebugLevel
+        {
+            get { return GetValueOrDefault<AwfulDebugger.Level>(DEBUGLEVEL_KEY, DEBUGLEVEL_DEFAULT); }
+            set
+            {
+                AddOrUpdateValue(DEBUGLEVEL_KEY, value);
+                AwfulDebugger.DebugLevel = value;
+                NotifyPropertyChanged("DebugLevel");
+            }
+        }
+
+        private const string CURRENTTHEME_DEFAULT = "accent";
+        private const string CURRENTTHEME_KEY = "CurrentTheme";
+        public string CurrentTheme
+        {
+            get { return GetValueOrDefault<string>(CURRENTTHEME_KEY, CURRENTTHEME_DEFAULT); }
+            set
+            {
+                AddOrUpdateValue(CURRENTTHEME_KEY, value);
+                ThemeManager.Instance.SetCurrentTheme(value);
+                NotifyPropertyChanged("CurrentTheme");
             }
         }
     }

@@ -15,17 +15,37 @@ namespace Awful.Controls
 {
     public partial class ForumListControl : UserControl
     {
+        public bool IsUngrouped
+        {
+            get { return this.UngroupedForumItemSelector.Visibility == System.Windows.Visibility.Visible; }
+            set
+            {
+                if (value)
+                {
+                    this.ForumItemSelector.Visibility = System.Windows.Visibility.Collapsed;
+                    this.UngroupedForumItemSelector.Visibility = System.Windows.Visibility.Visible;
+                    this.control = UngroupedForumItemSelector;
+                }
+                else
+                {
+                    this.UngroupedForumItemSelector.Visibility = System.Windows.Visibility.Collapsed;
+                    this.ForumItemSelector.Visibility = System.Windows.Visibility.Visible;
+                    this.control = ForumItemSelector;
+                }
+            }
+        }
+
         public ForumListControl()
         {
             InitializeComponent();
             PrepareAnimations();
             InitializeJumpList();
+            InteractionEffectManager.AllowedTypes.Add(typeof(RadDataBoundListBoxItem));
+			this.IsUngrouped = false;
         }
 
         private void PrepareAnimations()
         {
-            //InteractionEffectManager.AllowedTypes.Add(typeof(RadDataBoundListBoxItem));
-
             Func<RadMoveAndFadeAnimation> createAddAnimation = () =>
             {
                 var duration = new TimeSpan(0, 0, 0, 0, 500);
@@ -40,6 +60,7 @@ namespace Awful.Controls
             };
 
             this.ForumItemSelector.ItemAddedAnimation = createAddAnimation();
+            this.UngroupedForumItemSelector.ItemAddedAnimation = createAddAnimation();
 
             Func<RadMoveAndFadeAnimation> createRemoveAnimation = () =>
             {
@@ -55,6 +76,7 @@ namespace Awful.Controls
             };
 
             this.ForumItemSelector.ItemRemovedAnimation = createRemoveAnimation();
+            this.UngroupedForumItemSelector.ItemRemovedAnimation = createRemoveAnimation();
         }
 
         private void InitializeJumpList()
@@ -91,17 +113,25 @@ namespace Awful.Controls
         }
 
         bool refreshRequsted;
+        RadVirtualizingDataControl control = null;
         private void OnRefreshRequested(object sender, EventArgs e)
         {
             var context = (sender as RadJumpList).DataContext;
             var viewmodel = context as ViewModels.ListViewModel<Data.ForumDataSource>;
             if (viewmodel != null)
             {
-                refreshRequsted = true;
-                viewmodel.DataLoaded += OnViewmodelDataLoaded;
-                viewmodel.Refresh();
+             	control = sender as RadVirtualizingDataControl;
+             	control.IsHitTestVisible = false;
+				Refresh(viewmodel);
             }
         }
+		
+		void Refresh(ViewModels.ListViewModel<Data.ForumDataSource> viewmodel)
+		{
+			 refreshRequsted = true;
+             viewmodel.DataLoaded += OnViewmodelDataLoaded;
+             viewmodel.Refresh();
+		}
 
         void OnViewmodelDataLoaded(object sender, EventArgs e)
         {
@@ -109,9 +139,26 @@ namespace Awful.Controls
             viewmodel.DataLoaded -= OnViewmodelDataLoaded;
             if (refreshRequsted)
             {
-                this.ForumItemSelector.StopPullToRefreshLoading(true);
+                control.IsHitTestVisible = true;
+				
+				if (this.control is RadDataBoundListBox)
+                	(this.control as RadDataBoundListBox).StopPullToRefreshLoading(true);
+				else
+					(this.control as RadJumpList).StopPullToRefreshLoading(true);
+				
                 refreshRequsted = false;
             }
+        }
+
+        private void RefreshEmptyList(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+        	// TODO: Add event handler implementation here.
+			var viewmodel = this.DataContext as ViewModels.ListViewModel<Data.ForumDataSource>;
+			if (viewmodel != null)
+			{
+				control.IsHitTestVisible = false;
+				Refresh(viewmodel);
+			}
         }
     }
 }

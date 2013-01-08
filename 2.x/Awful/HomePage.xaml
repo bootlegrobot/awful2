@@ -1,62 +1,74 @@
-﻿<phone:PhoneApplicationPage 
-    x:Class="Awful.HomePage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:viewmodel="clr-namespace:Awful.ViewModels"
-    xmlns:local="clr-namespace:Awful.Controls"
-    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
-    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
-    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
-    FontFamily="{StaticResource PhoneFontFamilyNormal}"
-    FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Portrait"  Orientation="Portrait"
-    shell:SystemTray.IsVisible="True">
-   
-    <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" 
-          Background="Transparent">
-        <!--Panorama Control-->
-        <controls:Panorama x:Name="MainPanorama"
-            Title="MY APPLICATION"
-                        ItemsSource="{Binding Items}"
-                        SelectionChanged="LoadPanoramaContent" Loaded="LoadPanoramaContentInitial">
-            <controls:Panorama.HeaderTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Title}"
-                               Style="{StaticResource PhoneTextTitle2Style}" />
-                </DataTemplate>
-            </controls:Panorama.HeaderTemplate>
+﻿<phone:PhoneApplicationPage x:Class="Awful.HomePage"
+                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:viewmodel="clr-namespace:Awful.ViewModels"
+                            xmlns:local="clr-namespace:Awful.Controls"
+                            xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                            xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+                            xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+                            xmlns:common="clr-namespace:Awful.Common"
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            mc:Ignorable="d"
+                            d:DesignWidth="480"
+                            d:DesignHeight="768"
+                            FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                            FontSize="{StaticResource PhoneFontSizeNormal}"
+                            Background="{Binding CurrentTheme.BackgroundBrush, Source={StaticResource AwfulThemeManager}}"
+                            Foreground="{Binding CurrentTheme.ForegroundBrush, Source={StaticResource AwfulThemeManager}}"
+                            SupportedOrientations="Portrait"
+                            Orientation="Portrait"
+                            shell:SystemTray.IsVisible="True">
+  
+  <phone:PhoneApplicationPage.ApplicationBar>
+    <shell:ApplicationBar Opacity="0.75" Mode="Minimized">
+      <shell:ApplicationBar.MenuItems>
+        <shell:ApplicationBarMenuItem Text="settings..."
+                                      Click="NavigateToSettings" />
+      </shell:ApplicationBar.MenuItems>
+    </shell:ApplicationBar>
+  </phone:PhoneApplicationPage.ApplicationBar>
 
-            <controls:Panorama.ItemTemplate>
-                <DataTemplate>
-                    
-                    <viewmodel:HomePageSectionTemplateSelector Content="{Binding Content}"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch">
-                    
-                        <viewmodel:HomePageSectionTemplateSelector.ForumListTemplate>
-                            <DataTemplate>
-                                <local:ForumListControl DataContext="{Binding}" />
-                            </DataTemplate>
-                        </viewmodel:HomePageSectionTemplateSelector.ForumListTemplate>
-                        <viewmodel:HomePageSectionTemplateSelector.BookmarkListTemplate>
-                            <DataTemplate>
-                                <local:ThreadListControl DataContext="{Binding}" />
-                            </DataTemplate>
-                        </viewmodel:HomePageSectionTemplateSelector.BookmarkListTemplate>
-                        <viewmodel:HomePageSectionTemplateSelector.PinnedListTemplate>
-                            <DataTemplate>
-                                <local:ForumListControl DataContext="{Binding}" />
-                            </DataTemplate>
-                        </viewmodel:HomePageSectionTemplateSelector.PinnedListTemplate>
-                    </viewmodel:HomePageSectionTemplateSelector>
-                </DataTemplate>
-            </controls:Panorama.ItemTemplate>
-        </controls:Panorama>
-    </Grid>
+  <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot">
+        <!--Panorama Control-->
+    
+      <Grid.Resources>
+      <common:UppercaseConverter x:Key="toUpper" />
+      </Grid.Resources>
+
+    <controls:Pivot x:Name="MainContent"
+                    Title="{Binding Welcome, Converter={StaticResource toUpper}}"
+                    ItemsSource="{Binding Items}"
+                    SelectionChanged="LoadContent"
+                    Loaded="LoadContentInitial">
+
+      <controls:Pivot.ItemTemplate>
+        <DataTemplate>
+
+          <viewmodel:HomePageSectionTemplateSelector Content="{Binding Content}"
+                                                     HorizontalContentAlignment="Stretch"
+                                                     VerticalContentAlignment="Stretch">
+
+            <viewmodel:HomePageSectionTemplateSelector.ForumListTemplate>
+              <DataTemplate>
+                <local:ForumListControl DataContext="{Binding}" />
+              </DataTemplate>
+            </viewmodel:HomePageSectionTemplateSelector.ForumListTemplate>
+            <viewmodel:HomePageSectionTemplateSelector.BookmarkListTemplate>
+              <DataTemplate>
+                <local:ThreadListControl DataContext="{Binding}" />
+              </DataTemplate>
+            </viewmodel:HomePageSectionTemplateSelector.BookmarkListTemplate>
+            <viewmodel:HomePageSectionTemplateSelector.PinnedListTemplate>
+              <DataTemplate>
+                <local:ForumListControl DataContext="{Binding}" IsUngrouped="True"/>
+              </DataTemplate>
+            </viewmodel:HomePageSectionTemplateSelector.PinnedListTemplate>
+          </viewmodel:HomePageSectionTemplateSelector>
+        </DataTemplate>
+        </controls:Pivot.ItemTemplate>
+    </controls:Pivot>
+  </Grid>
     
 </phone:PhoneApplicationPage>

@@ -20,7 +20,7 @@ namespace Awful.ViewModels
                 new MainPageItem()
                 {
                     Title = "Forums",
-                    Description = "The Something Awful forums.",
+                    Description = "The Something Awful pinnedForums.",
                     Command = new Common.ActionCommand(NavigateToForumListPage),
                     CommandParameter = NavigationService
                 });
@@ -29,7 +29,7 @@ namespace Awful.ViewModels
                 new MainPageItem()
                 {
                     Title = "Pins",
-                    Description = "Browse pinned forums and bookmarks.",
+                    Description = "Browse pinned pinnedForums and bookmarks.",
                     Command = new Common.ActionCommand(NavigateToPinnedItemsPage),
                     CommandParameter = NavigationService
                 });

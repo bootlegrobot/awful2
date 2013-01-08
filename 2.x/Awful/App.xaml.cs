@@ -14,6 +14,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Text;
 using System.Threading;
+using Telerik.Windows.Controls;
 
 namespace Awful
 {
@@ -28,15 +29,15 @@ namespace Awful
         public const string POST_UNREAD_COLOR = "PostUnreadBrush";
         public const string POST_READ_COLOR = "PostReadBrush";
 
-        private AppDataModel model;
-        public AppDataModel Model
+        private static AppDataModel model;
+        public static AppDataModel Model
         {
             get
             {
-                if (this.model == null)
-                    this.model = new AppDataModel();
+                if (model == null)
+                    model = new AppDataModel();
 
-                return this.model;
+                return model;
             }
         }
 
@@ -85,6 +86,7 @@ namespace Awful
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            Model.LoadSettings();
             Model.Init();
         }
 
@@ -92,6 +94,7 @@ namespace Awful
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+            Model.LoadSettings();
             Model.LoadStateFromIsoStorage();
         }
 
@@ -99,6 +102,7 @@ namespace Awful
         // This code will not execute when the application is closing
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
+            Model.SaveSettings();
             Model.SaveStateToIsoStorage();
         }
 
@@ -106,6 +110,7 @@ namespace Awful
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
+            Model.SaveSettings();
             Model.SaveStateToIsoStorage();
         }
 
@@ -123,9 +128,13 @@ namespace Awful
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
+            string stackTrace = e.ExceptionObject.StackTrace == null ? string.Empty : e.ExceptionObject.StackTrace.ToString();
+            string message = e.ExceptionObject.Message == null ? string.Empty : e.ExceptionObject.Message;
+            AwfulDebugger.AddLog(sender, AwfulDebugger.Level.Critical, e.ExceptionObject);
+
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBox.Show(e.ExceptionObject.StackTrace, e.ExceptionObject.Message, MessageBoxButton.OK);
+                    MessageBox.Show(stackTrace, message, MessageBoxButton.OK);
                     if (System.Diagnostics.Debugger.IsAttached)
                     {
                         // An unhandled exception has occurred; break into the debugger
@@ -147,7 +156,26 @@ namespace Awful
 
             // Create the frame but don't set it as RootVisual yet; this allows the splash
             // screen to remain active until the application is ready to render.
-            RootFrame = new PhoneApplicationFrame();
+            //RootFrame = new PhoneApplicationFrame();
+
+            /*
+            RadTransition transition = new RadTransition()
+            {
+                BackwardInAnimation = this.Resources["fadeInAnimation"] as RadAnimation,
+                BackwardOutAnimation = this.Resources["fadeOutAnimation"] as RadAnimation,
+                ForwardInAnimation = this.Resources["fadeInAnimation"] as RadAnimation,
+                ForwardOutAnimation = this.Resources["fadeOutAnimation"] as RadAnimation
+            };
+            */
+          
+            RadPhoneApplicationFrame frame = new RadPhoneApplicationFrame()
+            {
+                Transition = this.Resources["pageTransition"] as RadTransition
+                //ClockwiseOrientationChangeAnimation = this.Resources["rotateRightAnimation"] as RadAnimation,
+                //CounterClockwiseOrientationChangeAnimation = this.Resources["rotateLeftAnimation"] as RadAnimation
+            };
+
+            RootFrame = frame;
             RootFrame.Navigated += CompleteInitializePhoneApplication;
 
             // Handle navigation failures

@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using Awful.Data;
 
 namespace Awful.ViewModels
 {
-    public class ThreadViewModel : Common.BindableBase
+    public class ThreadViewModel : Common.BindableBase, Controls.IThreadNavContext
     {
         private Data.ThreadDataSource _thread;
         public Data.ThreadDataSource Thread
@@ -27,6 +28,29 @@ namespace Awful.ViewModels
 
                 return _threadBookmarkCommand;
             }
+        }
+
+        private ICommand _firstPageCommand;
+        public ICommand FirstPageCommand
+        {
+            get { return _firstPageCommand; }
+            set { SetProperty(ref _firstPageCommand, value, "FirstPageCommand"); }
+        }
+
+
+        private ICommand _lastPageCommand;
+        public ICommand LastPageCommand
+        {
+            get { return _lastPageCommand; }
+            set { SetProperty(ref _lastPageCommand, value, "LastPageCommand"); }
+        }
+
+
+        private ICommand _customPageCommand;
+        public ICommand CustomPageCommand
+        {
+            get { return _customPageCommand; }
+            set { SetProperty(ref _customPageCommand, value, "CustomPageCommand"); }
         }
 
         private Data.ThreadPageDataProxy _proxy;
@@ -82,9 +106,18 @@ namespace Awful.ViewModels
             OnPropertyChanged("Items");
         }
 
-        public void UpdateModel(string threadId, string forumId, int pageNumber)
+        public void UpdateModel(ThreadDataSource thread)
         {
-            var thread = Data.MainDataSource.Instance.FindThreadByID(threadId, forumId);
+            if (thread != null)
+            {
+                this.Thread = thread;
+                this._pages = null;
+            }
+        }
+
+        public void UpdateModel(string threadId, int pageNumber)
+        {
+            var thread = Data.MainDataSource.Instance.FindThreadByID(threadId);
             if (thread != null)
             {
                 this.Thread = thread;
@@ -94,7 +127,7 @@ namespace Awful.ViewModels
 
         public void UpdateModel(ThreadViewPageState state)
         {
-            var thread = Data.MainDataSource.Instance.FindThreadByID(state.ThreadID, state.ForumID);
+            var thread = Data.MainDataSource.Instance.FindThreadByID(state.ThreadID);
             if (thread == null)
             {
                 ThreadMetadata metadata = new ThreadMetadata();
@@ -110,6 +143,15 @@ namespace Awful.ViewModels
             page.Html = state.Html;
             page.Posts = state.Posts;
 
+        }
+
+        internal static void SendRequestAsync(IThreadPostRequest request, Action<bool> notify)
+        {
+            ThreadPool.QueueUserWorkItem(state =>
+                {
+                    bool success = request.Send();
+                    Deployment.Current.Dispatcher.BeginInvoke(() => notify(success));
+                }, null);
         }
     }
 
@@ -157,6 +199,11 @@ namespace Awful.ViewModels
         protected override void SetItem(Data.ThreadPageDataSource item, int index)
         {
             item.PageNumber = index + 1;
+            if (item is ThreadPageDataObject)
+            {
+                var proxy = new ThreadPageDataProxy(item as ThreadPageDataObject);
+                UpdateCache(proxy);
+            }
         }
 
         public override bool Contains(Data.ThreadPageDataSource item)

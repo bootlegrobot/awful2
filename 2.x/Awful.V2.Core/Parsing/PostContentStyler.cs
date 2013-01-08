@@ -45,6 +45,10 @@ namespace Awful
                         builder.Append(HandleQuotes(node));
                         break;
 
+                    case "iframe":
+                        builder.Append(HandleObjects(node));
+                        break;
+
                     case "object":
                         builder.Append(HandleObjects(node));
                         break;
@@ -170,12 +174,18 @@ namespace Awful
             text = text.Replace("\t", "");
 
             text = text.Replace("&nbsp;", "");
+
+            text = Helpers.ContentFilter.Censor(text);
             return text;
         }
 
         public override string HandleObjects(HtmlNode node)
         {
-            var embedNode = node.Descendants("embed").FirstOrDefault();
+            /*
+            var embedNode = node.Descendants("iframe")
+                .Where(videoNode => videoNode.GetAttributeValue("class", string.Empty).Equals("youtube-player"))
+                .FirstOrDefault();
+
             if (embedNode != null)
             {
                 var src = embedNode.GetAttributeValue("src", "");
@@ -185,8 +195,9 @@ namespace Awful
                 src = string.Format("{0}/watch?v={1}", tokens[0], tokens[1]);
                 return string.Format("<a href=\"javascript:navigate('a{0}{1}')\">[click for video]</a>", CoreConstants.DEMARC, src);
             }
+            */
 
-            return node.OuterHtml;
+            return new EmbeddedVideoWebParser(node, false).Body;
         }
     }
 
@@ -215,6 +226,11 @@ namespace Awful
             }
             builder.Append("</div><br/>");
             content = builder.ToString();
+        }
+
+        public override string HandleObjects(HtmlNode node)
+        {
+            return new EmbeddedVideoWebParser(node, true).Body;
         }
 
         public override string HandleImages(HtmlNode node)
@@ -308,6 +324,41 @@ namespace Awful
         protected override string GetHideDisplay()
         {
             return "[tap for spoiler]";
+        }
+    }
+
+    public class EmbeddedVideoWebParser : ShowHideWebParser
+    {
+        private HtmlNode node;
+        private bool isInQuoteBlock;
+
+        public EmbeddedVideoWebParser(HtmlNode node, bool isInQuoteBlock)
+            : base(InlineStyle.Block)
+        {
+            this.isInQuoteBlock = isInQuoteBlock;
+            this.node = node;
+        }
+
+        public override string HandleObjects(HtmlNode node)
+        {
+            if (node != null)
+            {
+                // shrink window to 75% of page; 50% if in quotes
+                node.SetAttributeValue("width", isInQuoteBlock ? "160" : "240");
+                node.SetAttributeValue("height", isInQuoteBlock ? "120" : "180");
+            }
+
+            return node.OuterHtml;
+        }
+
+        protected override string GetContent()
+        {
+            return ParseNode(node);
+        }
+
+        protected override string GetHideDisplay()
+        {
+            return "[tap for video]";
         }
     }
 
