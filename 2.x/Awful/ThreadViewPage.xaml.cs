@@ -475,7 +475,9 @@ namespace Awful
 
         private void CancelEditRequest(object sender, EventArgs e)
         {
-            this.ThreadReplyTextBox.Text = string.Empty;
+            // I'll let this be a user choice (users must clear the text box manually)...
+            // this.ThreadReplyTextBox.Text = string.Empty;
+            
             this._currentRequest = null;
             this.HideThreadReplyPanel(null, null);
         }
