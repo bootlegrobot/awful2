@@ -25,7 +25,7 @@
       
       <!-- App Info -->
       <sys:String x:Key="ApplicationName">Awful!</sys:String>
-      <sys:String x:Key="ApplicationVersion">2.0 beta 2</sys:String>
+      <sys:String x:Key="ApplicationVersion">2.0 beta 3</sys:String>
 
       <!-- Sample Data -->
       <SampleData:SampleForumSource x:Key="SampleForumSource"
