@@ -1,6 +1,4 @@
-window.onload = function () {
-    window.external.notify('pageloaded');
-}
+
 
 function loadHTML(html) {
     window.external.notify('htmlloading');

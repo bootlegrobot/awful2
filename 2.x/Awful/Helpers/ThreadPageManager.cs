@@ -266,12 +266,15 @@ namespace Awful
 
         #region Web Browser events
 
-        void PageBrowser_Loaded(object sender, RoutedEventArgs e)
+        private void InitializeBrowserForPageView(WebBrowser browser)
         {
-            
-            (sender as WebBrowser).Navigate(
-                new Uri(Constants.THREAD_VIEWER_FILENAME, UriKind.RelativeOrAbsolute));
-           
+            browser.Navigate(
+             new Uri(Constants.THREAD_VIEWER_FILENAME, UriKind.RelativeOrAbsolute));
+        }
+
+        private void PageBrowser_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.InitializeBrowserForPageView(sender as WebBrowser);
         }
 
         private void PageBrowser_ScriptNotify(object sender, NotifyEventArgs e)
@@ -281,21 +284,32 @@ namespace Awful
 
         private void PageBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-            
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Event: PageBrowser_Navigated");
         }
 
         void PageBrowser_NavigationFailed(object sender, System.Windows.Navigation.NavigationFailedEventArgs e)
         {
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Event: PageBrowser_NavigationFailed");
+
             // ignore javascript uri navigation failures
             if (e.Uri.AbsoluteUri.Contains("javascript"))
                 return;
+            
+            else if (e.Uri.OriginalString.Contains(Constants.THREAD_VIEWER_FILENAME))
+            {
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, "Thread View Initialization failed.");
+                this.InitializeBrowserForPageView(sender as WebBrowser);
+            }
+
             else
                 this.IsReady = false;
         }
 
         void PageBrowser_Navigating(object sender, NavigatingEventArgs e)
         {
-           
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Event: PageBrowser_Navigating");
+            if (e.Uri.OriginalString.Contains(Constants.THREAD_VIEWER_FILENAME))
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Loading View Html in browser...");
         }
 
         #endregion

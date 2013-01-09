@@ -4,8 +4,25 @@
     <meta charset='utf-8' />
     <meta content='user-scalable=no' name='viewport' />
     <title>SomethingAwfulPost</title>
-    <script src='jquery.min.js'></script>
-    <script src='awful.js'></script>
+    <script src="./jquery.min.js"></script>
+    <script src="./awful.js"></script>
+    <script type="text/javascript">
+        function loadScript(name){
+            try {
+                var newscript = document.createElement('script') ;
+                newscript.type='text/javascript' ;
+                newscript.src= name;
+                document.getElementsByTagName("head")[0].appendChild(newscript) ;
+            } catch(e) {
+                // Timeout/error handling here.
+                window.external.notify('script load failed: ' + name);
+            }
+        }; 
+
+        window.onload = function () {
+            window.external.notify('pageloaded');
+        }
+    </script>
     <link rel='stylesheet' type='text/css' href='awful.css' />
    </head>
    <body />

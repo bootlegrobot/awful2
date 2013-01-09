@@ -64,6 +64,7 @@ namespace Awful
         private void LoadResourceFilesIntoIsoStore()
         {
             var dictionary = new Dictionary<string, string>();
+            var storage = IsolatedStorageFile.GetUserStoreForApplication();
             
             // add resource locations here.
 
@@ -75,7 +76,25 @@ namespace Awful
             // copy them into storage
             foreach (var key in dictionary.Keys)
             {
-               var success = CoreExtensions.CopyResourceFileToIsoStore(key, dictionary[key]);
+                var path = dictionary[key];
+               var success = CoreExtensions.CopyResourceFileToIsoStore(key, path);
+               success = success && storage.FileExists(path);
+             
+#if DEBUG
+               if (success)
+               {
+                   using (var reader = new System.IO.StreamReader(
+                       storage.OpenFile(path, 
+                       System.IO.FileMode.Open, 
+                       System.IO.FileAccess.Read)))
+                   {
+                       string text = reader.ReadToEnd();
+                       Debug.WriteLine(text);
+                   }
+               }
+
+#endif
+
                if (!success)
                    throw new Exception("Could not save resources to storage!");
             }

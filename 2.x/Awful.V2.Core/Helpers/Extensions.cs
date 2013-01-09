@@ -80,6 +80,9 @@ namespace Awful
                 if (storage == null)
                     storage = IsolatedStorageFile.GetUserStoreForApplication();
 
+                if (storage.FileExists(filePath))
+                    storage.DeleteFile(filePath);
+
                 if (BuildPath(storage, filePath))
                 {
                     using (BinaryWriter writer = new BinaryWriter(
