@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace Awful.Common
 {
@@ -50,6 +51,49 @@ namespace Awful.Common
     }
 
     #endregion
+
+    public class ShadowColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            double factor = 0.0;
+
+            if (parameter == null || !double.TryParse(parameter as string, out factor))
+                factor = 1.0;
+
+            if (value is SolidColorBrush)
+            {
+                Color baseColor = (value as SolidColorBrush).Color;
+                Color shadowColor = Color.FromArgb(
+                    baseColor.A,
+                    System.Convert.ToByte(baseColor.R * factor),
+                    System.Convert.ToByte(baseColor.G * factor),
+                    System.Convert.ToByte(baseColor.B * factor));
+
+                Brush shadow = new SolidColorBrush() { Color = shadowColor };
+                return shadow;
+            }
+
+            if (value is Color)
+            {
+                Color baseColor = (Color)value;
+                Color shadowColor = Color.FromArgb(
+                    baseColor.A,
+                    System.Convert.ToByte(baseColor.R * factor),
+                    System.Convert.ToByte(baseColor.G * factor),
+                    System.Convert.ToByte(baseColor.B * factor));
+
+                return shadowColor;
+            }
+
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     public class ContentFilterConverter : IValueConverter
     {
@@ -126,11 +170,11 @@ namespace Awful.Common
     public class ForumLayoutRetriever : DependencyObject, IValueConverter
     {
         public static readonly DependencyProperty ThemeManagerProperty = DependencyProperty.Register(
-            "ThemeManager", typeof(Helpers.ThemeManager), typeof(ForumLayoutRetriever), new PropertyMetadata(null));
+            "ThemeManager", typeof(ThemeManager), typeof(ForumLayoutRetriever), new PropertyMetadata(null));
 
-        public Helpers.ThemeManager ThemeManager
+        public ThemeManager ThemeManager
         {
-            get { return GetValue(ThemeManagerProperty) as Helpers.ThemeManager; }
+            get { return GetValue(ThemeManagerProperty) as ThemeManager; }
             set { SetValue(ThemeManagerProperty, value); }
         }
 

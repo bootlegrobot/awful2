@@ -4,10 +4,93 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                     xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
+                    xmlns:common="clr-namespace:Awful.Common"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:Controls="clr-namespace:Awful.Controls"
                     mc:Ignorable="d">
-      
+
+    <common:ShadowColorConverter x:Key="RatingIconShadow" />
+    
+    <DataTemplate x:Key="RatingIconContentTemplate">
+        <TextBlock HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   TextWrapping="NoWrap"
+                   TextAlignment="Center"
+                   FontFamily="Segoe WP Black"
+                   Text="{Binding}" />
+    </DataTemplate>
+    
+    <Style TargetType="Controls:RatingIcon">
+        <Setter Property="Height"
+                Value="40" />
+        <Setter Property="Width"
+                Value="50" />
+        <Setter Property="Content"
+                Value="5" />
+        <Setter Property="ContentTemplate"
+                Value="{StaticResource RatingIconContentTemplate}" />
+        <Setter Property="Background"
+                Value="gold" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Controls:RatingIcon">
+                    <Grid x:Name="ThreadRatingPanel"
+                          HorizontalAlignment="Left"
+                          Height="{TemplateBinding Height}"
+                          VerticalAlignment="Top"
+                          Width="{TemplateBinding Width}"
+                          Margin="{TemplateBinding Margin}">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.3*" />
+                            <RowDefinition Height="0.4*" />
+                            <RowDefinition Height="0.3*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.25*" />
+                            <ColumnDefinition Width="0.5*" />
+                            <ColumnDefinition Width="0.25*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Rectangle x:Name="MainBody"
+                                   Grid.ColumnSpan="2"
+                                   Fill="{TemplateBinding Background}"
+                                   Grid.RowSpan="2" />
+                        <Rectangle x:Name="RightEdge"
+                                   Fill="{TemplateBinding Background}"
+                                   Grid.Row="1"
+                                   Grid.Column="2" />
+
+                        <Border BorderThickness="1"
+                                Grid.Row="2"
+                                Grid.RowSpan="2">
+                            <Path x:Name="GlpyhDogEarBottom"
+                                  Data="M42.0585,-2.7748 L60.9564,-2.7748 L60.9564,15.6258 z"
+                                  Stretch="Fill"
+                                  UseLayoutRounding="False"
+                                  Fill="{Binding Fill, ElementName=MainBody, Converter={StaticResource RatingIconShadow}, ConverterParameter=0.7}"
+                                  Margin="-1,-1,-1,-1.167" />
+                        </Border>
+
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Grid.RowSpan="2"
+                                          Grid.Column="1" />
+
+                        <Border Grid.Column="2">
+                            <Path x:Name="GlpyhDogEarTop"
+                                  Data="M43.5674,-1.26242 L43.5123,13.8614 L59.5027,13.8614 z"
+                                  Stretch="Fill"
+                                  UseLayoutRounding="False"
+                                  Fill="{Binding Fill, ElementName=MainBody, Converter={StaticResource RatingIconShadow}, ConverterParameter=0.7}" />
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
     <Style TargetType="Controls:ForumItemControl">
         <Setter Property="Foreground"
                 Value="{StaticResource PhoneForegroundColor}" />

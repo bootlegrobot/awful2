@@ -102,6 +102,12 @@ namespace Awful
         }
     }
 
+    public enum ThreadPageType
+    {
+        Last = -1,
+        NewPost = 0
+    }
+
     public class ThreadPageMetadata
     {
         public string ThreadTitle { get; set; }

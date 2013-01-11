@@ -60,7 +60,7 @@ namespace Awful.Controls
             NavigateToThreadView(item);
         }
 
-        private void NavigateToThreadView(ThreadDataSource thread, int pageNumber = -1)
+        private void NavigateToThreadView(ThreadDataSource thread, int pageNumber = (int)ThreadPageType.NewPost)
         {
             if (this.ModalWindow.IsOpen)
                 this.ModalWindow.IsOpen = false;
@@ -128,7 +128,7 @@ namespace Awful.Controls
             get
             {
                 if (_lastPageCommand == null)
-                    _lastPageCommand = new ActionCommand((state) => { NavigateToThreadView(this.SelectedThread, this.SelectedThread.PageCount); });
+                    _lastPageCommand = new ActionCommand((state) => { NavigateToThreadView(this.SelectedThread, (int)ThreadPageType.Last); });
                 
                 return _lastPageCommand;
             }

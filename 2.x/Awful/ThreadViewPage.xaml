@@ -23,7 +23,10 @@
 
     <viewmodel:RatingViewModel x:Key="ratingViewModel" />
 
-    <System:String x:Key="LockOrientationButtonText">toggle view lock</System:String>
+        <telerikCore:RadFadeAnimation x:Key="fadeInAnimation" EndOpacity="0.3" FillBehavior="HoldEnd"/>
+        <telerikCore:RadFadeAnimation x:Key="fadeOutAnimation" EndOpacity="0.0" FillBehavior="HoldEnd"/>
+
+        <System:String x:Key="LockOrientationButtonText">toggle view lock</System:String>
 
     <shell:ApplicationBar x:Key="DefaultAppBar">
       <shell:ApplicationBar.MenuItems>
@@ -212,7 +215,18 @@
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
-    <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel x:Name="ThreadInitializationPane"
+                    Visibility="Collapsed"
+                    Grid.RowSpan="2"
+                    VerticalAlignment="Center">   
+            <TextBlock Style="{StaticResource PhoneTextNormalStyle}" Text="Loading Thread..."
+                       TextAlignment="Center"/>
+            
+            <ProgressBar IsIndeterminate="True" Margin="{StaticResource PhoneTouchTargetOverhang}"/>
+            
+        </StackPanel>
+
+        <!--TitlePanel contains the name of the application and page title-->
 
     <!--ContentPanel - place additional content here-->
 
@@ -382,11 +396,12 @@
                                     without bubbling them back up.
                             -->
 
-                <Rectangle Grid.Column="0"
+                <Rectangle x:Name="LeftSwipeGlyph" Grid.Column="0"
                            Canvas.ZIndex="10"
                            VerticalAlignment="Stretch"
-                           Fill="Red"
-                           Opacity="0" />
+                           Fill="{Binding CurrentTheme.AccentBrush, Source={StaticResource AwfulThemeManager}}"
+                           Opacity="0" ManipulationStarted="HightlightSwipeGlyph"
+                           ManipulationCompleted="HideSwipeGlyph"/>
 
                 <!--    The actual web content of the page. -->
 
@@ -402,10 +417,12 @@
                 </Border>
 
                 <!--    The Right column; see above. -->
-                <Rectangle Grid.Column="2"
+                <Rectangle x:Name="RightSwipeGlyph" Grid.Column="2"
                            Canvas.ZIndex="10"
                            VerticalAlignment="Stretch"
-                           Fill="Green"
+						   ManipulationStarted="HightlightSwipeGlyph"
+                           ManipulationCompleted="HideSwipeGlyph"
+                           Fill="{Binding CurrentTheme.AccentBrush, Source={StaticResource AwfulThemeManager}}"
                            Opacity="0" />
               </Grid>
             </DataTemplate>

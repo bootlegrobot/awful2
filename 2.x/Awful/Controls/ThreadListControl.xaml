@@ -29,6 +29,7 @@
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+
         <Grid Margin="0,5,0,0"
               Visibility="{Binding IconView, Source={StaticResource IconViewer}}">
           <Border x:Name="ThreadIconBorder"
@@ -60,29 +61,25 @@
             </Grid>
 
           </Border>
-          <Grid x:Name="ThreadRatingPanel"
-                HorizontalAlignment="Left"
-                Height="50"
-                VerticalAlignment="Top"
-                Visibility="{Binding ShowRating, Converter={StaticResource collapseOnFalseConverter}}"
-                Opacity="0.9"
-                Width="50">
-            <Path x:Name="ThreadRatingEarmarkGlyph"
-                  Data="M0.001575,0.000788 L49.9862,-0.075052 L0.001152,49.8804 z"
-                  Fill="{Binding RatingColor, Converter={StaticResource assetRetriever}}"
-                  Stretch="Fill"
-                  UseLayoutRounding="False" />
-            <TextBlock x:Name="ThreadRatingText"
-                       HorizontalAlignment="Left"
-                       TextWrapping="Wrap"
-                       Text="{Binding Rating}"
-                       VerticalAlignment="Top"
-                       Margin="6,3,0,0"
-                       Style="{StaticResource PhoneTextSubtleStyle}"
-                       FontFamily="Segoe WP Semibold"
-                       Foreground="#99000000" />
-          </Grid>
-        </Grid>
+
+		  <Grid x:Name="ThreadRatingPanel"
+			Visibility="{Binding ShowRating, Converter={StaticResource collapseOnFalseConverter}}"
+			HorizontalAlignment="Left" 
+			VerticalAlignment="Top" 
+			Margin="-13,10,0,0">
+			
+			<local:RatingIcon x:Name="RatingIconItem"
+				Width="50"
+				Height="50"
+                Content="{Binding Rating}"
+				Background="{Binding RatingColor, Converter={StaticResource assetRetriever}}"
+                Foreground="{Binding Background, ElementName=RatingIconItem, Converter={StaticResource shadowColorConverter}, ConverterParameter=0.5}"/>
+		  </Grid>
+
+		  </Grid>
+		  				
+		
+	
         <StackPanel Grid.Column="1"
                     VerticalAlignment="Top"
                     Margin="0">

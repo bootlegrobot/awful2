@@ -44,12 +44,14 @@
             <toolkit:GestureListener PinchCompleted="ZoomText"
                                      PinchStarted="BeginTextZoom"/>
         </toolkit:GestureService.GestureListener>
+        
         <phone:WebBrowser x:Name="ThreadPageView"
                           Opacity="0"
                           IsScriptEnabled="True"
                           kollasoft:KSWebBrowserHelper.BrowserBackground="Transparent"
                           kollasoft:KSWebBrowserHelper.SuppressPanAndZoom="True"
                           kollasoft:KSWebBrowserHelper.SupressDoubleTap="True"/>
+        
         <ProgressBar x:Name="ThreadPageLoadingBar"
                      Height="10"
                      VerticalAlignment="Center" />

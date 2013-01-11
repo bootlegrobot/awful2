@@ -68,6 +68,7 @@ namespace Awful
         {
             if (html != null)
             {
+                this._browser.Opacity = 1.0;
                 this._browser.InvokeScript(JS_LOAD_HTML_FUNCTION, html);
             }
         }

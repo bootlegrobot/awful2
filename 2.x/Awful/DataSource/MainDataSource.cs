@@ -563,8 +563,14 @@ namespace Awful.Data
 
         [DataMember]
         public string Tag { get; set; }
+
+        private int _rating;
         [DataMember]
-        public int Rating { get; set; }
+        public int Rating
+        {
+            get { return _rating; }
+            set { SetProperty(ref _rating, value, "Rating"); }
+        }
         [DataMember]
         public string RatingColor { get; set; }
         [DataMember]
@@ -633,7 +639,7 @@ namespace Awful.Data
             FormatImage(data.IconUri);
         }
 
-        public void NavigateToThreadView(NavigationDelegate nav, int pageNumber = -1)
+        public void NavigateToThreadView(NavigationDelegate nav, int pageNumber = (int)ThreadPageType.NewPost)
         {
             string uri = string.Format("/ThreadViewPage.xaml?ForumID={0}&ThreadID={1}&Page={2}",
                 this.ForumID,
@@ -876,6 +882,11 @@ namespace Awful.Data
     public sealed class ThreadPageDataProxy : Common.BindableBase, ThreadPageDataSource
     {
         private ThreadPageDataSource _page;
+        public ThreadPageDataSource Page
+        {
+            get { return _page; }
+            set { _page = value; }
+        }
 
         public ThreadPageDataProxy(ThreadPageMetadata metadata)
         {

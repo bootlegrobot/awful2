@@ -2,6 +2,16 @@
 using System.Net;
 using System.Linq;
 using System.Windows;
+using System.Collections.Generic;
+
+#if WINDOWS_STORE
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
+using Windows.UI;
+using Windows.UI.Xaml.Media.Imaging;
+#endif
+
+#if WINDOWS_PHONE
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Ink;
@@ -9,14 +19,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
-using System.Collections.Generic;
+
 using System.Windows.Media.Imaging;
 using System.Threading;
 using System.Windows.Threading;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Controls;
+#endif
 
-namespace Awful.Helpers
+namespace Awful.Common
 {
     public class ThemeManager : Common.BindableBase
     {
@@ -126,7 +137,7 @@ namespace Awful.Helpers
             {
                 if (this._image == null && this._imageUri != null)
                 {
-                    this._image = new BitmapImage(new Uri(this._imageUri, UriKind.Relative));
+                    this._image = new BitmapImage(new Uri(this._imageUri, UriKind.RelativeOrAbsolute));
                 }
                 return this._image;
             }

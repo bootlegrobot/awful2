@@ -42,4 +42,12 @@ namespace Awful.Common
     }
 
     public delegate void ThreadNavEventHandler(object sender, ThreadNavEventArgs args);
+
+    public sealed class ThreadReadyToBindEventArgs : EventArgs
+    {
+        public ThreadViewPageState State { get; private set; }
+        public ThreadReadyToBindEventArgs(ThreadViewPageState state) { State = state; }
+    }
+
+    public delegate void ThreadReadyToBindEventHandler(object sender, ThreadReadyToBindEventArgs args);
 }

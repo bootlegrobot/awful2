@@ -140,6 +140,7 @@
     <Compile Include="Controls\ForumListControl.xaml.cs">
       <DependentUpon>ForumListControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\RatingIcon.cs" />
     <Compile Include="Controls\ThreadListControl.xaml.cs">
       <DependentUpon>ThreadListControl.xaml</DependentUpon>
     </Compile>
@@ -156,7 +157,7 @@
     <Compile Include="Helpers\ForumItemTemplateSelector.cs" />
     <Compile Include="Helpers\OddEvenTemplateSelector.cs" />
     <Compile Include="Helpers\PinnedItemsManager.cs" />
-    <Compile Include="Helpers\ThemeManager.cs" />
+    <Compile Include="Common\ThemeManager.cs" />
     <Compile Include="Helpers\ThreadIconViewer.cs" />
     <Compile Include="HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>

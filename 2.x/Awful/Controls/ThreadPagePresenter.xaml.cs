@@ -80,7 +80,10 @@ namespace Awful.Controls
                     }
 
                     else if (PageManager.IsReady)
+                    {
+                        this.ThreadPageLoadingBar.Opacity = 0;
                         PageManager.LoadHtml(PageData.Html);
+                    }
             	}
 			
 		}
@@ -209,7 +212,10 @@ namespace Awful.Controls
         private void OnReadyForContent(object sender, EventArgs e)
         {
             if (this.PageManager.IsReady && PageData.Html != null)
+            {
+                this.ThreadPageLoadingBar.Opacity = 0;
                 this.PageManager.LoadHtml(PageData.Html);
+            }
         }
 
         private void OnPostSelected(object sender, EventArgs e)

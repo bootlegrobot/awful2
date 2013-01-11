@@ -276,12 +276,24 @@ namespace Awful
             if (string.IsNullOrEmpty(threadId))
                 throw new ArgumentException("FetchThreadPage: Cannot fetch thread page with null or empty threadId.");
 
-            // example string: http://forums.somethingawful.com/showthread.php?noseen=0&threadid=3439182&pagenumber=69
+            // example string: http://forums.somethingawful.com/showthread.php?&threadid=3439182&pagenumber=69
+            // or http://forums.somethingawful.com/showthread.php?&threadid=12345&goto=newpost
+
             var url = new StringBuilder();
             // http://forums.somethingawful.com/showthread.php
             url.AppendFormat("{0}/{1}", CoreConstants.BASE_URL, CoreConstants.THREAD_PAGE_URI);
-            // noseen=0&threadid=<THREADID>&pagenumber=<PAGENUMBER>
-            url.AppendFormat("?noseen=0&threadid={0}&pagenumber={1}", threadId, pageNumber);
+
+            if (pageNumber == (int)ThreadPageType.NewPost)
+                url.AppendFormat("?&threadid={0}&goto=newpost", threadId);
+            
+            else if (pageNumber == (int)ThreadPageType.Last)
+                url.AppendFormat("?&threadid={0}&goto=lastpost", threadId);
+
+            else
+            {
+                // &threadid=<THREADID>&pagenumber=<PAGENUMBER>
+                url.AppendFormat("?&threadid={0}&pagenumber={1}", threadId, pageNumber);
+            }
 
             var web = new AwfulWebClient();
             var doc = web.FetchHtml(url.ToString());
@@ -292,6 +304,23 @@ namespace Awful
         public static ThreadPageMetadata LoadPage(this ThreadMetadata thread, int pageNumber)
         {
            return FetchThreadPage(thread.ThreadID, pageNumber);
+        }
+
+        public static ThreadPageMetadata LoadNewPostPage(this ThreadMetadata thread)
+        {
+            // adding some special logic here.
+            // if the thread is new, then using 'goto=newpost' actually loads the last page.
+            // in this case, users typically want the first unread post,
+            // and for new threads, that would be the first page.
+
+            return thread.IsNew ?
+                FetchThreadPage(thread.ThreadID, 1) :
+                FetchThreadPage(thread.ThreadID, (int)ThreadPageType.NewPost);
+        }
+
+        public static ThreadPageMetadata LoadLastPage(this ThreadMetadata thread)
+        {
+            return FetchThreadPage(thread.ThreadID, (int)ThreadPageType.Last);
         }
 
         public static ThreadPageMetadata Refresh(this ThreadPageMetadata page)

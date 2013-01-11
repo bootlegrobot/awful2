@@ -20,9 +20,16 @@ namespace Awful
         {
             InitializeComponent();
             viewmodel = new ViewModels.ThreadViewModel();
+            viewmodel.ReadyToBind += OnViewModelReadyToBind;
+            viewmodel.UpdateFailed += OnViewModelUpdateFailed;
             SetThreadNavCommands(viewmodel);
             Commands.EditPostCommand.EditRequested += new ThreadPostRequestEventHandler(OpenEditWindow);
             Loaded += ThreadViewPage_Loaded;
+        }
+
+        void OnViewModelUpdateFailed(object sender, EventArgs e)
+        {
+            ThreadInitializationPane.Visibility = Visibility.Collapsed;
         }
 
         private ViewModels.ThreadViewModel viewmodel;
@@ -139,14 +146,6 @@ namespace Awful
 
         public void GoToIndex(int index = -1)
         {
-            // if index equals -1, load last read page
-            if (index < 0)
-            {
-                int lastRead = this.viewmodel.Thread.Data.GetLastReadPage();
-                lastRead = Math.Min(lastRead, this.viewmodel.Items.Count);
-                index = lastRead - 1;
-            }
-
             var pageProvider = this.ThreadViewPagination.PageProvider;
             if (pageProvider != null)
                 pageProvider.CurrentIndex = index;
@@ -231,9 +230,19 @@ namespace Awful
             }
         }
 
+        private void OnViewModelReadyToBind(object sender, Common.ThreadReadyToBindEventArgs args)
+        {
+            ThreadInitializationPane.Visibility = Visibility.Collapsed;
+            this.state = args.State;
+            this.DataContext = viewmodel;
+            this.GoToIndex(args.State.PageNumber - 1);
+        }
+
         private void BuildStateFromNavigationQuery()
         {
-            int currentIndex = -1;
+            ThreadInitializationPane.Visibility = Visibility.Visible;
+
+            int pageNumber = int.MinValue;
             string threadId = null;
             string forumId = null;
 
@@ -247,19 +256,10 @@ namespace Awful
             // get page number from navigation query
             if (NavigationContext.QueryString.ContainsKey("Page"))
             {
-                int pageNumber;
                 int.TryParse(NavigationContext.QueryString["Page"], out pageNumber);
-                currentIndex = pageNumber - 1;
             }
 
-            this.state = new ThreadViewPageState();
-            state.ThreadID = threadId;
-            state.ForumID = forumId;
-            state.PageNumber = currentIndex + 1;
-
-            this.viewmodel.UpdateModel(threadId, currentIndex);
-            this.DataContext = viewmodel;
-            this.GoToIndex(currentIndex);
+            this.viewmodel.UpdateModel(threadId, pageNumber);
         }
 
         void ThreadViewPage_Loaded(object sender, RoutedEventArgs e)
@@ -470,7 +470,12 @@ namespace Awful
 
         private void RefreshCurrentPage(object sender, EventArgs e)
         {
-            this.pagePresenter.Refresh();
+            if (this.viewmodel.IsReady)
+                this.pagePresenter.Refresh();
+            else
+            {
+                BuildStateFromNavigationQuery();
+            }
         }
 
         private void CancelEditRequest(object sender, EventArgs e)
@@ -493,6 +498,30 @@ namespace Awful
             MessageBox.Show("Message saved to drafts.", ":)", MessageBoxButton.OK);
         }
 
+        private RadAnimation FadeInAnimation
+        {
+            get { return this.Resources["fadeInAnimation"] as RadAnimation; }
+        }
+
+        private RadAnimation FadeOutAnimation
+        {
+            get { return this.Resources["fadeOutAnimation"] as RadAnimation; }
+        }
+
+        private void HightlightSwipeGlyph(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
+        {
+        	// TODO: Add event handler implementation here.
+            var element = sender as FrameworkElement;
+            if (element != null)
+                Telerik.Windows.Controls.RadAnimationManager.Play(element, FadeInAnimation);
+        }
+
+        private void HideSwipeGlyph(object sender, System.Windows.Input.ManipulationCompletedEventArgs e)
+        {
+            var element = sender as FrameworkElement;
+            if (element != null)
+                Telerik.Windows.Controls.RadAnimationManager.Play(element, FadeOutAnimation);
+        }
         
     }
 
@@ -519,7 +548,6 @@ namespace Awful
 
         public void Save(ThreadViewPage page)
         {
-
             var source = page.Viewmodel.SelectedItem;
             var data = source.Data;
 
@@ -545,6 +573,18 @@ namespace Awful
             return state;
         }
 
-       
+        public static void Save(ThreadViewPageState state) { state.SaveToFile(SAVE_FILE); }
+
+        public ThreadViewPageState() { }
+
+        public ThreadViewPageState(Data.ThreadDataSource thread, Data.ThreadPageDataSource page)
+        {
+            ThreadID = thread.ThreadID;
+            Title = thread.Title;
+            PageCount = thread.PageCount;
+            Html = page.Html;
+            Posts = page.Posts;
+            PageNumber = page.PageNumber;
+        }
     }
 }

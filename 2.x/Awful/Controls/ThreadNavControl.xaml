@@ -28,7 +28,7 @@
                   Content="Last Page"
                   Command="{Binding LastPageCommand}" />
           <Border x:Name="CustomPageBorder"
-                  BorderThickness="2"
+                  BorderThickness="4"
                   BorderBrush="{StaticResource PhoneForegroundBrush}"
                   Margin="12,0,12,12">
             <StackPanel x:Name="CustomPageGrid">

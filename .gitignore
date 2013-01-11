@@ -16,3 +16,5 @@ design/
 marketplace/
 # private 3rd-party library folder
 lib/private/
+# Thumbnail cache
+[Tt]humbs.db
