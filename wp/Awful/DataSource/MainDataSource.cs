@@ -151,9 +151,9 @@ namespace Awful.Data
             return Forums.Where(f => f.ForumID.Equals(forumId)).FirstOrDefault();
         }
 
-        public ObservableCollection<ThreadDataSource> FindForumThreadsByID(string forumId)
+        public ObservableSetWrapper<ThreadDataSource> FindForumThreadsByID(string forumId)
         {
-            ObservableCollection<ThreadDataSource> threads = null;
+            ObservableSetWrapper<ThreadDataSource> threads = null;
 
             if (forumId == Bookmarks.ForumID)
                 threads = Bookmarks;
@@ -221,12 +221,15 @@ namespace Awful.Data
         public bool CanLogIn { get { return this.Metadata != null && !this.Metadata.Cookies.IsNullOrEmpty(); } }
     }
 
-    [CollectionDataContract]
-    public class UserBookmarks : ObservableSet<ThreadDataSource>
+    [DataContract]
+    public class UserBookmarks : ObservableSetWrapper<ThreadDataSource>, ILastUpdated
     {
-        public UserBookmarks() : base() { CollectionChanged += UserBookmarks_CollectionChanged; }
+        public UserBookmarks() : base() { Items.CollectionChanged += UserBookmarks_CollectionChanged; }
 
-        public UserBookmarks(IEnumerable<ThreadDataSource> collection) : base(collection) { CollectionChanged += UserBookmarks_CollectionChanged; }
+        public UserBookmarks(IEnumerable<ThreadDataSource> collection) : base(collection) 
+        { 
+            Items.CollectionChanged += UserBookmarks_CollectionChanged; 
+        }
 
         private void UserBookmarks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -235,6 +238,22 @@ namespace Awful.Data
                 foreach (var item in e.NewItems)
                     (item as ThreadDataSource).ForumID = this.ForumID;
             }
+        }
+
+        [DataMember(IsRequired = true, EmitDefaultValue = false)]
+        public DateTime _lastUpdated;
+
+        [IgnoreDataMember]
+        public DateTime? LastUpdated
+        {
+            get
+            {
+                return _lastUpdated == default(DateTime) ?
+                    new DateTime?() :
+                    new DateTime?(_lastUpdated);
+            }
+
+            set { _lastUpdated = value.GetValueOrDefault(); }
         }
 
         [IgnoreDataMember]
@@ -391,8 +410,8 @@ namespace Awful.Data
         }
     }
 
-    [CollectionDataContract]
-    public class ForumCollection : ObservableSet<ForumDataSource>
+    [DataContract]
+    public class ForumCollection : ObservableSetWrapper<ForumDataSource>
     {
         public ForumCollection() : base() { }
         public ForumCollection(IEnumerable<ForumDataSource> source) : base(source) { }
@@ -430,18 +449,18 @@ namespace Awful.Data
         }
     }
 
-    [CollectionDataContract]
-    public class PinnedItemsCollection : ObservableSet<string>
+    [DataContract]
+    public class PinnedItemsCollection : ObservableSetWrapper<string>
     {
         public PinnedItemsCollection() : base() 
         {
-            CollectionChanged += PinnedItemsCollection_CollectionChanged;
+            Items.CollectionChanged += PinnedItemsCollection_CollectionChanged;
         }
 
         public PinnedItemsCollection(IEnumerable<string> items)
             : base(items)
         {
-            CollectionChanged += PinnedItemsCollection_CollectionChanged;
+            Items.CollectionChanged += PinnedItemsCollection_CollectionChanged;
         }
 
         private void PinnedItemsCollection_CollectionChanged(object sender, 
@@ -449,16 +468,27 @@ namespace Awful.Data
         {
 
         }
-        
-        public override int GetHashCode(string obj)
-        {
-            return obj.GetHashCode();
-        }
     }
 
-    [CollectionDataContract]
-    public class ForumThreadCollection : ObservableSet<ThreadDataSource>
+    [DataContract]
+    public class ForumThreadCollection : ObservableSetWrapper<ThreadDataSource>, ILastUpdated
     {
+        [DataMember(IsRequired = true, EmitDefaultValue = false)]
+        public DateTime _lastUpdated;
+
+        [IgnoreDataMember]
+        public DateTime? LastUpdated
+        {
+            get
+            {
+                return _lastUpdated == default(DateTime) ?
+                    new DateTime?() :
+                    new DateTime?(_lastUpdated);
+            }
+
+            set { _lastUpdated = value.GetValueOrDefault(); }
+        }
+
         public static List<ThreadDataSource> CreateThreadSources(ForumPageMetadata page, ForumMetadata forum)
         {
             var threads = new List<ThreadDataSource>(page.Threads.Count);
@@ -473,12 +503,17 @@ namespace Awful.Data
 
         public ForumThreadCollection() : base() 
         {
-            CollectionChanged += ForumThreadCollection_CollectionChanged;
+            Items.HashCodeMethod = GetThreadHashCode;
+            Items.CollectionChanged += ForumThreadCollection_CollectionChanged;
         }
 
-        public override int GetHashCode(ThreadDataSource obj)
+        private int GetThreadHashCode(object obj)
         {
-            return obj.ThreadID.GetHashCode();
+            ThreadDataSource thread = obj as ThreadDataSource;
+            if (thread != null)
+                return thread.ThreadID.GetHashCode();
+
+            return obj.GetHashCode();
         }
 
         private void ForumThreadCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

@@ -16,6 +16,12 @@ using System.Text;
 using System.Threading;
 using Telerik.Windows.Controls;
 
+#if DEBUG
+
+using IsolatedStorageExplorer;
+
+#endif
+
 namespace Awful
 {
     public partial class App : Application
@@ -89,6 +95,11 @@ namespace Awful
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+
+#if DEBUG
+            //IsolatedStorageExplorer.Explorer.Start("localhost");
+#endif
+
             Model.LoadSettings();
             Model.Init();
         }
@@ -97,6 +108,10 @@ namespace Awful
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+#if DEBUG
+            //IsolatedStorageExplorer.Explorer.RestoreFromTombstone();
+#endif
+
             Model.LoadSettings();
             Model.LoadStateFromIsoStorage();
         }

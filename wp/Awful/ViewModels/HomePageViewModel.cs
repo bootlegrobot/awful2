@@ -135,7 +135,9 @@ namespace Awful.ViewModels
         { 
             _source = source;
             if (!_source.Forums.IsNullOrEmpty())
-                _forums = source.Forums;
+            {
+                _forums = source.Forums.Items;
+            }
 
             UpdateStatus(EMPTY_STATUS);
         }
@@ -181,7 +183,6 @@ namespace Awful.ViewModels
             {
                 result = forums.Select(forum => new Data.ForumDataSource(forum));
                 AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Forum body request complete!");
-                _source.Forums.LastUpdated = DateTime.Now;
             }
             return result;
         }
@@ -214,7 +215,7 @@ namespace Awful.ViewModels
 
         protected override void OnSuccess()
         {
-            this.UpdateLastUpdated(_source.LastUpdated);
+           // do nothing
         }
     }
 
@@ -290,11 +291,11 @@ namespace Awful.ViewModels
         private Data.MainDataSource _source;
         private const string EMPTY_STATUS = "Tap here to refresh your bookmarks.";
 
-        public BookmarkSectionViewModel(Data.MainDataSource source) : base(source.Bookmarks) 
+        public BookmarkSectionViewModel(Data.MainDataSource source) : base(source.Bookmarks.Items) 
         { 
             _source = source;
             UpdateStatus(EMPTY_STATUS);
-            UpdateLastUpdated(source.LastUpdated);
+            UpdateLastUpdated(source.Bookmarks.LastUpdated);
         }
 
         protected override IEnumerable<Data.ThreadDataSource> LoadDataInBackground()

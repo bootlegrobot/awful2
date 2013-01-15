@@ -56,6 +56,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\sl4-windowsphone71\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="IsolatedStorageExplorer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="KollaSoft.WP7, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\KollaSoft.WP7.dll</HintPath>
@@ -133,6 +134,7 @@
     <Compile Include="Common\Converters.cs" />
     <Compile Include="Common\EventArgs.cs" />
     <Compile Include="Common\Group.cs" />
+    <Compile Include="Common\ILastUpdated.cs" />
     <Compile Include="Common\ObservableSet.cs" />
     <Compile Include="Common\RadContextMenuProvider.cs" />
     <Compile Include="Controls\ContextMenus.cs" />
@@ -1937,6 +1939,7 @@
     <Content Include="Assets\ThreadIcons\yp-tubes296.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="awful.icon.v.300.beta.png" />
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

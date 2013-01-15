@@ -30,7 +30,7 @@ namespace Awful.ViewModels
             private set { SetProperty(ref _title, value, "Title"); }
         }
 
-        private ObservableCollection<Data.ThreadDataSource> _threads;
+        private Common.ObservableSetWrapper<Data.ThreadDataSource> _threadListModel;
 
         public void UpdateModel(string forumId, int currentPage)
         {
@@ -44,8 +44,10 @@ namespace Awful.ViewModels
             var threads = Data.MainDataSource.Instance.FindForumThreadsByID(forumId);
             if (threads != null)
             {
-                this._threads = threads as Data.ForumThreadCollection;
-                this.Items = threads;
+                var forumThreadList = threads as Data.ForumThreadCollection;
+                this._threadListModel = forumThreadList;
+                this.UpdateLastUpdated(forumThreadList.LastUpdated);
+                this.Items = forumThreadList.Items;
             }
 
             this.CurrentIndex = currentPage - 1;
@@ -56,7 +58,7 @@ namespace Awful.ViewModels
             UpdateStatus("Loading thread list...");
 
             IEnumerable<Data.ThreadDataSource> threads = null;
-            var pageSource = _threads as Data.ForumThreadCollection;
+            var pageSource = _threadListModel as Data.ForumThreadCollection;
 
             
             if (pageSource != null)
@@ -79,8 +81,8 @@ namespace Awful.ViewModels
                 UpdateStatus("Formatting...");
                 threads = Data.ForumThreadCollection.CreateThreadSources(forumPageData, forum);
 
-                if (this._threads is Data.ForumThreadCollection)
-                    (this._threads as Data.ForumThreadCollection).LastUpdated = DateTime.Now;
+                if (this._threadListModel is Data.ForumThreadCollection)
+                    (this._threadListModel as Data.ForumThreadCollection).LastUpdated = DateTime.Now;
             }
             return threads;
         }
@@ -105,9 +107,9 @@ namespace Awful.ViewModels
 
         protected override void OnSuccess()
         {
-           if (this._threads is Data.ForumThreadCollection)
+           if (this._threadListModel is Data.ForumThreadCollection)
            {
-               this.UpdateLastUpdated((this._threads as Data.ForumThreadCollection).LastUpdated);
+               this.UpdateLastUpdated((this._threadListModel as Data.ForumThreadCollection).LastUpdated);
            }
         }
     }
