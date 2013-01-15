@@ -165,6 +165,13 @@ namespace Awful.ViewModels
                 eventHandler(this, new Common.ThreadReadyToBindEventArgs(state));
         }
 
+        private void OnUpdateFailed()
+        {
+            var eventHandler = this.UpdateFailed;
+            if (eventHandler != null)
+                eventHandler(this, EventArgs.Empty);
+        }
+
         internal static void SendRequestAsync(IThreadPostRequest request, Action<bool> notify)
         {
             ThreadPool.QueueUserWorkItem(state =>
@@ -179,6 +186,7 @@ namespace Awful.ViewModels
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex);
             MessageBox.Show("Could not load the requested page. Please try again.", ":(", MessageBoxButton.OK);
             IsReady = false;
+            OnUpdateFailed();
         }
 
         protected override void OnCancel()
