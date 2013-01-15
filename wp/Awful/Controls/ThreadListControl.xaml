@@ -17,11 +17,12 @@
 
   <UserControl.Resources>
     <DataTemplate x:Key="ThreadListItemWithIconTemplate">
-      <Grid Margin="{StaticResource PhoneTouchTargetOverhang}"
-            VerticalAlignment="Top"
-            MinHeight="100">
-        
-        <telerikPrimitives:RadContextMenu.ContextMenu>
+            <Grid Margin="{StaticResource PhoneTouchTargetOverhang}"
+                  Opacity="{Binding ItemOpacity}"
+                  VerticalAlignment="Top"
+                  MinHeight="100">
+
+                <telerikPrimitives:RadContextMenu.ContextMenu>
           <local:ThreadContextMenu JumpToPageRequest="ThreadContextMenu_JumpToPageRequest"/>
         </telerikPrimitives:RadContextMenu.ContextMenu>
         
@@ -85,7 +86,6 @@
                     Margin="0">
           <TextBlock x:Name="TitleText"
                      Text="{Binding Title, Converter={StaticResource contentFilter}}"
-                     Opacity="{Binding ItemOpacity}"
                      TextWrapping="Wrap"
                      Style="{StaticResource PhoneTextTitle3Style}"
                      FontFamily="Segoe WP Semibold"
@@ -126,17 +126,33 @@
         <telerikPrimitives:RadDataBoundListBox x:Name="ThreadListBox"
                                                telerikCore:InteractionEffectManager.IsInteractionEnabled="true"
                                                ItemsSource="{Binding Items}"
+                                               ListHeaderContent="{Binding LastUpdated}"
                                                ItemTemplate="{StaticResource ThreadListItemWithIconTemplate}"
                                                ItemTap="ThreadListBox_ItemTap"
                                                DataVirtualizationMode="Automatic"
                                                RefreshRequested="ThreadListBox_RefreshRequested"
                                                IsPullToRefreshEnabled="True"
                                                EmptyContent="{Binding Status}"
-                                               DataRequested="ThreadListBox_DataRequested" 
+                                               DataRequested="ThreadListBox_DataRequested"
                                                EmptyContentDisplayMode="Always"
-                                               EmptyContentTemplate="{StaticResource EmptyListContentTemplate}" />
+                                               EmptyContentTemplate="{StaticResource EmptyListContentTemplate}">
+            <telerikPrimitives:RadDataBoundListBox.ListHeaderTemplate>
+                <DataTemplate>
+                    <Border Background="{StaticResource PhoneAccentBrush}"
+                            HorizontalAlignment="Stretch"
+                            Margin="0,0,0,12"
+                            IsHitTestVisible="False">
+                        <TextBlock Text="{Binding}"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Bottom"
+                                   Margin="12,6"
+                                   FontSize="{StaticResource PhoneFontSizeMedium}" />
+                    </Border>
+                </DataTemplate>
+            </telerikPrimitives:RadDataBoundListBox.ListHeaderTemplate>
+        </telerikPrimitives:RadDataBoundListBox>
 
-    <telerikPrimitives:RadModalWindow x:Name="ModalWindow"
+            <telerikPrimitives:RadModalWindow x:Name="ModalWindow"
                                       PlacementTarget="{Binding ElementName=LayoutRoot}"
                                       Placement="CenterCenter">
       <local:ThreadNavControl x:Name="ThreadNav"

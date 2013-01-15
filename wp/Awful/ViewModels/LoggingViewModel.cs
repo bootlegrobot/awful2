@@ -65,6 +65,11 @@ namespace Awful.ViewModels
             }
             set { SetProperty(ref _item, value, "SelectedItem"); }
         }
+
+        protected override void OnSuccess()
+        {
+           
+        }
     }
 
     public sealed class LoggingItem1 : Common.BindableBase

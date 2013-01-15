@@ -11,6 +11,14 @@ namespace Awful.Common
     [CollectionDataContract]
     public abstract class ObservableSet<T> : ObservableCollection<T>, IEqualityComparer<T>
     {
+        private DateTime? _lastUpdated = null;
+        [DataMember]
+        public DateTime? LastUpdated
+        {
+            get { return _lastUpdated; }
+            set { _lastUpdated = value; }
+        }
+
         public ObservableSet()
             : base()
         {

@@ -78,6 +78,9 @@ namespace Awful.ViewModels
             {
                 UpdateStatus("Formatting...");
                 threads = Data.ForumThreadCollection.CreateThreadSources(forumPageData, forum);
+
+                if (this._threads is Data.ForumThreadCollection)
+                    (this._threads as Data.ForumThreadCollection).LastUpdated = DateTime.Now;
             }
             return threads;
         }
@@ -98,6 +101,14 @@ namespace Awful.ViewModels
         protected override void OnCancel()
         {
             throw new NotImplementedException();
+        }
+
+        protected override void OnSuccess()
+        {
+           if (this._threads is Data.ForumThreadCollection)
+           {
+               this.UpdateLastUpdated((this._threads as Data.ForumThreadCollection).LastUpdated);
+           }
         }
     }
 }

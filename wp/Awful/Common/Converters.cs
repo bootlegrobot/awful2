@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -58,8 +59,17 @@ namespace Awful.Common
         {
             double factor = 0.0;
 
-            if (parameter == null || !double.TryParse(parameter as string, out factor))
+            if (parameter == null || !double.TryParse(parameter as string,
+                System.Globalization.NumberStyles.Float | System.Globalization.NumberStyles.AllowThousands,
+                CultureInfo.InvariantCulture, out factor))
                 factor = 1.0;
+
+            // in case the value passed in is a double, but outside the range of allowed values
+            else 
+            { 
+                factor = Math.Min(1.0, factor);
+                factor = Math.Max(0.0, factor);
+            }
 
             if (value is SolidColorBrush)
             {

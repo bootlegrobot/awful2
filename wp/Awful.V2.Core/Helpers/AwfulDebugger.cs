@@ -14,8 +14,8 @@ namespace Awful
     {
         public enum Level
         {
-            Info = 0,
-            Critical,
+            Critical = -1,
+            Info,
             Debug
         };
 

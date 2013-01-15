@@ -178,7 +178,7 @@ namespace Awful.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 0.7.
+        ///   Looks up a localized string similar to 0.2.
         /// </summary>
         internal static string THREAD_VIEWED_ITEM_OPACITY {
             get {

@@ -169,7 +169,7 @@
     <comment>The default opacity for thread list items on screen.</comment>
   </data>
   <data name="THREAD_VIEWED_ITEM_OPACITY" xml:space="preserve">
-    <value>0.7</value>
+    <value>0.2</value>
     <comment>The opacity of thread list items that have been recently visited by the user. The items return back to the default when the application is restarted.</comment>
   </data>
   <data name="THREAD_VIEWER_FILENAME" xml:space="preserve">

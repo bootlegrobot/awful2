@@ -40,6 +40,18 @@ namespace Awful.ViewModels
 
         #region properties
 
+        private DateTime? _lastUpdated;
+        public string LastUpdated
+        {
+            get
+            {
+                return string.Format("Last Updated: {0}",
+                    _lastUpdated.HasValue ?
+                    _lastUpdated.Value.ToString("MM/dd/yyyy") + " " + _lastUpdated.Value.ToShortTimeString() :
+                    "never");
+            }
+        }
+
         protected ListItemsDelegate<T> ProcessItems
         {
             get;
@@ -119,16 +131,24 @@ namespace Awful.ViewModels
             {
                 IEnumerable<T> items = e.Result as IEnumerable<T>;
                 ProcessItems(items);
+                OnSuccess();
             }
         }
 
         protected abstract void OnError(Exception exception);
         protected abstract void OnCancel();
-
+        protected abstract void OnSuccess();
+        
         protected void UpdateStatus(string message)
         {
             try { Worker.ReportProgress(-1, message); }
             catch (InvalidOperationException) { }
+        }
+
+        protected void UpdateLastUpdated(DateTime? date)
+        {
+            this._lastUpdated = date;
+            OnPropertyChanged("LastUpdated");
         }
 
         private void OnProgressChanged(object sender, ProgressChangedEventArgs e)

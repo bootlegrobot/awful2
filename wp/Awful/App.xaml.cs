@@ -135,6 +135,8 @@ namespace Awful
             string message = e.ExceptionObject.Message == null ? string.Empty : e.ExceptionObject.Message;
             AwfulDebugger.AddLog(sender, AwfulDebugger.Level.Critical, e.ExceptionObject);
 
+            MessageBox.Show(e.ExceptionObject.StackTrace, e.ExceptionObject.Message, MessageBoxButton.OK);
+
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     MessageBox.Show(stackTrace, message, MessageBoxButton.OK);

@@ -181,6 +181,7 @@ namespace Awful.ViewModels
             {
                 result = forums.Select(forum => new Data.ForumDataSource(forum));
                 AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Forum body request complete!");
+                _source.Forums.LastUpdated = DateTime.Now;
             }
             return result;
         }
@@ -209,6 +210,11 @@ namespace Awful.ViewModels
         protected override void OnCancel()
         {
             throw new NotImplementedException();
+        }
+
+        protected override void OnSuccess()
+        {
+            this.UpdateLastUpdated(_source.LastUpdated);
         }
     }
 
@@ -272,6 +278,11 @@ namespace Awful.ViewModels
         {
             throw new NotImplementedException();
         }
+
+        protected override void OnSuccess()
+        {
+           // do nothing
+        }
     }
 
     public class BookmarkSectionViewModel : ListViewModel<Data.ThreadDataSource>, IDataLoadable
@@ -283,6 +294,7 @@ namespace Awful.ViewModels
         { 
             _source = source;
             UpdateStatus(EMPTY_STATUS);
+            UpdateLastUpdated(source.LastUpdated);
         }
 
         protected override IEnumerable<Data.ThreadDataSource> LoadDataInBackground()
@@ -303,6 +315,9 @@ namespace Awful.ViewModels
             UpdateStatus("Formatting...");
             var result = Data.ForumThreadCollection.CreateThreadSources(bookmarks, data);
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Format complete.");
+
+            this._source.Bookmarks.LastUpdated = DateTime.Now;
+
             return result;
         }
 
@@ -317,6 +332,11 @@ namespace Awful.ViewModels
         protected override void OnCancel()
         {
             throw new NotImplementedException();
+        }
+
+        protected override void OnSuccess()
+        {
+            UpdateLastUpdated(this._source.Bookmarks.LastUpdated);
         }
     }
 }
