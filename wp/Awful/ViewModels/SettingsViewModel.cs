@@ -18,6 +18,33 @@ namespace Awful.ViewModels
             appModel = App.Model;
         }
 
+        public List<AppDataModel.HomePageSection> HomePages
+        {
+            get
+            {
+                var list = new List<AppDataModel.HomePageSection>()
+                {
+                    AppDataModel.HomePageSection.Forums,
+                    AppDataModel.HomePageSection.Pins,
+                    AppDataModel.HomePageSection.Bookmarks
+                };
+
+                return list;
+            }
+        }
+
+        public AppDataModel.HomePageSection SelectedHomePage
+        {
+            get { return appModel.DefaultHomePage; }
+            set { appModel.DefaultHomePage = value; OnPropertyChanged("SelectedHomePage"); }
+        }
+
+        public bool RefreshBookmarks
+        {
+            get { return appModel.AutoRefreshBookmarks; }
+            set { appModel.AutoRefreshBookmarks = value; OnPropertyChanged("RefreshBookmarks"); }
+        }
+
         public List<AwfulDebugger.Level> DebugItems
         {
             get

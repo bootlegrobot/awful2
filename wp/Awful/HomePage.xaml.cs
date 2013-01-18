@@ -50,12 +50,17 @@ namespace Awful
 
         private void LoadContentInitial(object sender, RoutedEventArgs e)
         {
-            /*
-            //When we initially load the panorama, get items to put into the data source.
-            var item = Datasource.Items[0];
-            if (!item.IsDataLoaded)
-                item.LoadData();
-            */
+            SelectDefaultSection(sender as Pivot);
+        }
+
+        private void SelectDefaultSection(Pivot pivot)
+        {
+            AppDataModel model = App.Model;
+            if (model != null)
+            {
+                int defaultIndex = (int)model.DefaultHomePage;
+                pivot.SelectedIndex = defaultIndex;
+            }
         }
 
         private void NavigateToSettings(object sender, EventArgs e)

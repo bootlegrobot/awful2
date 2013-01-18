@@ -41,35 +41,43 @@
       <controls:PivotItem x:Name="SettingsPivot"
                           Header="settings"
                           DataContext="{StaticResource SettingsDataSource}">
+          
+        <controls:PivotItem.Resources>
+            <DataTemplate x:Key="SettingsListPickerItemTemplate">
+                <TextBlock Text="{Binding}" />
+             </DataTemplate>
+        </controls:PivotItem.Resources>
         
         <StackPanel Orientation="Vertical">
-          <telerikPrimitives:RadToggleSwitch x:Name="ContentFilterSwitch"
-                                             Header="Content Filter"
-                                             IsChecked="{Binding ContentFilterEnabled, Mode=TwoWay}"/>
+          <telerikInput:RadListPicker x:Name="DefaultHomePagePicker"
+                                      Header="What section should appear on start?"
+                                      ItemsSource="{Binding HomePages}"
+                                      ItemTemplate="{StaticResource SettingsListPickerItemTemplate}"
+                                      SelectedItem="{Binding SelectedHomePage, Mode=TwoWay}"
+                                      SelectionMode="Single"/>
             
+         
                     <telerikInput:RadListPicker x:Name="DefaultThreadViewPicker"
-                                      Header="default thread view"
+                                      Header="What is the default view for threads?"
                                       ItemsSource="{Binding ViewModes}"
+                                                ItemTemplate="{StaticResource SettingsListPickerItemTemplate}"
                                       SelectedItem="{Binding SelectedViewMode, Mode=TwoWay}"
-                                      SelectionMode="Single">
-                        
-                        <telerikInput:RadListPicker.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" />
-                            </DataTemplate>
-                        </telerikInput:RadListPicker.ItemTemplate>
-                    </telerikInput:RadListPicker>
+                                      SelectionMode="Single"/>
+                
+                    <telerikPrimitives:RadToggleSwitch x:Name="AutoRefreshBookmarksSwitch"
+                                                       Header="Refresh bookmarks automatically"
+                                                       IsChecked="{Binding RefreshBookmarks, Mode=TwoWay}" />
+
+                    <telerikPrimitives:RadToggleSwitch x:Name="ContentFilterSwitch"
+                                                       Header="Content filter"
+                                                       IsChecked="{Binding ContentFilterEnabled, Mode=TwoWay}" />
+
                     <telerikInput:RadListPicker x:Name="DebugLevelPicker"
-                                      Header="debug level"
+                                      Header="Select a debug level for logging:"
                                       ItemsSource="{Binding DebugItems}"
                                       SelectedItem="{Binding SelectedDebugLevel, Mode=TwoWay}"
-                                      SelectionMode="Single">
-            <telerikInput:RadListPicker.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Text="{Binding}" />
-              </DataTemplate>
-            </telerikInput:RadListPicker.ItemTemplate>
-          </telerikInput:RadListPicker>
+                                                ItemTemplate="{StaticResource SettingsListPickerItemTemplate}"
+                                      SelectionMode="Single"/>
         </StackPanel>
       </controls:PivotItem>
 

@@ -72,7 +72,7 @@ namespace Awful.ViewModels
 
         public bool IsDataLoaded
         {
-            get { return !this.Items.IsNullOrEmpty(); }
+            get { return OnIsDataLoaded(); }
         }
 
         private bool _isRunning;
@@ -133,6 +133,11 @@ namespace Awful.ViewModels
                 ProcessItems(items);
                 OnSuccess();
             }
+        }
+
+        protected virtual bool OnIsDataLoaded()
+        {
+            return !Items.IsNullOrEmpty();
         }
 
         protected abstract void OnError(Exception exception);

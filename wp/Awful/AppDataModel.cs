@@ -105,6 +105,40 @@ namespace Awful
             AwfulDebugger.DebugLevel = this.DebugLevel;
             ContentFilter.IsContentFilterEnabled = this.IsContentFilterEnabled;
             ThemeManager.Instance.SetCurrentTheme(this.CurrentTheme);
+            MainDataSource.Instance.AutoRefreshBookmarks = this.AutoRefreshBookmarks;
+        }
+
+        public enum HomePageSection
+        {
+            Forums = 0,
+            Pins,
+            Bookmarks
+        };
+
+        private const int HOMEPAGESECTION_DEFAULT = 0;
+        public const string HOMEPAGESECTION_KEY = "DefaultHomePage";
+        public HomePageSection DefaultHomePage
+        {
+            get
+            {
+                int value = GetValueOrDefault<int>(HOMEPAGESECTION_KEY, HOMEPAGESECTION_DEFAULT);
+                return (HomePageSection)value;
+            }
+
+            set
+            {
+                int key = (int)value;
+                AddOrUpdateValue(HOMEPAGESECTION_KEY, key);
+                NotifyPropertyChanged("DefaultHomePage");
+            }
+        }
+
+        private const bool AUTOREFRESH_BOOKMARKS_DEFAULT = false;
+        public const string AUTOREFRESH_BOOKMARKS_KEY = "AutoRefreshBookmarks";
+        public bool AutoRefreshBookmarks
+        {
+            get { return GetValueOrDefault<bool>(AUTOREFRESH_BOOKMARKS_KEY, AUTOREFRESH_BOOKMARKS_DEFAULT); }
+            set { AddOrUpdateValue(AUTOREFRESH_BOOKMARKS_KEY, value); NotifyPropertyChanged("AutoRefreshBookmarks"); }
         }
 
         public enum ThreadViewMode

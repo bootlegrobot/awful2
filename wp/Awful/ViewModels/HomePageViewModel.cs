@@ -306,6 +306,13 @@ namespace Awful.ViewModels
             return threads;
         }
 
+        protected override bool OnIsDataLoaded()
+        {
+            bool ready = base.OnIsDataLoaded();
+            ready = ready && !this._source.AutoRefreshBookmarks;
+            return ready;
+        }
+
         private IEnumerable<Data.ThreadDataSource> Refresh(UserMetadata user)
         {
             UpdateStatus("Loading bookmarks...");
@@ -337,6 +344,7 @@ namespace Awful.ViewModels
 
         protected override void OnSuccess()
         {
+            this._source.AutoRefreshBookmarks = false;
             UpdateLastUpdated(this._source.Bookmarks.LastUpdated);
         }
     }

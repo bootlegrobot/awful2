@@ -168,7 +168,7 @@ namespace Awful.Common
             return oldItem != null;
         }
 
-        protected void AddOrUpdate(T newItem)
+        private void AddOrUpdate(T newItem)
         {
             if (!ReplaceItem(newItem))
                 base.Add(newItem);

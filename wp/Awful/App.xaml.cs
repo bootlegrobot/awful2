@@ -16,11 +16,6 @@ using System.Text;
 using System.Threading;
 using Telerik.Windows.Controls;
 
-#if DEBUG
-
-using IsolatedStorageExplorer;
-
-#endif
 
 namespace Awful
 {

@@ -66,6 +66,9 @@ namespace Awful.Data
 
         #region properties
 
+        [IgnoreDataMember]
+        public bool AutoRefreshBookmarks { get; set; }
+
         [DataMember]
         public DateTime? LastUpdated { get; set; }
 
