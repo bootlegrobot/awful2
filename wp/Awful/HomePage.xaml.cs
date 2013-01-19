@@ -43,14 +43,15 @@ namespace Awful
 
             // if we got here from the login page...
             if (e.IsNavigationInitiator && e.NavigationMode == System.Windows.Navigation.NavigationMode.New)
-            {
                 NavigationService.RemoveBackEntry();
-            }
+
+            if (e.NavigationMode != System.Windows.Navigation.NavigationMode.Back)
+                SelectDefaultSection(this.MainContent);
         }
 
         private void LoadContentInitial(object sender, RoutedEventArgs e)
         {
-            SelectDefaultSection(sender as Pivot);
+            
         }
 
         private void SelectDefaultSection(Pivot pivot)

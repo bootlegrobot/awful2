@@ -111,8 +111,8 @@ namespace Awful
         public enum HomePageSection
         {
             Forums = 0,
-            Pins,
-            Bookmarks
+            Bookmarks,
+            Pins
         };
 
         private const int HOMEPAGESECTION_DEFAULT = 0;

@@ -146,14 +146,20 @@ namespace Awful.ViewModels
         
         protected void UpdateStatus(string message)
         {
-            try { Worker.ReportProgress(-1, message); }
+            try 
+            {
+                if (this.Worker.IsBusy)
+                    Worker.ReportProgress(-1, message);
+                else
+                    this.Status = message;
+            }
             catch (InvalidOperationException) { }
         }
 
         protected void UpdateLastUpdated(DateTime? date)
         {
             this._lastUpdated = date;
-            OnPropertyChanged("LastUpdated");
+            UpdateStatus(LastUpdated);
         }
 
         private void OnProgressChanged(object sender, ProgressChangedEventArgs e)

@@ -126,7 +126,7 @@
         <telerikPrimitives:RadDataBoundListBox x:Name="ThreadListBox"
                                                telerikCore:InteractionEffectManager.IsInteractionEnabled="true"
                                                ItemsSource="{Binding Items}"
-                                               ListHeaderContent="{Binding LastUpdated}"
+                                               ListHeaderContent="{Binding Status}"
                                                ItemTemplate="{StaticResource ThreadListItemWithIconTemplate}"
                                                ItemTap="ThreadListBox_ItemTap"
                                                DataVirtualizationMode="Automatic"
