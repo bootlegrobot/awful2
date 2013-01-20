@@ -155,24 +155,19 @@
     <Compile Include="Controls\ThreadRatingControl.xaml.cs">
       <DependentUpon>ThreadRatingControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ThreadReplyControl.xaml.cs">
-      <DependentUpon>ThreadReplyControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\VariableTemplateControl.cs" />
-    <Compile Include="DataSource\CodeTagDataModel.cs" />
     <Compile Include="DataSource\MainDataSource.cs" />
     <Compile Include="Helpers\ForumItemTemplateSelector.cs" />
     <Compile Include="Helpers\OddEvenTemplateSelector.cs" />
     <Compile Include="Helpers\PinnedItemsManager.cs" />
     <Compile Include="Common\ThemeManager.cs" />
     <Compile Include="Helpers\ThreadIconViewer.cs" />
-    <Compile Include="View\HomePage.xaml.cs">
+    <Compile Include="HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\LoginPage.xaml.cs">
+    <Compile Include="LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\PrivateMessageViewPage.xaml.cs">
+    <Compile Include="PrivateMessageViewPage.xaml.cs">
       <DependentUpon>PrivateMessageViewPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="SampleData\SampleForumCollection\SampleForumCollection.xaml.cs">
@@ -181,7 +176,7 @@
     <Compile Include="SampleData\SampleForumSource\SampleForumSource.xaml.cs">
       <DependentUpon>SampleForumSource.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\SettingsPage.xaml.cs">
+    <Compile Include="SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\AboutViewModel.cs" />
@@ -192,12 +187,12 @@
     <Compile Include="ViewModels\LoggingViewModel.cs" />
     <Compile Include="ViewModels\LoginPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
-    <Compile Include="View\ForumViewPage.xaml.cs">
+    <Compile Include="ForumViewPage.xaml.cs">
       <DependentUpon>ForumViewPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ThreadPageManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="View\ThreadViewPage.xaml.cs">
+    <Compile Include="ThreadViewPage.xaml.cs">
       <DependentUpon>ThreadViewPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\RatingViewModel.cs" />
@@ -233,23 +228,19 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\ThreadReplyControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\ForumViewPage.xaml">
+    <Page Include="ForumViewPage.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\HomePage.xaml">
+    <Page Include="HomePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\LoginPage.xaml">
+    <Page Include="LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\PrivateMessageViewPage.xaml">
+    <Page Include="PrivateMessageViewPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -261,7 +252,7 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\SettingsPage.xaml">
+    <Page Include="SettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -273,7 +264,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\ThreadViewPage.xaml">
+    <Page Include="ThreadViewPage.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
     </Page>
