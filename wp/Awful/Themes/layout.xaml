@@ -3,6 +3,7 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:common="clr-namespace:Awful.Common"
+                    xmlns:data="clr-namespace:Awful.Data"
                     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                     xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -20,6 +21,10 @@
                    Color="#FFFFDD15" />
   <SolidColorBrush x:Key="ThreadRating5Brush"
                    Color="gold" />
+    
+  <!-- Code Tags -->
+   
+  
 
   <common:ThemeManager x:Key="AwfulThemeManager">
     
