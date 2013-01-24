@@ -1,0 +1,73 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
+             mc:Ignorable="d"
+             x:Class="Awful.Controls.ThreadNavControl"
+             d:DesignWidth="480"
+             d:DesignHeight="800"
+             MinWidth="480">
+
+  <Grid VerticalAlignment="Top">
+    <Border x:Name="InvisibleBorder"
+            BorderThickness="12"
+            BorderBrush="{StaticResource TransparentBrush}">
+
+      <Border BorderThickness="1"
+              BorderBrush="{StaticResource PhoneBorderBrush}"
+              Background="{StaticResource PhoneChromeBrush}"
+              Margin="16">
+
+        <StackPanel x:Name="LayoutRoot"
+                    Background="Transparent">
+          <Button x:Name="FirstButton"
+                  Content="First Page"
+                  Command="{Binding FirstPageCommand}" />
+          <Button x:Name="LastButton"
+                  Content="Last Page"
+                  Command="{Binding LastPageCommand}" />
+          <Border x:Name="CustomPageBorder"
+                  BorderThickness="4"
+                  BorderBrush="{StaticResource PhoneForegroundBrush}"
+                  Margin="12,0,12,12">
+            <StackPanel x:Name="CustomPageGrid">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <telerikPrimitives:RadTextBox x:Name="CustomPageInput"
+                                              InputScope="Number"
+                                              TextChanged="UpdateCustomPageButtonLabel" />
+
+                <TextBlock Grid.Column="1"
+                           Text="/"
+                           TextAlignment="Center"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Style="{StaticResource PhoneTextTitle3Style}"/>
+
+                <TextBlock x:Name="MaxPageCountLabel"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Grid.Column="2"
+                           Text="{Binding ThreadSource.PageCount}"
+                           FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+
+              </Grid>
+             
+              <Button x:Name="CustomPageButton"
+                      Loaded="InitializeCustomPageButtonLabel"
+                      Command="{Binding CustomPageCommand}"
+                      CommandParameter="{Binding Text, ElementName=CustomPageInput}" />
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </Border>
+    </Border>
+  </Grid>
+</UserControl>

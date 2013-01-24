@@ -1,0 +1,921 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{13F62146-607F-4F0D-B2F0-328B9383FBCD}</ProjectGuid>
+    <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Awful</RootNamespace>
+    <AssemblyName>Awful.WP7</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <TargetFrameworkProfile>WindowsPhone71</TargetFrameworkProfile>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <SilverlightApplication>true</SilverlightApplication>
+    <SupportedCultures>
+    </SupportedCultures>
+    <XapOutputs>true</XapOutputs>
+    <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
+    <XapFilename>Awful.WP7.xap</XapFilename>
+    <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
+    <SilverlightAppEntry>Awful.WP7.App</SilverlightAppEntry>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Coding4Fun.Phone.Audio">
+      <HintPath>..\packages\Coding4Fun.Phone.Audio.1.6.1\lib\sl4-windowsphone71\Coding4Fun.Phone.Audio.dll</HintPath>
+    </Reference>
+    <Reference Include="Coding4Fun.Phone.Controls">
+      <HintPath>..\packages\Coding4Fun.Phone.Controls.1.6.1\lib\sl4-windowsphone71\Coding4Fun.Phone.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Coding4Fun.Phone.Controls.Toolkit, Version=1.6.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Coding4Fun.Phone.Controls.TimeSpan.1.6.1\lib\sl4-windowsphone71\Coding4Fun.Phone.Controls.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Coding4Fun.Phone.Net">
+      <HintPath>..\packages\Coding4Fun.Phone.Net.1.6.1\lib\sl4-windowsphone71\Coding4Fun.Phone.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Coding4Fun.Phone.Storage">
+      <HintPath>..\packages\Coding4Fun.Phone.Storage.1.6.1\lib\sl4-windowsphone71\Coding4Fun.Phone.Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="ImageTools">
+      <HintPath>..\..\..\lib\ImageTools.dll</HintPath>
+    </Reference>
+    <Reference Include="ImageTools.Controls">
+      <HintPath>..\..\..\lib\ImageTools.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="ImageTools.IO.Gif">
+      <HintPath>..\..\..\lib\ImageTools.IO.Gif.dll</HintPath>
+    </Reference>
+    <Reference Include="KollaSoft.WP7">
+      <HintPath>..\..\..\lib\KollaSoft.WP7.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Phone" />
+    <Reference Include="Microsoft.Phone.Controls, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Phone.Controls.Toolkit, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b772ad94eb9ca604, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SilverlightToolkitWP.4.2012.10.9\lib\sl4-windowsphone71\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Phone.Interop" />
+    <Reference Include="Microsoft.Xna.Framework" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Xml" />
+    <Reference Include="mscorlib.extensions" />
+    <Reference Include="Telerik.Windows.BackgroundAgentTools">
+      <HintPath>..\..\..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q3 2012\Binaries\WindowsPhone\Telerik.Windows.BackgroundAgentTools.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Behaviors">
+      <HintPath>..\..\..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q3 2012\Binaries\WindowsPhone\Telerik.Windows.Behaviors.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Chart">
+      <HintPath>..\..\..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q3 2012\Binaries\WindowsPhone\Telerik.Windows.Controls.Chart.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Data">
+      <HintPath>..\..\..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q3 2012\Binaries\WindowsPhone\Telerik.Windows.Controls.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.DataVisualization">
+      <HintPath>..\..\..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q3 2012\Binaries\WindowsPhone\Telerik.Windows.Controls.DataVisualization.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Input">
+      <HintPath>..\..\..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q3 2012\Binaries\WindowsPhone\Telerik.Windows.Controls.Input.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Primitives">
+      <HintPath>..\..\..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q3 2012\Binaries\WindowsPhone\Telerik.Windows.Controls.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Core">
+      <HintPath>..\..\..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q3 2012\Binaries\WindowsPhone\Telerik.Windows.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Data">
+      <HintPath>..\..\..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q3 2012\Binaries\WindowsPhone\Telerik.Windows.Data.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AppDataModel.cs" />
+    <Compile Include="Commands\BackgroundWorkerCommand.cs" />
+    <Compile Include="Commands\LinkCommands.cs" />
+    <Compile Include="Commands\RateThisAppCommand.cs" />
+    <Compile Include="Commands\SendAnEmailCommand.cs" />
+    <Compile Include="Commands\ThreadCommands.cs" />
+    <Compile Include="Common\ActionCommand.cs" />
+    <Compile Include="Common\Constants.Designer.cs" />
+    <Compile Include="Common\Converters.cs" />
+    <Compile Include="Common\EventArgs.cs" />
+    <Compile Include="Common\Group.cs" />
+    <Compile Include="Common\ILastUpdated.cs" />
+    <Compile Include="Common\NotificationMethod.cs" />
+    <Compile Include="Common\ObservableSet.cs" />
+    <Compile Include="Common\RadContextMenuProvider.cs" />
+    <Compile Include="Common\SettingsBase.cs" />
+    <Compile Include="Common\ThemeManager.cs" />
+    <Compile Include="Controls\ContextMenus.cs" />
+    <Compile Include="Controls\ForumItemControl.cs" />
+    <Compile Include="Controls\ForumListControl.xaml.cs">
+      <DependentUpon>ForumListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LoadMoreControl.cs" />
+    <Compile Include="Controls\RatingIcon.cs" />
+    <Compile Include="Controls\ThreadListControl.xaml.cs">
+      <DependentUpon>ThreadListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ThreadNavControl.xaml.cs">
+      <DependentUpon>ThreadNavControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ThreadPagePresenter.xaml.cs">
+      <DependentUpon>ThreadPagePresenter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ThreadRatingControl.xaml.cs">
+      <DependentUpon>ThreadRatingControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ThreadReplyControl.xaml.cs">
+      <DependentUpon>ThreadReplyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VariableTemplateControl.cs" />
+    <Compile Include="DataSource\CodeTagDataModel.cs" />
+    <Compile Include="DataSource\MainDataSource.cs" />
+    <Compile Include="DataSource\SampleDataSource.cs" />
+    <Compile Include="ForumViewPage.xaml.cs">
+      <DependentUpon>ForumViewPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\ForumItemTemplateSelector.cs" />
+    <Compile Include="Helpers\OddEvenTemplateSelector.cs" />
+    <Compile Include="Helpers\PinnedItemsManager.cs" />
+    <Compile Include="Helpers\ThreadIconViewer.cs" />
+    <Compile Include="Helpers\ThreadPageManager.cs" />
+    <Compile Include="HomePage.xaml.cs">
+      <DependentUpon>HomePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LoginPage.xaml.cs">
+      <DependentUpon>LoginPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PrivateMessageViewPage.xaml.cs">
+      <DependentUpon>PrivateMessageViewPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ThreadViewPage.xaml.cs">
+      <DependentUpon>ThreadViewPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\AboutViewModel.cs" />
+    <Compile Include="ViewModels\CommonViewModels.cs" />
+    <Compile Include="ViewModels\ForumPageViewModel.cs" />
+    <Compile Include="ViewModels\HomePageViewModel.cs" />
+    <Compile Include="ViewModels\LoggingViewModel.cs" />
+    <Compile Include="ViewModels\LoginPageViewModel.cs" />
+    <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <Compile Include="ViewModels\RatingViewModel.cs" />
+    <Compile Include="ViewModels\ReplyViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\SmileyListViewModel.cs" />
+    <Compile Include="ViewModels\ThreadViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+    <Page Include="Common\CommonStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ForumListControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ThreadListControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ThreadNavControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ThreadPagePresenter.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ThreadRatingControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ThreadReplyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ForumViewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="HomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="LoginPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PrivateMessageViewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\layout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ThreadViewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\ThreadIcons\README.md" />
+    <None Include="Awful.WP7.App_2013_01_21_22_27_23.sap" />
+    <None Include="packages.config" />
+    <None Include="Properties\AppManifest.xml" />
+    <None Include="Properties\WMAppManifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ApplicationIcon.png" />
+    <Content Include="Assets\AppBar\appbar.add.rest.png" />
+    <Content Include="Assets\AppBar\appbar.back.rest.png" />
+    <Content Include="Assets\AppBar\appbar.favs.rest.png" />
+    <Content Include="Assets\AppBar\appbar.goto.rest.png" />
+    <Content Include="Assets\AppBar\appbar.minus.rest.png" />
+    <Content Include="Assets\AppBar\appbar.next.rest.png" />
+    <Content Include="Assets\AppBar\appbar.refresh.rest.png" />
+    <Content Include="Assets\AppBar\appbar.save.rest.png" />
+    <Content Include="Assets\AppBar\appbar.transport.ff.rest.png" />
+    <Content Include="Assets\AppBar\appbar.transport.rew.rest.png" />
+    <Content Include="Assets\AppBar\BookmarkIcon.png" />
+    <Content Include="Assets\ForumIcons\1.png" />
+    <Content Include="Assets\ForumIcons\122.png" />
+    <Content Include="Assets\ForumIcons\124.png" />
+    <Content Include="Assets\ForumIcons\130.png" />
+    <Content Include="Assets\ForumIcons\132.png" />
+    <Content Include="Assets\ForumIcons\144.png" />
+    <Content Include="Assets\ForumIcons\150.png" />
+    <Content Include="Assets\ForumIcons\151.png" />
+    <Content Include="Assets\ForumIcons\158.png" />
+    <Content Include="Assets\ForumIcons\161.png" />
+    <Content Include="Assets\ForumIcons\167.png" />
+    <Content Include="Assets\ForumIcons\179.png" />
+    <Content Include="Assets\ForumIcons\182.png" />
+    <Content Include="Assets\ForumIcons\188.png" />
+    <Content Include="Assets\ForumIcons\192.png" />
+    <Content Include="Assets\ForumIcons\204.png" />
+    <Content Include="Assets\ForumIcons\21.png" />
+    <Content Include="Assets\ForumIcons\215.png" />
+    <Content Include="Assets\ForumIcons\218.png" />
+    <Content Include="Assets\ForumIcons\22.png" />
+    <Content Include="Assets\ForumIcons\241.png" />
+    <Content Include="Assets\ForumIcons\25.png" />
+    <Content Include="Assets\ForumIcons\255.png" />
+    <Content Include="Assets\ForumIcons\26.png" />
+    <Content Include="Assets\ForumIcons\27.png" />
+    <Content Include="Assets\ForumIcons\31.png" />
+    <Content Include="Assets\ForumIcons\43.png" />
+    <Content Include="Assets\ForumIcons\44.png" />
+    <Content Include="Assets\ForumIcons\46.png" />
+    <Content Include="Assets\ForumIcons\61.png" />
+    <Content Include="Assets\ForumIcons\90.png" />
+    <Content Include="Assets\ForumIcons\91.png" />
+    <Content Include="Assets\ForumIcons\banner_1.png" />
+    <Content Include="Assets\ForumIcons\banner_122.png" />
+    <Content Include="Assets\ForumIcons\banner_124.png" />
+    <Content Include="Assets\ForumIcons\banner_130.png" />
+    <Content Include="Assets\ForumIcons\banner_132.png" />
+    <Content Include="Assets\ForumIcons\banner_144.png" />
+    <Content Include="Assets\ForumIcons\banner_150.png" />
+    <Content Include="Assets\ForumIcons\banner_151.png" />
+    <Content Include="Assets\ForumIcons\banner_158.png" />
+    <Content Include="Assets\ForumIcons\banner_161.png" />
+    <Content Include="Assets\ForumIcons\banner_167.png" />
+    <Content Include="Assets\ForumIcons\banner_179.png" />
+    <Content Include="Assets\ForumIcons\banner_182.png" />
+    <Content Include="Assets\ForumIcons\banner_188.png" />
+    <Content Include="Assets\ForumIcons\banner_192.png" />
+    <Content Include="Assets\ForumIcons\banner_204.png" />
+    <Content Include="Assets\ForumIcons\banner_21.png" />
+    <Content Include="Assets\ForumIcons\banner_215.png" />
+    <Content Include="Assets\ForumIcons\banner_218.png" />
+    <Content Include="Assets\ForumIcons\banner_22.png" />
+    <Content Include="Assets\ForumIcons\banner_241.png" />
+    <Content Include="Assets\ForumIcons\banner_25.png" />
+    <Content Include="Assets\ForumIcons\banner_255.png" />
+    <Content Include="Assets\ForumIcons\banner_26.png" />
+    <Content Include="Assets\ForumIcons\banner_27.png" />
+    <Content Include="Assets\ForumIcons\banner_31.png" />
+    <Content Include="Assets\ForumIcons\banner_43.png" />
+    <Content Include="Assets\ForumIcons\banner_44.png" />
+    <Content Include="Assets\ForumIcons\banner_46.png" />
+    <Content Include="Assets\ForumIcons\banner_61.png" />
+    <Content Include="Assets\ForumIcons\banner_90.png" />
+    <Content Include="Assets\ForumIcons\banner_91.png" />
+    <Content Include="Assets\LoadMore.png" />
+    <Content Include="Assets\ThreadIcons\adtrw-hokutonoken.png" />
+    <Content Include="Assets\ThreadIcons\ai-cycles.png" />
+    <Content Include="Assets\ThreadIcons\ai-mods.png" />
+    <Content Include="Assets\ThreadIcons\AICA-TAG-60s.png" />
+    <Content Include="Assets\ThreadIcons\AICA-TAG-70s.png" />
+    <Content Include="Assets\ThreadIcons\AICA-TAG-80s.png" />
+    <Content Include="Assets\ThreadIcons\AICA-TAG-classic.png" />
+    <Content Include="Assets\ThreadIcons\AICA-TAG-newride.png" />
+    <Content Include="Assets\ThreadIcons\AICA-TAG-race.png" />
+    <Content Include="Assets\ThreadIcons\AICA-TAG-trip.png" />
+    <Content Include="Assets\ThreadIcons\ama.png" />
+    <Content Include="Assets\ThreadIcons\ap-1999.png" />
+    <Content Include="Assets\ThreadIcons\art.png" />
+    <Content Include="Assets\ThreadIcons\asktell-jobs.png" />
+    <Content Include="Assets\ThreadIcons\asktell-lifestyle.png" />
+    <Content Include="Assets\ThreadIcons\asktell-travel.png" />
+    <Content Include="Assets\ThreadIcons\attention.png" />
+    <Content Include="Assets\ThreadIcons\audio.png" />
+    <Content Include="Assets\ThreadIcons\bb-author.png" />
+    <Content Include="Assets\ThreadIcons\bb-classics.png" />
+    <Content Include="Assets\ThreadIcons\bb-fantasy.png" />
+    <Content Include="Assets\ThreadIcons\bb-foreign.png" />
+    <Content Include="Assets\ThreadIcons\bb-nonfiction.png" />
+    <Content Include="Assets\ThreadIcons\books.png" />
+    <Content Include="Assets\ThreadIcons\bs-diablo.png" />
+    <Content Include="Assets\ThreadIcons\bs-starcraft.png" />
+    <Content Include="Assets\ThreadIcons\bss-con.png" />
+    <Content Include="Assets\ThreadIcons\bss-discussion.png" />
+    <Content Include="Assets\ThreadIcons\bss-fanboy.png" />
+    <Content Include="Assets\ThreadIcons\bss-indie.png" />
+    <Content Include="Assets\ThreadIcons\bss-manga.png" />
+    <Content Include="Assets\ThreadIcons\bss-new.png" />
+    <Content Include="Assets\ThreadIcons\bss-review.png" />
+    <Content Include="Assets\ThreadIcons\bss-shipping.png" />
+    <Content Include="Assets\ThreadIcons\bss-swag.png" />
+    <Content Include="Assets\ThreadIcons\bss-webcomic.png" />
+    <Content Include="Assets\ThreadIcons\byob-anti.png" />
+    <Content Include="Assets\ThreadIcons\byob-cheer.png" />
+    <Content Include="Assets\ThreadIcons\byob-chill.png" />
+    <Content Include="Assets\ThreadIcons\byob-dent.png" />
+    <Content Include="Assets\ThreadIcons\byob-dont.png" />
+    <Content Include="Assets\ThreadIcons\byob-excuse.png" />
+    <Content Include="Assets\ThreadIcons\byob-explosion.png" />
+    <Content Include="Assets\ThreadIcons\byob-friends.png" />
+    <Content Include="Assets\ThreadIcons\byob-gents.png" />
+    <Content Include="Assets\ThreadIcons\byob-grouch.png" />
+    <Content Include="Assets\ThreadIcons\byob-salt.png" />
+    <Content Include="Assets\ThreadIcons\byob-secrets.png" />
+    <Content Include="Assets\ThreadIcons\byob-shocking.png" />
+    <Content Include="Assets\ThreadIcons\byob-slax.png" />
+    <Content Include="Assets\ThreadIcons\byob-slayer.png" />
+    <Content Include="Assets\ThreadIcons\byob-soulja.png" />
+    <Content Include="Assets\ThreadIcons\byob-treasure.png" />
+    <Content Include="Assets\ThreadIcons\byob.png" />
+    <Content Include="Assets\ThreadIcons\CA-TAG-CA-atb.png" />
+    <Content Include="Assets\ThreadIcons\CA-TAG-CA-dirtmoto.png" />
+    <Content Include="Assets\ThreadIcons\CA-TAG-CA-roadbike.png" />
+    <Content Include="Assets\ThreadIcons\CA-TAG-CA-streetmoto.png" />
+    <Content Include="Assets\ThreadIcons\cars.png" />
+    <Content Include="Assets\ThreadIcons\cc-critique.png" />
+    <Content Include="Assets\ThreadIcons\cc-daily.png" />
+    <Content Include="Assets\ThreadIcons\cc-design.png" />
+    <Content Include="Assets\ThreadIcons\cc-fiction.png" />
+    <Content Include="Assets\ThreadIcons\cc-film.png" />
+    <Content Include="Assets\ThreadIcons\cc-poetry.png" />
+    <Content Include="Assets\ThreadIcons\cc-project.png" />
+    <Content Include="Assets\ThreadIcons\cc-tutorial.png" />
+    <Content Include="Assets\ThreadIcons\cc-writing.png" />
+    <Content Include="Assets\ThreadIcons\cc_design.png" />
+    <Content Include="Assets\ThreadIcons\cd_action.png" />
+    <Content Include="Assets\ThreadIcons\cd_classic.png" />
+    <Content Include="Assets\ThreadIcons\cd_comedy.png" />
+    <Content Include="Assets\ThreadIcons\cd_director.png" />
+    <Content Include="Assets\ThreadIcons\cd_drama.png" />
+    <Content Include="Assets\ThreadIcons\cd_horror2.png" />
+    <Content Include="Assets\ThreadIcons\cd_hype.png" />
+    <Content Include="Assets\ThreadIcons\cd_scifi.png" />
+    <Content Include="Assets\ThreadIcons\cell-cdma.png" />
+    <Content Include="Assets\ThreadIcons\cell-gsm.png" />
+    <Content Include="Assets\ThreadIcons\coc-binbash.png" />
+    <Content Include="Assets\ThreadIcons\coc-c.png" />
+    <Content Include="Assets\ThreadIcons\coc-db.png" />
+    <Content Include="Assets\ThreadIcons\coc-java.png" />
+    <Content Include="Assets\ThreadIcons\coc-theory.png" />
+    <Content Include="Assets\ThreadIcons\coc-web.png" />
+    <Content Include="Assets\ThreadIcons\computers.png" />
+    <Content Include="Assets\ThreadIcons\coupon-coupon.png" />
+    <Content Include="Assets\ThreadIcons\coupon-free.png" />
+    <Content Include="Assets\ThreadIcons\coupon-instore.png" />
+    <Content Include="Assets\ThreadIcons\coupon-nonus.png" />
+    <Content Include="Assets\ThreadIcons\cps-android.png" />
+    <Content Include="Assets\ThreadIcons\dd-9-11.png" />
+    <Content Include="Assets\ThreadIcons\dd-africa.png" />
+    <Content Include="Assets\ThreadIcons\dd-asia.png" />
+    <Content Include="Assets\ThreadIcons\dd-dems.png" />
+    <Content Include="Assets\ThreadIcons\dd-economics.png" />
+    <Content Include="Assets\ThreadIcons\dd-environment.png" />
+    <Content Include="Assets\ThreadIcons\dd-europe.png" />
+    <Content Include="Assets\ThreadIcons\dd-fox.png" />
+    <Content Include="Assets\ThreadIcons\dd-GOP.png" />
+    <Content Include="Assets\ThreadIcons\dd-gotcha.png" />
+    <Content Include="Assets\ThreadIcons\dd-history.png" />
+    <Content Include="Assets\ThreadIcons\dd-law.png" />
+    <Content Include="Assets\ThreadIcons\dd-notracist.png" />
+    <Content Include="Assets\ThreadIcons\dd-offmeds.png" />
+    <Content Include="Assets\ThreadIcons\dd-philosophy.png" />
+    <Content Include="Assets\ThreadIcons\dd-religion.png" />
+    <Content Include="Assets\ThreadIcons\dd-war.png" />
+    <Content Include="Assets\ThreadIcons\default.png" />
+    <Content Include="Assets\ThreadIcons\diy-advice.png" />
+    <Content Include="Assets\ThreadIcons\diy-homeimprove.png" />
+    <Content Include="Assets\ThreadIcons\diy-robots.png" />
+    <Content Include="Assets\ThreadIcons\diy-step.png" />
+    <Content Include="Assets\ThreadIcons\diy-tips.png" />
+    <Content Include="Assets\ThreadIcons\diy-tools.png" />
+    <Content Include="Assets\ThreadIcons\diy-wood.png" />
+    <Content Include="Assets\ThreadIcons\Dorkroom-K-ROCK.png" />
+    <Content Include="Assets\ThreadIcons\Dorkroom-silkysmooth.png" />
+    <Content Include="Assets\ThreadIcons\drugs.png" />
+    <Content Include="Assets\ThreadIcons\en.png" />
+    <Content Include="Assets\ThreadIcons\event.png" />
+    <Content Include="Assets\ThreadIcons\flame.png" />
+    <Content Include="Assets\ThreadIcons\food.png" />
+    <Content Include="Assets\ThreadIcons\fruity.png" />
+    <Content Include="Assets\ThreadIcons\fyad-alas.png" />
+    <Content Include="Assets\ThreadIcons\fyad-archery.png" />
+    <Content Include="Assets\ThreadIcons\fyad-atheist.png" />
+    <Content Include="Assets\ThreadIcons\fyad-bapes.png" />
+    <Content Include="Assets\ThreadIcons\fyad-bats.png" />
+    <Content Include="Assets\ThreadIcons\fyad-blaagh.png" />
+    <Content Include="Assets\ThreadIcons\fyad-blades.png" />
+    <Content Include="Assets\ThreadIcons\fyad-blogs.png" />
+    <Content Include="Assets\ThreadIcons\fyad-burn.png" />
+    <Content Include="Assets\ThreadIcons\fyad-cats.png" />
+    <Content Include="Assets\ThreadIcons\fyad-champion.png" />
+    <Content Include="Assets\ThreadIcons\fyad-cockfights.png" />
+    <Content Include="Assets\ThreadIcons\fyad-dirigibles.png" />
+    <Content Include="Assets\ThreadIcons\fyad-dogfights.png" />
+    <Content Include="Assets\ThreadIcons\fyad-eggs.png" />
+    <Content Include="Assets\ThreadIcons\fyad-falconry.png" />
+    <Content Include="Assets\ThreadIcons\fyad-flannel.png" />
+    <Content Include="Assets\ThreadIcons\fyad-framed.png" />
+    <Content Include="Assets\ThreadIcons\fyad-ghostride.png" />
+    <Content Include="Assets\ThreadIcons\fyad-ghosts.png" />
+    <Content Include="Assets\ThreadIcons\fyad-hark.png" />
+    <Content Include="Assets\ThreadIcons\fyad-hogyanker.png" />
+    <Content Include="Assets\ThreadIcons\fyad-horses.png" />
+    <Content Include="Assets\ThreadIcons\fyad-hunting.png" />
+    <Content Include="Assets\ThreadIcons\fyad-imgay.png" />
+    <Content Include="Assets\ThreadIcons\fyad-lovecum.png" />
+    <Content Include="Assets\ThreadIcons\fyad-magician.png" />
+    <Content Include="Assets\ThreadIcons\fyad-menopause.png" />
+    <Content Include="Assets\ThreadIcons\fyad-moof.png" />
+    <Content Include="Assets\ThreadIcons\fyad-mystery.png" />
+    <Content Include="Assets\ThreadIcons\fyad-nilbog.png" />
+    <Content Include="Assets\ThreadIcons\fyad-otherforums.png" />
+    <Content Include="Assets\ThreadIcons\fyad-parroty.png" />
+    <Content Include="Assets\ThreadIcons\fyad-puns.png" />
+    <Content Include="Assets\ThreadIcons\FYAD-redants.png" />
+    <Content Include="Assets\ThreadIcons\fyad-robocop.png" />
+    <Content Include="Assets\ThreadIcons\fyad-salad.png" />
+    <Content Include="Assets\ThreadIcons\fyad-sandwich.png" />
+    <Content Include="Assets\ThreadIcons\fyad-smallthread.png" />
+    <Content Include="Assets\ThreadIcons\fyad-socks.png" />
+    <Content Include="Assets\ThreadIcons\fyad-space.png" />
+    <Content Include="Assets\ThreadIcons\fyad-speedrun.png" />
+    <Content Include="Assets\ThreadIcons\fyad-starcraft.png" />
+    <Content Include="Assets\ThreadIcons\fyad-suts.png" />
+    <Content Include="Assets\ThreadIcons\fyad-thuggery.png" />
+    <Content Include="Assets\ThreadIcons\fyad-tim.png" />
+    <Content Include="Assets\ThreadIcons\fyad-toucan.png" />
+    <Content Include="Assets\ThreadIcons\fyad-tree.png" />
+    <Content Include="Assets\ThreadIcons\fyad-troll.png" />
+    <Content Include="Assets\ThreadIcons\fyad-trout.png" />
+    <Content Include="Assets\ThreadIcons\fyad-wiki.png" />
+    <Content Include="Assets\ThreadIcons\fyad-words.png" />
+    <Content Include="Assets\ThreadIcons\fyad-yourrights.png" />
+    <Content Include="Assets\ThreadIcons\fyad-yuck.png" />
+    <Content Include="Assets\ThreadIcons\fyad-zounds.png" />
+    <Content Include="Assets\ThreadIcons\games-360.png" />
+    <Content Include="Assets\ThreadIcons\games-360ps3tag.png" />
+    <Content Include="Assets\ThreadIcons\games-3ds.png" />
+    <Content Include="Assets\ThreadIcons\games-ds.png" />
+    <Content Include="Assets\ThreadIcons\games-letsplay.png" />
+    <Content Include="Assets\ThreadIcons\games-ps3.png" />
+    <Content Include="Assets\ThreadIcons\games-psp.png" />
+    <Content Include="Assets\ThreadIcons\Games-vita.png" />
+    <Content Include="Assets\ThreadIcons\games-wii.png" />
+    <Content Include="Assets\ThreadIcons\games-wiiu.png" />
+    <Content Include="Assets\ThreadIcons\games.png" />
+    <Content Include="Assets\ThreadIcons\gip-airforce.png" />
+    <Content Include="Assets\ThreadIcons\gip-army.png" />
+    <Content Include="Assets\ThreadIcons\gip-EMT4.png" />
+    <Content Include="Assets\ThreadIcons\gip-firetruck.png" />
+    <Content Include="Assets\ThreadIcons\gip-marines.png" />
+    <Content Include="Assets\ThreadIcons\gip-money.png" />
+    <Content Include="Assets\ThreadIcons\gip-navy2.png" />
+    <Content Include="Assets\ThreadIcons\gip-pew.png" />
+    <Content Include="Assets\ThreadIcons\gip-police3.png" />
+    <Content Include="Assets\ThreadIcons\gip-uscg.png" />
+    <Content Include="Assets\ThreadIcons\goonmeet.png" />
+    <Content Include="Assets\ThreadIcons\gross.png" />
+    <Content Include="Assets\ThreadIcons\guns-airsoft.png" />
+    <Content Include="Assets\ThreadIcons\guns-ammo.png" />
+    <Content Include="Assets\ThreadIcons\guns-ccw.png" />
+    <Content Include="Assets\ThreadIcons\guns-hunting.png" />
+    <Content Include="Assets\ThreadIcons\guns-milsurp.png" />
+    <Content Include="Assets\ThreadIcons\guns-ohshi.png" />
+    <Content Include="Assets\ThreadIcons\guns-paintball.png" />
+    <Content Include="Assets\ThreadIcons\guns-review.png" />
+    <Content Include="Assets\ThreadIcons\guns.png" />
+    <Content Include="Assets\ThreadIcons\gws-bread.png" />
+    <Content Include="Assets\ThreadIcons\gws-dessert.png" />
+    <Content Include="Assets\ThreadIcons\gws-diet.png" />
+    <Content Include="Assets\ThreadIcons\gws-drink.png" />
+    <Content Include="Assets\ThreadIcons\gws-fish.png" />
+    <Content Include="Assets\ThreadIcons\gws-local.png" />
+    <Content Include="Assets\ThreadIcons\gws-meat.png" />
+    <Content Include="Assets\ThreadIcons\gws-snacks.png" />
+    <Content Include="Assets\ThreadIcons\gws-soup.png" />
+    <Content Include="Assets\ThreadIcons\gws-veggie.png" />
+    <Content Include="Assets\ThreadIcons\hell-boot.png" />
+    <Content Include="Assets\ThreadIcons\hell-fuckthis.png" />
+    <Content Include="Assets\ThreadIcons\hell-glomp.png" />
+    <Content Include="Assets\ThreadIcons\hell-hive.png" />
+    <Content Include="Assets\ThreadIcons\hell-jorts.png" />
+    <Content Include="Assets\ThreadIcons\hell-miso.png" />
+    <Content Include="Assets\ThreadIcons\hell-spergin.png" />
+    <Content Include="Assets\ThreadIcons\hell-stfu.png" />
+    <Content Include="Assets\ThreadIcons\hell-suck.png" />
+    <Content Include="Assets\ThreadIcons\hell-tim.png" />
+    <Content Include="Assets\ThreadIcons\hell-whore.png" />
+    <Content Include="Assets\ThreadIcons\help.png" />
+    <Content Include="Assets\ThreadIcons\humor.png" />
+    <Content Include="Assets\ThreadIcons\icon-30-attnmod.png" />
+    <Content Include="Assets\ThreadIcons\icon-31-hotthread.png" />
+    <Content Include="Assets\ThreadIcons\icon-37-selling.png" />
+    <Content Include="Assets\ThreadIcons\icon-38-buying.png" />
+    <Content Include="Assets\ThreadIcons\icon-41-game-xbox.png" />
+    <Content Include="Assets\ThreadIcons\icon-42-game-ps2.png" />
+    <Content Include="Assets\ThreadIcons\icon-43-game-gamecube.png" />
+    <Content Include="Assets\ThreadIcons\icon-44-game-gba.png" />
+    <Content Include="Assets\ThreadIcons\icon-45-game-pc.png" />
+    <Content Include="Assets\ThreadIcons\icon-46-trading.png" />
+    <Content Include="Assets\ThreadIcons\icon-52-trading.png" />
+    <Content Include="Assets\ThreadIcons\icon-59-lobster.png" />
+    <Content Include="Assets\ThreadIcons\icon-60-pig.png" />
+    <Content Include="Assets\ThreadIcons\icon-61-comics.png" />
+    <Content Include="Assets\ThreadIcons\icon-dear_richard.png" />
+    <Content Include="Assets\ThreadIcons\icon-honk.png" />
+    <Content Include="Assets\ThreadIcons\icon23-banme.png" />
+    <Content Include="Assets\ThreadIcons\lan-asia.png" />
+    <Content Include="Assets\ThreadIcons\lan-canada.png" />
+    <Content Include="Assets\ThreadIcons\lan-europe.png" />
+    <Content Include="Assets\ThreadIcons\lan-international.png" />
+    <Content Include="Assets\ThreadIcons\lan-midwest.png" />
+    <Content Include="Assets\ThreadIcons\lan-ne.png" />
+    <Content Include="Assets\ThreadIcons\lan-nw.png" />
+    <Content Include="Assets\ThreadIcons\lan-south.png" />
+    <Content Include="Assets\ThreadIcons\lan-sw.png" />
+    <Content Include="Assets\ThreadIcons\lan-west.png" />
+    <Content Include="Assets\ThreadIcons\LF-24yu5af.png" />
+    <Content Include="Assets\ThreadIcons\LF-25tjf47.png" />
+    <Content Include="Assets\ThreadIcons\LF-29qdqgy.png" />
+    <Content Include="Assets\ThreadIcons\LF-2mfbryu.png" />
+    <Content Include="Assets\ThreadIcons\LF-2wqxulw.png" />
+    <Content Include="Assets\ThreadIcons\lf-9287.png" />
+    <Content Include="Assets\ThreadIcons\lf-amerika.png" />
+    <Content Include="Assets\ThreadIcons\lf-arecountry.png" />
+    <Content Include="Assets\ThreadIcons\LF-article.png" />
+    <Content Include="Assets\ThreadIcons\LF-BiCurious.png" />
+    <Content Include="Assets\ThreadIcons\lf-choom.png" />
+    <Content Include="Assets\ThreadIcons\lf-dji.png" />
+    <Content Include="Assets\ThreadIcons\lf-eu.png" />
+    <Content Include="Assets\ThreadIcons\lf-eurabia.png" />
+    <Content Include="Assets\ThreadIcons\LF-fem_LF_tag2.png" />
+    <Content Include="Assets\ThreadIcons\lf-fff.png" />
+    <Content Include="Assets\ThreadIcons\lf-fuckit3.png" />
+    <Content Include="Assets\ThreadIcons\LF-fuckshitdamntag2.png" />
+    <Content Include="Assets\ThreadIcons\LF-gay2.png" />
+    <Content Include="Assets\ThreadIcons\lf-gipper.png" />
+    <Content Include="Assets\ThreadIcons\LF-gitrdun2.png" />
+    <Content Include="Assets\ThreadIcons\lf-gooddog.png" />
+    <Content Include="Assets\ThreadIcons\lf-gotmine.png" />
+    <Content Include="Assets\ThreadIcons\lf-hansen2.png" />
+    <Content Include="Assets\ThreadIcons\LF-iraq.png" />
+    <Content Include="Assets\ThreadIcons\LF-japan_clean_fast.png" />
+    <Content Include="Assets\ThreadIcons\lf-laters.png" />
+    <Content Include="Assets\ThreadIcons\LF-legacy.png" />
+    <Content Include="Assets\ThreadIcons\lf-marx.png" />
+    <Content Include="Assets\ThreadIcons\lf-migra.png" />
+    <Content Include="Assets\ThreadIcons\LF-nazisrael2.png" />
+    <Content Include="Assets\ThreadIcons\LF-pcc6-2-32-576.png" />
+    <Content Include="Assets\ThreadIcons\LF-pennybags.png" />
+    <Content Include="Assets\ThreadIcons\LF-perspective_1.png" />
+    <Content Include="Assets\ThreadIcons\LF-purestrain2.png" />
+    <Content Include="Assets\ThreadIcons\lf-race2.png" />
+    <Content Include="Assets\ThreadIcons\LF-rungop.png" />
+    <Content Include="Assets\ThreadIcons\lf-trains.png" />
+    <Content Include="Assets\ThreadIcons\lf-whites.png" />
+    <Content Include="Assets\ThreadIcons\link.png" />
+    <Content Include="Assets\ThreadIcons\lp-adventure.png" />
+    <Content Include="Assets\ThreadIcons\lp-fps.png" />
+    <Content Include="Assets\ThreadIcons\lp-romhack.png" />
+    <Content Include="Assets\ThreadIcons\lp-rpg.png" />
+    <Content Include="Assets\ThreadIcons\lp-strategy.png" />
+    <Content Include="Assets\ThreadIcons\lp-text.png" />
+    <Content Include="Assets\ThreadIcons\ml-acoustic.png" />
+    <Content Include="Assets\ThreadIcons\ml-amps.png" />
+    <Content Include="Assets\ThreadIcons\ml-bass.png" />
+    <Content Include="Assets\ThreadIcons\ml-contest.png" />
+    <Content Include="Assets\ThreadIcons\ml-drums.png" />
+    <Content Include="Assets\ThreadIcons\ml-dumbass.png" />
+    <Content Include="Assets\ThreadIcons\ml-feedback.png" />
+    <Content Include="Assets\ThreadIcons\ml-gear.png" />
+    <Content Include="Assets\ThreadIcons\ml-guitar.png" />
+    <Content Include="Assets\ThreadIcons\ml-recording.png" />
+    <Content Include="Assets\ThreadIcons\ml-theory.png" />
+    <Content Include="Assets\ThreadIcons\ml-voice.png" />
+    <Content Include="Assets\ThreadIcons\mods-expert.png" />
+    <Content Include="Assets\ThreadIcons\movies.png" />
+    <Content Include="Assets\ThreadIcons\music.png" />
+    <Content Include="Assets\ThreadIcons\newbie.png" />
+    <Content Include="Assets\ThreadIcons\news.png" />
+    <Content Include="Assets\ThreadIcons\nmd-classical.png" />
+    <Content Include="Assets\ThreadIcons\nmd-country.png" />
+    <Content Include="Assets\ThreadIcons\nmd-electronic.png" />
+    <Content Include="Assets\ThreadIcons\nmd-hiphop.png" />
+    <Content Include="Assets\ThreadIcons\nmd-jazz.png" />
+    <Content Include="Assets\ThreadIcons\nmd-metal.png" />
+    <Content Include="Assets\ThreadIcons\nmd-pop.png" />
+    <Content Include="Assets\ThreadIcons\nmd-punk.png" />
+    <Content Include="Assets\ThreadIcons\nmd-rock.png" />
+    <Content Include="Assets\ThreadIcons\nmd-tour.png" />
+    <Content Include="Assets\ThreadIcons\nmd-us.png" />
+    <Content Include="Assets\ThreadIcons\nmd-world.png" />
+    <Content Include="Assets\ThreadIcons\phiz-ant.png" />
+    <Content Include="Assets\ThreadIcons\phiz-aoki.png" />
+    <Content Include="Assets\ThreadIcons\phiz-crabcore.png" />
+    <Content Include="Assets\ThreadIcons\phiz-dad.png" />
+    <Content Include="Assets\ThreadIcons\phiz-dollas.png" />
+    <Content Include="Assets\ThreadIcons\phiz-donk.png" />
+    <Content Include="Assets\ThreadIcons\phiz-dontlike.png" />
+    <Content Include="Assets\ThreadIcons\phiz-emo.png" />
+    <Content Include="Assets\ThreadIcons\phiz-grind.png" />
+    <Content Include="Assets\ThreadIcons\phiz-irony.png" />
+    <Content Include="Assets\ThreadIcons\phiz-kayne.png" />
+    <Content Include="Assets\ThreadIcons\phiz-kermit.png" />
+    <Content Include="Assets\ThreadIcons\phiz-phag.png" />
+    <Content Include="Assets\ThreadIcons\phiz-powerband.png" />
+    <Content Include="Assets\ThreadIcons\phiz-prince.png" />
+    <Content Include="Assets\ThreadIcons\phiz-rap.png" />
+    <Content Include="Assets\ThreadIcons\phiz-robojax.png" />
+    <Content Include="Assets\ThreadIcons\phiz-rockist.png" />
+    <Content Include="Assets\ThreadIcons\phiz-sincere.png" />
+    <Content Include="Assets\ThreadIcons\phiz-smugwave.png" />
+    <Content Include="Assets\ThreadIcons\phiz-style.png" />
+    <Content Include="Assets\ThreadIcons\phiz-sucks.png" />
+    <Content Include="Assets\ThreadIcons\phiz-vampire.png" />
+    <Content Include="Assets\ThreadIcons\photos.png" />
+    <Content Include="Assets\ThreadIcons\photoshop.png" />
+    <Content Include="Assets\ThreadIcons\pi-birds.png" />
+    <Content Include="Assets\ThreadIcons\pi-bugs.png" />
+    <Content Include="Assets\ThreadIcons\pi-caged.png" />
+    <Content Include="Assets\ThreadIcons\pi-cats.png" />
+    <Content Include="Assets\ThreadIcons\pi-dogs.png" />
+    <Content Include="Assets\ThreadIcons\pi-fish.png" />
+    <Content Include="Assets\ThreadIcons\pi-herps.png" />
+    <Content Include="Assets\ThreadIcons\politics.png" />
+    <Content Include="Assets\ThreadIcons\poll.png" />
+    <Content Include="Assets\ThreadIcons\psp-grappling.png" />
+    <Content Include="Assets\ThreadIcons\psp-itstime.png" />
+    <Content Include="Assets\ThreadIcons\psp-k1.png" />
+    <Content Include="Assets\ThreadIcons\psp-mma.png" />
+    <Content Include="Assets\ThreadIcons\psp-pride.png" />
+    <Content Include="Assets\ThreadIcons\psp-thonglor.png" />
+    <Content Include="Assets\ThreadIcons\psp-tuf.png" />
+    <Content Include="Assets\ThreadIcons\psp-ufc.png" />
+    <Content Include="Assets\ThreadIcons\question.png" />
+    <Content Include="Assets\ThreadIcons\rant.png" />
+    <Content Include="Assets\ThreadIcons\repeat.png" />
+    <Content Include="Assets\ThreadIcons\request.png" />
+    <Content Include="Assets\ThreadIcons\RP-20a6zc0.png" />
+    <Content Include="Assets\ThreadIcons\RP-carling.png" />
+    <Content Include="Assets\ThreadIcons\RP-championship.png" />
+    <Content Include="Assets\ThreadIcons\RP-epl.png" />
+    <Content Include="Assets\ThreadIcons\RP-facup.png" />
+    <Content Include="Assets\ThreadIcons\RP-fifa.png" />
+    <Content Include="Assets\ThreadIcons\RP-league.png" />
+    <Content Include="Assets\ThreadIcons\RP-LFP.png" />
+    <Content Include="Assets\ThreadIcons\RP-ligue1.png" />
+    <Content Include="Assets\ThreadIcons\RP-mls_tag.png" />
+    <Content Include="Assets\ThreadIcons\RP-MOTD_TAG.png" />
+    <Content Include="Assets\ThreadIcons\RP-nonleague.png" />
+    <Content Include="Assets\ThreadIcons\RP-seriea.png" />
+    <Content Include="Assets\ThreadIcons\RP-spl.png" />
+    <Content Include="Assets\ThreadIcons\RP-uefa_tag.png" />
+    <Content Include="Assets\ThreadIcons\sam-clothing.png" />
+    <Content Include="Assets\ThreadIcons\samartd-interestcheck.png" />
+    <Content Include="Assets\ThreadIcons\samartd-organs.png" />
+    <Content Include="Assets\ThreadIcons\samartd-potions.png" />
+    <Content Include="Assets\ThreadIcons\samartd-water.png" />
+    <Content Include="Assets\ThreadIcons\sap-language.png" />
+    <Content Include="Assets\ThreadIcons\sas-fantasy.png" />
+    <Content Include="Assets\ThreadIcons\school.png" />
+    <Content Include="Assets\ThreadIcons\science.png" />
+    <Content Include="Assets\ThreadIcons\serious.png" />
+    <Content Include="Assets\ThreadIcons\sex.png" />
+    <Content Include="Assets\ThreadIcons\shitpost.png" />
+    <Content Include="Assets\ThreadIcons\shsc-apple.png" />
+    <Content Include="Assets\ThreadIcons\shsc-bsd.png" />
+    <Content Include="Assets\ThreadIcons\shsc-code.png" />
+    <Content Include="Assets\ThreadIcons\shsc-hardware.png" />
+    <Content Include="Assets\ThreadIcons\shsc-laptop.png" />
+    <Content Include="Assets\ThreadIcons\shsc-linux.png" />
+    <Content Include="Assets\ThreadIcons\shsc-networking.png" />
+    <Content Include="Assets\ThreadIcons\shsc-sysadmin.png" />
+    <Content Include="Assets\ThreadIcons\shsc-win.png" />
+    <Content Include="Assets\ThreadIcons\sports-boxing.png" />
+    <Content Include="Assets\ThreadIcons\sports-golf.png" />
+    <Content Include="Assets\ThreadIcons\sports-mlb.png" />
+    <Content Include="Assets\ThreadIcons\sports-nascar.png" />
+    <Content Include="Assets\ThreadIcons\sports-nba.png" />
+    <Content Include="Assets\ThreadIcons\sports-ncaa.png" />
+    <Content Include="Assets\ThreadIcons\sports-nfl.png" />
+    <Content Include="Assets\ThreadIcons\sports-nhl.png" />
+    <Content Include="Assets\ThreadIcons\sports-soccer.png" />
+    <Content Include="Assets\ThreadIcons\sports-sylvia.png" />
+    <Content Include="Assets\ThreadIcons\sports-wwe.png" />
+    <Content Include="Assets\ThreadIcons\sports.png" />
+    <Content Include="Assets\ThreadIcons\stupid.png" />
+    <Content Include="Assets\ThreadIcons\tava-analog.png" />
+    <Content Include="Assets\ThreadIcons\tava-cables.png" />
+    <Content Include="Assets\ThreadIcons\tava-cellphone.png" />
+    <Content Include="Assets\ThreadIcons\tava-gadget.png" />
+    <Content Include="Assets\ThreadIcons\tava-headphones.png" />
+    <Content Include="Assets\ThreadIcons\tava-highdef.png" />
+    <Content Include="Assets\ThreadIcons\tava-mp3.png" />
+    <Content Include="Assets\ThreadIcons\tava-speakers.png" />
+    <Content Include="Assets\ThreadIcons\tava-vintage.png" />
+    <Content Include="Assets\ThreadIcons\tcc-acid.png" />
+    <Content Include="Assets\ThreadIcons\tcc-addiction.png" />
+    <Content Include="Assets\ThreadIcons\tcc-busted.png" />
+    <Content Include="Assets\ThreadIcons\tcc-downers.png" />
+    <Content Include="Assets\ThreadIcons\tcc-halluc.png" />
+    <Content Include="Assets\ThreadIcons\tcc-research.png" />
+    <Content Include="Assets\ThreadIcons\tcc-rx.png" />
+    <Content Include="Assets\ThreadIcons\tcc-shrooms.png" />
+    <Content Include="Assets\ThreadIcons\tcc-trip_report.png" />
+    <Content Include="Assets\ThreadIcons\tcc-txt.png" />
+    <Content Include="Assets\ThreadIcons\tcc-uppers.png" />
+    <Content Include="Assets\ThreadIcons\tcc-weed.png" />
+    <Content Include="Assets\ThreadIcons\tech.png" />
+    <Content Include="Assets\ThreadIcons\terrordome.png" />
+    <Content Include="Assets\ThreadIcons\tfr-box.png" />
+    <Content Include="Assets\ThreadIcons\tg-boardgames.png" />
+    <Content Include="Assets\ThreadIcons\tg-cards.png" />
+    <Content Include="Assets\ThreadIcons\tg-d20.png" />
+    <Content Include="Assets\ThreadIcons\tg-dd.png" />
+    <Content Include="Assets\ThreadIcons\tg-gurps.png" />
+    <Content Include="Assets\ThreadIcons\tg-mafia.png" />
+    <Content Include="Assets\ThreadIcons\tg-poker.png" />
+    <Content Include="Assets\ThreadIcons\tg-recruiting.png" />
+    <Content Include="Assets\ThreadIcons\tg-story.png" />
+    <Content Include="Assets\ThreadIcons\tg-wargames.png" />
+    <Content Include="Assets\ThreadIcons\tma.png" />
+    <Content Include="Assets\ThreadIcons\trp-laliga.png" />
+    <Content Include="Assets\ThreadIcons\tv.png" />
+    <Content Include="Assets\ThreadIcons\tviv-cable.png" />
+    <Content Include="Assets\ThreadIcons\tviv-cartoon.png" />
+    <Content Include="Assets\ThreadIcons\tviv-classic.png" />
+    <Content Include="Assets\ThreadIcons\tviv-competition.png" />
+    <Content Include="Assets\ThreadIcons\tviv-dvd.png" />
+    <Content Include="Assets\ThreadIcons\tviv-on-demand.png" />
+    <Content Include="Assets\ThreadIcons\tviv-reality.png" />
+    <Content Include="Assets\ThreadIcons\tviv-spoilers.png" />
+    <Content Include="Assets\ThreadIcons\unfunny.png" />
+    <Content Include="Assets\ThreadIcons\video.png" />
+    <Content Include="Assets\ThreadIcons\weird.png" />
+    <Content Include="Assets\ThreadIcons\whine.png" />
+    <Content Include="Assets\ThreadIcons\wrestlehut-ecw.png" />
+    <Content Include="Assets\ThreadIcons\wrestlehut-global.png" />
+    <Content Include="Assets\ThreadIcons\wrestlehut-indy.png" />
+    <Content Include="Assets\ThreadIcons\wrestlehut-thunder.png" />
+    <Content Include="Assets\ThreadIcons\wrestlehut-tna.png" />
+    <Content Include="Assets\ThreadIcons\wrestling-raw.png" />
+    <Content Include="Assets\ThreadIcons\wrestling-roh.png" />
+    <Content Include="Assets\ThreadIcons\wrestling-sd.png" />
+    <Content Include="Assets\ThreadIcons\ww-denim.png" />
+    <Content Include="Assets\ThreadIcons\YCS-01.png" />
+    <Content Include="Assets\ThreadIcons\ycs-achieve.png" />
+    <Content Include="Assets\ThreadIcons\ycs-girl.png" />
+    <Content Include="Assets\ThreadIcons\ycs-goomba.png" />
+    <Content Include="Assets\ThreadIcons\ycs-jap.png" />
+    <Content Include="Assets\ThreadIcons\ycs-jc.png" />
+    <Content Include="Assets\ThreadIcons\ycs-letsgo.png" />
+    <Content Include="Assets\ThreadIcons\ycs-link.png" />
+    <Content Include="Assets\ThreadIcons\yospos-blurit.png" />
+    <Content Include="Assets\ThreadIcons\YOSPOS-DOS.png" />
+    <Content Include="Assets\ThreadIcons\yospos-hackersafe.png" />
+    <Content Include="Assets\ThreadIcons\yospos-janitor.png" />
+    <Content Include="Assets\ThreadIcons\yospos-netscape.png" />
+    <Content Include="Assets\ThreadIcons\yospos-web20.png" />
+    <Content Include="Assets\ThreadIcons\yp-amiga859.png" />
+    <Content Include="Assets\ThreadIcons\yp-apple.png" />
+    <Content Include="Assets\ThreadIcons\yp-bsod.png" />
+    <Content Include="Assets\ThreadIcons\yp-c64.png" />
+    <Content Include="Assets\ThreadIcons\yp-gnugpl.png" />
+    <Content Include="Assets\ThreadIcons\yp-snowcrash971.png" />
+    <Content Include="Assets\ThreadIcons\yp-tubes296.png" />
+    <Content Include="Assets\Awful.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Background.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="README_FIRST.txt" />
+    <Content Include="SplashScreenImage.jpg" />
+    <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
+    <Resource Include="www\awful.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="www\jquery.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="www\main.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="www\view.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Common\Constants.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Awful.V2.Core\Awful.V2.Core.csproj">
+      <Project>{CE3F4D7C-B819-4590-9816-C311B8CF8734}</Project>
+      <Name>Awful.V2.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Glyph\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions />
+</Project>

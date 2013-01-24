@@ -8,9 +8,24 @@ namespace Awful
 {
     public class ForumTasks
     {
+        private const string SMILEY_REQUEST_URI = "http://forums.somethingawful.com/misc.php?action=showsmilies";
+
         private static readonly ForumTasks Instance = new ForumTasks();
 
         private ForumTasks() { }
+
+        public static IEnumerable<TagMetadata> FetchAllSmilies()
+        {
+            return Instance.Private_FetchAllSmilies();
+        }
+
+        private IEnumerable<TagMetadata> Private_FetchAllSmilies()
+        {
+            var client = new AwfulWebClient();
+            var document = client.FetchHtml(SMILEY_REQUEST_URI);
+            var smilies = SmileyParser.ParseSmiliesFromNode(document);
+            return smilies;
+        }
 
         public static IEnumerable<ForumMetadata> FetchAllForums() { return Instance.Private_FetchAllForums(); }
         public IEnumerable<ForumMetadata> Private_FetchAllForums()

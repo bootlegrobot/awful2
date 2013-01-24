@@ -74,6 +74,7 @@
     <Compile Include="Parsing\PostContentStyler.cs" />
     <Compile Include="Parsing\PostParser.cs" />
     <Compile Include="Parsing\PrivateMessageParser.cs" />
+    <Compile Include="Parsing\SmileyParser.cs" />
     <Compile Include="Parsing\ThreadPageParser.cs" />
     <Compile Include="Parsing\ThreadParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

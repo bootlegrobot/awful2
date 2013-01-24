@@ -26,6 +26,11 @@ namespace Awful
             return value.Contains("://") && (value.Contains("http"));
         }
 
+        public static IEnumerable<TSource> Page<TSource>(this IEnumerable<TSource> source, int page, int pageSize)
+        {
+            return source.Skip((page - 1) * pageSize).Take(pageSize);
+        }
+
         private static bool BuildPath(this IsolatedStorageFile storage, string path)
         {
             bool success = false;

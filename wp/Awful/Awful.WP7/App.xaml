@@ -1,0 +1,70 @@
+﻿<Application x:Class="Awful.WP7.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+             xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:common="clr-namespace:Awful.Common"
+             xmlns:helpers="clr-namespace:Awful.Helpers"
+             xmlns:telerikCore="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Core"
+             xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives">
+
+    <!--Application Resources-->
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/generic.xaml" />
+                <ResourceDictionary Source="Themes/layout.xaml" />
+                <ResourceDictionary Source="Common/CommonStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- App Info -->
+            <sys:String x:Key="ApplicationName">Awful!</sys:String>
+            <sys:String x:Key="ApplicationVersion">2.0 beta 5</sys:String>
+
+            <!-- Animations -->
+            <telerikCore:RadPlaneProjectionAnimation x:Key="rotateRightAnimation"
+                                                     Axes="Z"
+                                                     StartAngleZ="-90"
+                                                     EndAngleZ="90" />
+
+            <telerikCore:RadPlaneProjectionAnimation x:Key="rotateLeftAnimation"
+                                                     Axes="Z"
+                                                     StartAngleZ="90"
+                                                     EndAngleZ="0" />
+
+            <telerikPrimitives:RadTurnstileTransition x:Key="pageTransition"
+                                                      PlayMode="Simultaneously" />
+
+            <!-- Converters -->
+            <common:ShadowColorConverter x:Key="shadowColorConverter" />
+            <common:CollapseOnTrue x:Key="collapseOnTrueConverter" />
+            <common:CollapseOnFalse x:Key="collapseOnFalseConverter" />
+            <common:AssetRetriever x:Key="assetRetriever" />
+            
+            <common:ContentFilterConverter x:Key="contentFilter" />
+
+            <!-- Helpers -->
+            <helpers:ThreadIconViewer x:Key="IconViewer" />
+
+            <!-- Post Read Status Colors -->
+            <SolidColorBrush x:Key="PostReadBrush"
+                             Color="{StaticResource PhoneAccentColor}" />
+            <SolidColorBrush x:Key="PostUnreadBrush"
+                             Color="{StaticResource PhoneForegroundColor}" />
+
+        </ResourceDictionary>
+
+      
+    </Application.Resources>
+
+    <Application.ApplicationLifetimeObjects>
+        <!--Required object that handles lifetime events for the application-->
+        <shell:PhoneApplicationService 
+            Launching="Application_Launching" Closing="Application_Closing" 
+            Activated="Application_Activated" Deactivated="Application_Deactivated"/>
+    </Application.ApplicationLifetimeObjects>
+
+</Application>
