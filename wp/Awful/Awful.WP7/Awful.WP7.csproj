@@ -284,6 +284,7 @@
     <None Include="Properties\WMAppManifest.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ApplicationIcon.173.png" />
     <Content Include="ApplicationIcon.png" />
     <Content Include="Assets\AppBar\appbar.add.rest.png" />
     <Content Include="Assets\AppBar\appbar.back.rest.png" />

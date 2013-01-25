@@ -18,7 +18,7 @@
     <Tokens>
       <PrimaryToken TokenID="Awful.WP7.AppToken" TaskName="_default">
         <TemplateType5>
-          <BackgroundImageURI IsRelative="true" IsResource="false">Background.png</BackgroundImageURI>
+          <BackgroundImageURI IsRelative="true" IsResource="false">ApplicationIcon.173.png</BackgroundImageURI>
           <Count>0</Count>
           <Title>Beta</Title>
         </TemplateType5>
