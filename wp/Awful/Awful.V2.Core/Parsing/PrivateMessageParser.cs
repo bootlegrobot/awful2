@@ -230,7 +230,8 @@ namespace Awful
             if (postmarkNode != null)
             {
                 string postmark = postmarkNode.InnerText;
-                pm.PostDate = Convert.ToDateTime(postmark);
+                try { pm.PostDate = Convert.ToDateTime(postmark); }
+                catch (Exception) { pm.PostDate = DateTime.Parse(postmark, System.Globalization.CultureInfo.InvariantCulture); }
             }
 
             return pm;

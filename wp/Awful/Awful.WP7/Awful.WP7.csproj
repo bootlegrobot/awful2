@@ -897,7 +897,9 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Common\Constants.resx" />
+    <EmbeddedResource Include="Common\Constants.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Awful.V2.Core\Awful.V2.Core.csproj">

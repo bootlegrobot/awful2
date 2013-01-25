@@ -86,8 +86,16 @@ namespace Awful
 
             var postDateString = postDateNode == null ? string.Empty : postDateNode.InnerText;
 
-            post.PostDate = postDateNode == null ? default(DateTime) :
-                Convert.ToDateTime(postDateString.SanitizeDateTimeHTML());
+            try
+            {
+                post.PostDate = postDateNode == null ? default(DateTime) :
+                    Convert.ToDateTime(postDateString.SanitizeDateTimeHTML());
+            }
+
+            catch (Exception)
+            {
+                post.PostDate = DateTime.Parse(postDateString.SanitizeDateTimeHTML(), System.Globalization.CultureInfo.InvariantCulture);
+            }
 
             return post;
         }

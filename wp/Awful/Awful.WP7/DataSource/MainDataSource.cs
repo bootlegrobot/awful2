@@ -632,7 +632,7 @@ namespace Awful.Data
             set;
         }
 
-        private double _itemOpacity = Convert.ToDouble(Constants.THREAD_DEFAULT_ITEM_OPACITY);
+        private double _itemOpacity = double.Parse(Constants.THREAD_DEFAULT_ITEM_OPACITY, System.Globalization.CultureInfo.InvariantCulture);
         [DataMember]
         public double ItemOpacity
         {
@@ -654,10 +654,12 @@ namespace Awful.Data
                 if (this._hasBeenNavigatedTo != value)
                 {
                     this._hasBeenNavigatedTo = value;
-                    if (value)
-                        this.ItemOpacity = Convert.ToDouble(Constants.THREAD_VIEWED_ITEM_OPACITY);
-                    else
-                        this.ItemOpacity = Convert.ToDouble(Constants.THREAD_DEFAULT_ITEM_OPACITY);
+                    
+                    double opacity = double.Parse(
+                        value ? Constants.THREAD_VIEWED_ITEM_OPACITY : Constants.THREAD_DEFAULT_ITEM_OPACITY,
+                        System.Globalization.CultureInfo.InvariantCulture);
+
+                    this.ItemOpacity = opacity;
                 }
             }
         }
