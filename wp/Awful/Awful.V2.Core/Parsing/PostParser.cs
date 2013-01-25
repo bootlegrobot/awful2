@@ -18,7 +18,7 @@ namespace Awful
                 .ParsePostDate(postNode)
                 .ParsePostID(postNode)
                 .ParseUserID(postNode)
-                .ParsePostThreadIndex(postNode)
+                .ParsePostThreadIndexAndMarkUrl(postNode)
                 .ParseHasSeen(postNode);
 
             return post;
@@ -114,6 +114,7 @@ namespace Awful
             var authorNode = postNode.Descendants()
               .Where(node =>
                   (node.GetAttributeValue("class", "").Equals("author")) ||
+                  (node.GetAttributeValue("class", "").Equals("author op")) ||
                   (node.GetAttributeValue("title", "").Equals("Administrator")) ||
                   (node.GetAttributeValue("title", "").Equals("Moderator")))
               .FirstOrDefault();
@@ -148,10 +149,10 @@ namespace Awful
             return post;
         }
 
-        private static ThreadPostMetadata ParsePostThreadIndex(this ThreadPostMetadata post, HtmlNode postNode)
+        private static ThreadPostMetadata ParsePostThreadIndexAndMarkUrl(this ThreadPostMetadata post, HtmlNode postNode)
         {
             var seenUrlNode = postNode.Descendants("a")
-                .Where(node => node.GetAttributeValue("title", "").Contains("Mark thread"))
+                .Where(node => node.GetAttributeValue("class", "").Contains(MARK_THREAD_CLASS_ID))
                 .FirstOrDefault();
 
             if (seenUrlNode == null)
@@ -194,5 +195,7 @@ namespace Awful
             post.PostID = result;
             return post;
         }
+
+        public const string MARK_THREAD_CLASS_ID = "lastseen_icon";
     }
 }

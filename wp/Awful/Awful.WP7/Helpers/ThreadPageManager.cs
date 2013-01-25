@@ -260,7 +260,7 @@ namespace Awful
                 {
                     AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, action);
 #if DEBUG
-                    MessageBox.Show(action, "debug: script action");
+                    MessageBox.Show(action, "debug: script action", MessageBoxButton.OK);
 #endif
                 }
             }
