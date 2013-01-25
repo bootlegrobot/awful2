@@ -17,6 +17,12 @@ namespace Awful.Controls
             InitializeComponent();
         }
 
+        public delegate void ButtonClickDelgate(object sender, System.EventArgs e);
+
+        public ButtonClickDelgate SaveDraftClick { get; set; }
+        public ButtonClickDelgate ReplyClick { get; set; }
+        public ButtonClickDelgate CancelEditClick { get; set; }
+
         private ViewModels.SmileyListViewModel SmileyViewModel
         {
             get { return this.Resources["smileyViewModel"] as ViewModels.SmileyListViewModel; }
@@ -36,11 +42,19 @@ namespace Awful.Controls
         private void CancelEditRequest(object sender, System.EventArgs e)
         {
             // TODO: Add event handler implementation here.
+            if (CancelEditClick == null)
+                throw new NullReferenceException("CancelEditRequest must not be null!");
+
+            CancelEditClick(sender, e);
         }
 
         private void SaveReplyDraft(object sender, System.EventArgs e)
         {
             // TODO: Add event handler implementation here.
+            if (SaveDraftClick == null)
+                throw new NullReferenceException("SaveDraftDelegate must not be null!");
+
+            SaveDraftClick(sender, e);
         }
 
         private void ShowTags(object sender, System.EventArgs e)
@@ -56,8 +70,12 @@ namespace Awful.Controls
         private void SendReply(object sender, System.EventArgs e)
         {
             // TODO: Add event handler implementation here.
+            if (ReplyClick == null)
+                throw new NullReferenceException("ReplyDelgate must be set!");
+
+            ReplyClick(sender, e);
         }
-		
+
 		private void AppendTagToReplyText(object sender, Telerik.Windows.Controls.ListBoxItemTapEventArgs e)
         {
            // TODO: Add event handler implementation here.

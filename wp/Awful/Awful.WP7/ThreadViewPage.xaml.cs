@@ -26,6 +26,16 @@ namespace Awful
             SetThreadNavCommands(viewmodel);
             Commands.EditPostCommand.EditRequested += new ThreadPostRequestEventHandler(OpenEditWindow);
             Loaded += ThreadViewPage_Loaded;
+            
+            threadReplyControl.Loaded += WireThreadReplyControl;
+        }
+
+        void WireThreadReplyControl(object sender, RoutedEventArgs e)
+        {
+            var control = sender as Controls.ThreadReplyControl;
+            control.ReplyClick = this.SendReply;
+            control.SaveDraftClick = this.SaveReplyDraft;
+            control.CancelEditClick = this.CancelEditRequest;
         }
 
         void OnViewModelUpdateFailed(object sender, EventArgs e)
