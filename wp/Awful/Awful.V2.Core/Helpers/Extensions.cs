@@ -225,38 +225,7 @@ namespace Awful
     {
         #region Thread Extensions
 
-        public static int GetLastReadPage(this ThreadMetadata thread)
-        {
-            if (thread.IsNew)
-                return 1;
-
-            int page = -1;
-            int postsPerPage = 40;
-            int totalPostCount = thread.ReplyCount;
-            int newPostCount = thread.NewPostCount;
-            int readPostCount = totalPostCount - newPostCount;
-
-            // get the exact number of pages read, including fractions of a page
-            double readPages = (double)readPostCount / postsPerPage;
-            // get the base number of pages read
-            double basePage = Math.Floor(readPages);
-
-            // the fractional remainder
-            double remainder = readPages - basePage;
-
-            // if the remainder = 0.975, then the entire page was read (quirky!)
-            if (Math.Round(remainder, 3) == 0.975)
-                // jump two pages from the base page
-                page = (int)basePage + 2;
-
-            else
-                // jump one page from the base page
-                page = (int)basePage + 1;
-
-            return page;
-        }
-
-        public static string ConvertToMetroStyle(this ThreadPageMetadata page)
+        public static string ToMetroStyle(this ThreadPageMetadata page)
         {
             return MetroStyler.Metrofy(page.Posts);
         }
@@ -306,12 +275,12 @@ namespace Awful
             return result;
         }
 
-        public static ThreadPageMetadata LoadPage(this ThreadMetadata thread, int pageNumber)
+        public static ThreadPageMetadata Page(this ThreadMetadata thread, int pageNumber)
         {
            return FetchThreadPage(thread.ThreadID, pageNumber);
         }
 
-        public static ThreadPageMetadata LoadNewPostPage(this ThreadMetadata thread)
+        public static ThreadPageMetadata FirstUnreadPost(this ThreadMetadata thread)
         {
             // adding some special logic here.
             // if the thread is new, then using 'goto=newpost' actually loads the last page.
@@ -323,7 +292,7 @@ namespace Awful
                 FetchThreadPage(thread.ThreadID, (int)ThreadPageType.NewPost);
         }
 
-        public static ThreadPageMetadata LoadLastPage(this ThreadMetadata thread)
+        public static ThreadPageMetadata LastPage(this ThreadMetadata thread)
         {
             return FetchThreadPage(thread.ThreadID, (int)ThreadPageType.Last);
         }
@@ -382,7 +351,7 @@ namespace Awful
             return LoadPageFromUrl(url.ToString());
         }
 
-        public static ForumPageMetadata LoadPage(this ForumMetadata forum, int pageNumber)
+        public static ForumPageMetadata Page(this ForumMetadata forum, int pageNumber)
         {
             ForumPageMetadata page = null;
             if (forum is BookmarkMetadata)
@@ -586,7 +555,7 @@ namespace Awful
         public static ForumPageMetadata LoadBookmarks(this UserMetadata user)
         {
             BookmarkMetadata data = new BookmarkMetadata();
-            return data.LoadPage(0);
+            return data.Page(0);
         }
 
         public static IEnumerable<PrivateMessageFolderMetadata> LoadPrivateMessageFolders(this UserMetadata user)

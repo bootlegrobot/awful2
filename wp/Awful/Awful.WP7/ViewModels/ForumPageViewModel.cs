@@ -75,7 +75,7 @@ namespace Awful.ViewModels
         private IEnumerable<Data.ThreadDataSource> LoadThreadsFromPage(ForumMetadata forum, int pageNumber)
         {
             List<Data.ThreadDataSource> threads = null;
-            var forumPageData = forum.LoadPage(pageNumber);
+            var forumPageData = forum.Page(pageNumber);
             if (forumPageData != null)
             {
                 UpdateStatus("Formatting...");

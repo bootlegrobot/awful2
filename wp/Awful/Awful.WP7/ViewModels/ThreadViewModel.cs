@@ -235,13 +235,13 @@ namespace Awful.ViewModels
             ThreadPageMetadata page = null;
 
             if (pageNumber == (int)ThreadPageType.NewPost)
-                page = Thread.Data.LoadNewPostPage();
+                page = Thread.Data.FirstUnreadPost();
 
             else if (pageNumber == (int)ThreadPageType.Last)
-                page = Thread.Data.LoadLastPage();
+                page = Thread.Data.LastPage();
 
             else
-                page = Thread.Data.LoadPage(pageNumber);
+                page = Thread.Data.Page(pageNumber);
 
             return page;
         }
