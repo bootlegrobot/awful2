@@ -39,6 +39,11 @@
                                 ImageUri="/Assets/ForumIcons/1.png"
                                 PrimaryColor="#ff005c89" />
 
+            <common:ForumLayout x:Name="paranormal/conspiracy"
+                                Nickname="P/C"
+                                ForumId="242"
+                                PrimaryColor="#ff5b0430" />
+
             <common:ForumLayout x:Name="fyad"
                                 Nickname="FYAD"
                                 ForumId="26"
