@@ -146,6 +146,12 @@ namespace Awful.Common
 
     }
 
+    public class BookmarkColorMapping
+    {
+        public BookmarkColorCategory Category { get; set; }
+        public Brush CategoryBrush { get; set; }
+    }
+
     public class ApplicationTheme
     {
         public string Title { get; set; }
@@ -161,7 +167,14 @@ namespace Awful.Common
         public virtual Color ThreadPageOldPostColor { get; set; }
         public virtual Color ModeratorColor { get; set; }
         public virtual Color AdministratorColor { get; set; }
-        public virtual void Initialize() { }
+
+        public virtual List<BookmarkColorMapping> BookmarkColors { get; set; }
+
+        public virtual void Initialize() 
+        {
+            if (BookmarkColors == null)
+                BookmarkColors = new List<BookmarkColorMapping>();
+        }
 
         public override string ToString()
         {

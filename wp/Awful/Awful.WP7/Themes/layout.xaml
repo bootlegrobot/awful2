@@ -229,7 +229,16 @@
                                      AccentBrush="{StaticResource PhoneAccentBrush}"
                                      ThreadPageBackgroundColor="{StaticResource PhoneBackgroundColor}"
                                      ThreadPageForegroundColor="{StaticResource PhoneForegroundColor}"
-                                     ThreadPageOldPostColor="{StaticResource PhoneAccentColor}" />
+                                     ThreadPageOldPostColor="{StaticResource PhoneAccentColor}">
+                
+                <common:ApplicationTheme.BookmarkColors>
+                    <common:BookmarkColorMapping Category="Unknown" CategoryBrush="Transparent"/>
+                    <common:BookmarkColorMapping Category="Category0" CategoryBrush="Orange"/>
+                    <common:BookmarkColorMapping Category="Category1" CategoryBrush="Yellow"/>
+                    <common:BookmarkColorMapping Category="Category2" CategoryBrush="Red"/>
+                </common:ApplicationTheme.BookmarkColors>
+            
+            </common:ApplicationTheme>
 
         </common:ThemeManager.Themes>
 
@@ -237,5 +246,8 @@
 
     <common:ForumLayoutRetriever x:Key="forumLayoutRetriever"
                                  ThemeManager="{StaticResource AwfulThemeManager}" />
+
+    <common:BookmarkColorConverter x:Key="bookmarkColorConverter" 
+                                   CurrentTheme="{Binding CurrentTheme, Source={StaticResource AwfulThemeManager}}"/>
 
 </ResourceDictionary>

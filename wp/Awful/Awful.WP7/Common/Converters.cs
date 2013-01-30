@@ -146,6 +146,45 @@ namespace Awful.Common
         }
     }
 
+    public class BookmarkColorConverter : DependencyObject, IValueConverter
+    {
+        public static readonly DependencyProperty CurrentThemeProperty = DependencyProperty.Register(
+            "CurrentTheme", typeof(ApplicationTheme), typeof(BookmarkColorConverter), new PropertyMetadata(null));
+
+        public ApplicationTheme CurrentTheme
+        {
+            get { return GetValue(CurrentThemeProperty) as ApplicationTheme; }
+            set { SetValue(CurrentThemeProperty, value); }
+        }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            SolidColorBrush transparentBrush = new SolidColorBrush(Color.FromArgb(0,0,0,0));
+
+            if (!(value is ThreadMetadata))
+                return value;
+
+            else if (CurrentTheme == null)
+                return transparentBrush;
+
+            BookmarkColorCategory category = (value as ThreadMetadata).ColorCategory;
+            
+            var mapping = CurrentTheme.BookmarkColors
+                .Where(map => map.Category.Equals(category))
+                .SingleOrDefault();
+            
+            if (mapping == null)
+                return transparentBrush;
+
+            return mapping.CategoryBrush;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class ContentFilterConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

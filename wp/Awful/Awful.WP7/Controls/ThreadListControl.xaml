@@ -28,93 +28,97 @@
                   MinHeight="100">
 
                 <telerikPrimitives:RadContextMenu.ContextMenu>
-          <local:ThreadContextMenu JumpToPageRequest="ThreadContextMenu_JumpToPageRequest"/>
-        </telerikPrimitives:RadContextMenu.ContextMenu>
-        
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="Auto" />
-          <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+                    <local:ThreadContextMenu JumpToPageRequest="ThreadContextMenu_JumpToPageRequest"/>
+                </telerikPrimitives:RadContextMenu.ContextMenu>
 
-        <Grid Margin="0,5,0,0"
-              Visibility="{Binding IconView, Source={StaticResource IconViewer}}">
-          <Border x:Name="ThreadIconBorder"
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="4"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Margin="0,5,0,0"
+                      Visibility="{Binding IconView, Source={StaticResource IconViewer}}">
+                    <Border x:Name="ThreadIconBorder"
                   Width="100"
                   BorderThickness="2"
                   BorderBrush="{StaticResource PhoneBorderBrush}"
                   Height="100"
                   VerticalAlignment="Top">
-            <Grid>
-              <TextBlock Text="{Binding Tag}"
+                        <Grid>
+                            <TextBlock Text="{Binding Tag}"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          TextAlignment="Center"
                          TextWrapping="Wrap"
                          FontSize="10"
                          Style="{StaticResource PhoneTextAccentStyle}" />
-              
-              
-              <Image Source="/Assets/ThreadIcons/default.png"
+
+
+                            <Image Source="/Assets/ThreadIcons/default.png"
                      Canvas.ZIndex="9"
                      Stretch="UniformToFill"
                      AutomationProperties.Name="{Binding Tag}" />
-              
-              
-              <Image Source="{Binding Image}"
+
+
+                            <Image Source="{Binding Image}"
                      Canvas.ZIndex="10"
                      Stretch="UniformToFill"
                      AutomationProperties.Name="{Binding Tag}" />
-            </Grid>
+                        </Grid>
 
-          </Border>
+                    </Border>
 
-		  <Grid x:Name="ThreadRatingPanel"
+                    <Grid x:Name="ThreadRatingPanel"
 			Visibility="{Binding ShowRating, Converter={StaticResource collapseOnFalseConverter}}"
 			HorizontalAlignment="Left" 
 			VerticalAlignment="Top" 
 			Margin="-13,10,0,0">
-			
-			<local:RatingIcon x:Name="RatingIconItem"
+
+                        <local:RatingIcon x:Name="RatingIconItem"
 				Width="50"
 				Height="50"
                 Content="{Binding Rating}"
 				Background="{Binding RatingColor, Converter={StaticResource assetRetriever}}"
                 Foreground="{Binding Background, ElementName=RatingIconItem, Converter={StaticResource shadowColorConverter}, ConverterParameter=0.5}"/>
-		  </Grid>
+                    </Grid>
 
-		  </Grid>
-		  				
-		
-	
-        <StackPanel Grid.Column="1"
+                </Grid>
+
+                <StackPanel Grid.Column="1"
                     VerticalAlignment="Top"
                     Margin="0">
-          <TextBlock x:Name="TitleText"
+                    <TextBlock x:Name="TitleText"
                      Text="{Binding Title, Converter={StaticResource contentFilter}}"
                      TextWrapping="Wrap"
                      Style="{StaticResource PhoneTextTitle3Style}"
                      FontFamily="Segoe WP Semibold"
                      TextTrimming="WordEllipsis"
                      MaxHeight="95" />
-          <TextBlock x:Name="SubtitleText"
+                    <TextBlock x:Name="SubtitleText"
                      Text="{Binding Subtitle, Converter={StaticResource contentFilter}}"
                      Style="{StaticResource PhoneTextSubtleStyle}" />
-          <TextBlock x:Name="DescriptionText"
+                    <TextBlock x:Name="DescriptionText"
                      Text="{Binding Description, Converter={StaticResource contentFilter}}"
                      Visibility="{Binding ShowPostCount, Converter={StaticResource collapseOnFalseConverter}}"
                      MaxHeight="60"
                      Padding="0"
                      Style="{StaticResource PhoneTextAccentStyle}"
                      Foreground="{Binding Converter={StaticResource threadInfoColor}}"/>
-          <TextBlock x:Name="StickyText"
+                    <TextBlock x:Name="StickyText"
                      TextWrapping="Wrap"
                      Text="[Stickied]"
                      Visibility="{Binding IsSticky, Converter={StaticResource collapseOnFalseConverter}}"
                      Style="{StaticResource PhoneTextSubtleStyle}"
                      Foreground="{Binding CurrentTheme.AccentBrush, Source={StaticResource AwfulThemeManager}}" />
-        </StackPanel>
-      </Grid>
-    </DataTemplate>
+                </StackPanel>
+                
+                <Rectangle Grid.Column="2" 
+                           VerticalAlignment="Stretch" 
+                           HorizontalAlignment="Stretch" 
+                           Fill="{Binding Data, Converter={StaticResource bookmarkColorConverter}}"/>
+            </Grid>
+        </DataTemplate>
     <DataTemplate x:Key="EmptyListContentTemplate">
     	<TextBlock Style="{StaticResource EmptyListContentStyle}"
     		Text="{Binding}"

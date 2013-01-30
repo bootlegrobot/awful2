@@ -33,10 +33,10 @@ namespace Awful
         }
     }
 
-    public class BookmarkMetadata : ForumMetadata
+    public class UserBookmarksMetadata : ForumMetadata
     {
         public string Url { get { return CoreConstants.USERCP_URI; } }
-        public BookmarkMetadata()
+        public UserBookmarksMetadata()
         {
             ForumName = "bookmarks";
             ForumID = "-1";
@@ -49,6 +49,14 @@ namespace Awful
         public int PageNumber { get; set; }
         public int PageCount { get; set; }
         public IList<ThreadMetadata> Threads { get; set; }
+    }
+
+    public enum BookmarkColorCategory
+    {
+        Unknown = 0,
+        Category0,
+        Category1,
+        Category2,
     }
 
     [DataContract]
@@ -80,6 +88,8 @@ namespace Awful
         public DateTime? LastUpdated { get; set; }
         [DataMember]
         public string IconUri { get; set; }
+        [DataMember]
+        public BookmarkColorCategory ColorCategory { get; set; }
         
         public bool Equals(ThreadMetadata other)
         {

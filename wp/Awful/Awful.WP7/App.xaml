@@ -43,6 +43,7 @@
             <common:CollapseOnTrue x:Key="collapseOnTrueConverter" />
             <common:CollapseOnFalse x:Key="collapseOnFalseConverter" />
             <common:AssetRetriever x:Key="assetRetriever" />
+          
             
             <common:ContentFilterConverter x:Key="contentFilter" />
 

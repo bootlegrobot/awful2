@@ -20,10 +20,61 @@ namespace Awful
                 .ParseReplies(node)
                 .ParseRating(node)
                 .ParseSticky(node)
+                .ParseColorCategory(node)
                 .ParseIconUri(node);
 
             thread.LastUpdated = DateTime.Now;
             return thread;
+        }
+
+        private const string COLOR_CATEGORY0 = "bm0";
+        private const string COLOR_CATEGORY1 = "bm1";
+        private const string COLOR_CATEGORY2 = "bm2";
+
+        private static ThreadMetadata ParseColorCategory(this ThreadMetadata thread, HtmlNode node)
+        {
+            // code block example: <td class="star bm0">
+            var colorNode = node.Descendants("td").Where(aNode => aNode.GetAttributeValue("class", "")
+              .Contains("star")).FirstOrDefault();
+
+            if (colorNode != null)
+            {
+                string colorValue = colorNode.GetAttributeValue("class", "");
+                string categoryToken = colorValue.Split(new char[] { ' ' })[1];
+                try { thread.ColorCategory = ConvertColorValueToBookmarkCategory(categoryToken); }
+                catch (Exception ex)
+                {
+                    AwfulDebugger.AddLog(thread, AwfulDebugger.Level.Info, ex);
+                    thread.ColorCategory = BookmarkColorCategory.Unknown;
+                }
+            }
+
+            return thread;
+        }
+
+        private static BookmarkColorCategory ConvertColorValueToBookmarkCategory(string value)
+        {
+            BookmarkColorCategory category = default(BookmarkColorCategory);
+            switch (value)
+            {
+                case COLOR_CATEGORY0:
+                    category = BookmarkColorCategory.Category0;
+                    break;
+
+                case COLOR_CATEGORY1:
+                    category = BookmarkColorCategory.Category1;
+                    break;
+
+                case COLOR_CATEGORY2:
+                    category = BookmarkColorCategory.Category2;
+                    break;
+
+                default:
+                    category = BookmarkColorCategory.Unknown;
+                    break;
+            }
+
+            return category;
         }
 
         private static ThreadMetadata ParseSticky(this ThreadMetadata thread, HtmlNode node)

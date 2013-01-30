@@ -354,10 +354,10 @@ namespace Awful
         public static ForumPageMetadata Page(this ForumMetadata forum, int pageNumber)
         {
             ForumPageMetadata page = null;
-            if (forum is BookmarkMetadata)
+            if (forum is UserBookmarksMetadata)
             {
                 string url = null;
-                url = (forum as BookmarkMetadata).Url;
+                url = (forum as UserBookmarksMetadata).Url;
                 page = LoadPageFromUrl(url);
             }
             else
@@ -554,7 +554,7 @@ namespace Awful
 
         public static ForumPageMetadata LoadBookmarks(this UserMetadata user)
         {
-            BookmarkMetadata data = new BookmarkMetadata();
+            UserBookmarksMetadata data = new UserBookmarksMetadata();
             return data.Page(0);
         }
 

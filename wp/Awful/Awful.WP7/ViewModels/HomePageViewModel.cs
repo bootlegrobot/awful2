@@ -318,7 +318,7 @@ namespace Awful.ViewModels
             UpdateStatus("Loading bookmarks...");
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Loading bookmarks from SA...");
             var bookmarks = user.LoadBookmarks();
-            var data = new BookmarkMetadata();
+            var data = new UserBookmarksMetadata();
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Load completed. Formatting...");
             UpdateStatus("Formatting...");
             var result = Data.ForumThreadCollection.CreateThreadSources(bookmarks, data);
