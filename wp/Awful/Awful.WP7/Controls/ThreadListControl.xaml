@@ -20,7 +20,12 @@
         <common:ThreadInfoColorConverter x:Key="threadInfoColor"
                                          Default="{StaticResource PhoneForegroundBrush}"
                                          Accent="{StaticResource PhoneAccentBrush}" />
-      
+
+        
+        <common:BookmarkColorConverter x:Key="bookmarkColorConverter"
+                                       ThemeManager="{StaticResource AwfulThemeManager}"/>
+        
+
         <DataTemplate x:Key="ThreadListItemWithIconTemplate">
             <Grid Margin="{StaticResource PhoneTouchTargetOverhang}"
                   Opacity="{Binding ItemOpacity}"
@@ -33,8 +38,9 @@
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="4"/>
+                    
                 </Grid.ColumnDefinitions>
 
                 <Grid Margin="0,5,0,0"
@@ -85,7 +91,7 @@
 
                 </Grid>
 
-                <StackPanel Grid.Column="1"
+                <StackPanel Grid.Column="2"
                     VerticalAlignment="Top"
                     Margin="0">
                     <TextBlock x:Name="TitleText"
@@ -113,8 +119,11 @@
                      Foreground="{Binding CurrentTheme.AccentBrush, Source={StaticResource AwfulThemeManager}}" />
                 </StackPanel>
                 
-                <Rectangle Grid.Column="2" 
-                           VerticalAlignment="Stretch" 
+                <Rectangle Grid.Column="1"
+                           Margin="6,5,0,0"
+                           Height="50"
+                           Width="4"
+                           VerticalAlignment="Top"
                            HorizontalAlignment="Stretch" 
                            Fill="{Binding Data, Converter={StaticResource bookmarkColorConverter}}"/>
             </Grid>

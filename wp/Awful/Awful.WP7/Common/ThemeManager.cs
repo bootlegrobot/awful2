@@ -170,6 +170,11 @@ namespace Awful.Common
 
         public virtual List<BookmarkColorMapping> BookmarkColors { get; set; }
 
+        public ApplicationTheme()
+        {
+            Initialize();
+        }
+
         public virtual void Initialize() 
         {
             if (BookmarkColors == null)

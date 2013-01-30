@@ -148,13 +148,13 @@ namespace Awful.Common
 
     public class BookmarkColorConverter : DependencyObject, IValueConverter
     {
-        public static readonly DependencyProperty CurrentThemeProperty = DependencyProperty.Register(
-            "CurrentTheme", typeof(ApplicationTheme), typeof(BookmarkColorConverter), new PropertyMetadata(null));
+        public static readonly DependencyProperty ThemeMangerProperty = DependencyProperty.Register(
+            "ThemeManager", typeof(ThemeManager), typeof(BookmarkColorConverter), new PropertyMetadata(null));
 
-        public ApplicationTheme CurrentTheme
+        public ThemeManager ThemeManager
         {
-            get { return GetValue(CurrentThemeProperty) as ApplicationTheme; }
-            set { SetValue(CurrentThemeProperty, value); }
+            get { return GetValue(ThemeMangerProperty) as ThemeManager; }
+            set { SetValue(ThemeMangerProperty, value); }
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -164,12 +164,12 @@ namespace Awful.Common
             if (!(value is ThreadMetadata))
                 return value;
 
-            else if (CurrentTheme == null)
+            else if (ThemeManager == null)
                 return transparentBrush;
 
             BookmarkColorCategory category = (value as ThreadMetadata).ColorCategory;
             
-            var mapping = CurrentTheme.BookmarkColors
+            var mapping = ThemeManager.CurrentTheme.BookmarkColors
                 .Where(map => map.Category.Equals(category))
                 .SingleOrDefault();
             
