@@ -125,8 +125,8 @@ namespace Awful
                 AwfulDebugger.AddLog(top, AwfulDebugger.Level.Debug, "Page number parsing failed.");
 
             // set page number
-            page.PageNumber = pageNumber;
-            page.LastPage = lastPage;
+            page.PageNumber = 1;
+            page.LastPage = 1;
 
             return page;
         }

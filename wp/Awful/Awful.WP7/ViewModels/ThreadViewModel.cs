@@ -211,7 +211,9 @@ namespace Awful.ViewModels
 
                 // mine data about the thread from the page
                 Thread.Title = page.ThreadTitle;
-                Thread.PageCount = page.LastPage;
+                
+                if (page.LastPage > 0)
+                    Thread.PageCount = page.LastPage;
                 
                 // set the selected index to that of the loaded page
                 SelectedIndex = page.PageNumber - 1;

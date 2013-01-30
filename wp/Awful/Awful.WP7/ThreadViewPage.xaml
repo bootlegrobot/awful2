@@ -550,7 +550,6 @@
 
     				<Border HorizontalAlignment="Stretch"
     					VerticalAlignment="Stretch"
-    					Padding="8"
     					Width="72"
     					Background="{StaticResource PhoneChromeBrush}"
     					Margin="0,0,2,0">
@@ -649,7 +648,7 @@
             Grid.RowSpan="2"
             VerticalAlignment="Top"
             d:LayoutOverrides="GridBox"
-            BorderThickness="1"
+            BorderThickness="0"
             CornerRadius="100"
             Canvas.ZIndex="5">
       <Border.BorderBrush>
