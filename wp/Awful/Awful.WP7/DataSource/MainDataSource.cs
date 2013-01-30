@@ -584,6 +584,18 @@ namespace Awful.Data
             set { this.UniqueId = value; }
         }
 
+        [IgnoreDataMember]
+        public bool HasCategory
+        {
+            get
+            {
+                bool value = Data != null &&
+                    Data.ColorCategory != BookmarkColorCategory.Unknown;
+
+                return value;
+            }
+        }
+
         private string _forumID;
         [DataMember]
         public string ForumID

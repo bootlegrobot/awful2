@@ -124,7 +124,8 @@
                            Height="50"
                            Width="4"
                            VerticalAlignment="Top"
-                           HorizontalAlignment="Stretch" 
+                           HorizontalAlignment="Stretch"
+                           Visibility="{Binding HasCategory, Converter={StaticResource collapseOnFalseConverter}}"
                            Fill="{Binding Data, Converter={StaticResource bookmarkColorConverter}}"/>
             </Grid>
         </DataTemplate>
