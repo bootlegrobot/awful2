@@ -52,16 +52,15 @@ namespace Awful
             AwfulDebugger.AddLog(top,  AwfulDebugger.Level.Debug, "Parsing HTML for posts...");
 
             // first, let's generate data about the thread
-            ThreadPageMetadata page = ProcessParent(top);
-
-            // parse other thread page data
-            ParsePageNumberAndMaxPages(page, top);
-            ParsePostTable(page, top);
+            ThreadPageMetadata page = new ThreadPageMetadata()
+                .ProcessParent(top)
+                .ParsePageNumberAndMaxPages(top)
+                .ParsePostTable(top);
          
             return page;
         }
 
-        private static ThreadPageMetadata ParsePostTable(ThreadPageMetadata page, HtmlNode top)
+        private static ThreadPageMetadata ParsePostTable(this ThreadPageMetadata page, HtmlNode top)
         {
             if (page.Posts == null) { page.Posts = new List<ThreadPostMetadata>(); }
 
@@ -90,7 +89,7 @@ namespace Awful
             return page;
         }
 
-        private static ThreadPageMetadata ParsePageNumberAndMaxPages(ThreadPageMetadata page, HtmlNode top)
+        private static ThreadPageMetadata ParsePageNumberAndMaxPages(this ThreadPageMetadata page, HtmlNode top)
         {
             // now, let's parse page number
             AwfulDebugger.AddLog(top, AwfulDebugger.Level.Debug, "Parsing page number...");
@@ -106,7 +105,7 @@ namespace Awful
             {
                 var currentPageOptions = currentPageNode.Descendants(THREAD_PAGE_NUMBER_ELEMENT_2);
 
-                var currentPageOption = currentPageOptions    
+                var currentPageOption = currentPageOptions
                     .Where(node => node.GetAttributeValue(THREAD_PAGE_NUMBER_ATTRIBUTE_2, "").Equals(THREAD_PAGE_NUMBER_VALUE_2))
                     .FirstOrDefault();
 
@@ -119,21 +118,26 @@ namespace Awful
 
                 if (lastPageOption != null)
                     int.TryParse(lastPageOption.GetAttributeValue(THREAD_PAGE_NUMBER_ATTRIBUTE_3, ""), out lastPage);
+
+                page.PageNumber = pageNumber;
+                page.LastPage = lastPage;
             }
 
             else
+            {
                 AwfulDebugger.AddLog(top, AwfulDebugger.Level.Debug, "Page number parsing failed.");
+                // set page number
+                page.PageNumber = 1;
+                page.LastPage = 1;
+            }
 
-            // set page number
-            page.PageNumber = 1;
-            page.LastPage = 1;
+           
 
             return page;
         }
 
-        private static ThreadPageMetadata ProcessParent(HtmlNode top)
+        private static ThreadPageMetadata ProcessParent(this ThreadPageMetadata page, HtmlNode top)
         {
-            ThreadPageMetadata page = new ThreadPageMetadata();
             var threadNode = top.Descendants()
                 .Where(node => node.GetAttributeValue("class", "").Equals("bclast"))
                 .FirstOrDefault();
