@@ -230,54 +230,9 @@ namespace Awful
             return MetroStyler.Metrofy(page.Posts);
         }
 
-        public static string PageUrl(this ThreadMetadata data, int page = -1)
-        {
-            if (string.IsNullOrEmpty(data.ThreadID))
-                throw new ArgumentException("PageUrl: Cannot generate url with null or empty threadId.");
-
-            StringBuilder url = new StringBuilder();
-            url.AppendFormat("http://forums.somethingawful.com/displaythread.php?threadid={0}", data.ThreadID);
-            if (page == -1)
-                url.Append("&goto=newpost");
-            else
-                url.AppendFormat("&pagenumber={0}", page);
-
-            return url.ToString();
-        }
-
-        private static ThreadPageMetadata FetchThreadPage(string threadId, int pageNumber)
-        {
-            if (string.IsNullOrEmpty(threadId))
-                throw new ArgumentException("FetchThreadPage: Cannot fetch thread page with null or empty threadId.");
-
-            // example string: http://forums.somethingawful.com/showthread.php?&threadid=3439182&pagenumber=69
-            // or http://forums.somethingawful.com/showthread.php?&threadid=12345&goto=newpost
-
-            var url = new StringBuilder();
-            // http://forums.somethingawful.com/showthread.php
-            url.AppendFormat("{0}/{1}", CoreConstants.BASE_URL, CoreConstants.THREAD_PAGE_URI);
-
-            if (pageNumber == (int)ThreadPageType.NewPost)
-                url.AppendFormat("?&threadid={0}&goto=newpost", threadId);
-            
-            else if (pageNumber == (int)ThreadPageType.Last)
-                url.AppendFormat("?&threadid={0}&goto=lastpost", threadId);
-
-            else
-            {
-                // &threadid=<THREADID>&pagenumber=<PAGENUMBER>
-                url.AppendFormat("?&threadid={0}&pagenumber={1}", threadId, pageNumber);
-            }
-
-            var web = new AwfulWebClient();
-            var doc = web.FetchHtml(url.ToString());
-            var result = ThreadPageParser.ParseThreadPage(doc);
-            return result;
-        }
-
         public static ThreadPageMetadata Page(this ThreadMetadata thread, int pageNumber)
         {
-           return FetchThreadPage(thread.ThreadID, pageNumber);
+            return AwfulContentRequest.Threads.LoadThreadPage(thread.ThreadID, pageNumber);
         }
 
         public static ThreadPageMetadata FirstUnreadPost(this ThreadMetadata thread)
@@ -288,88 +243,61 @@ namespace Awful
             // and for new threads, that would be the first page.
 
             return thread.IsNew ?
-                FetchThreadPage(thread.ThreadID, 1) :
-                FetchThreadPage(thread.ThreadID, (int)ThreadPageType.NewPost);
+                AwfulContentRequest.Threads.LoadThreadPage(thread.ThreadID, 1) :
+                AwfulContentRequest.Threads.LoadThreadUnreadPostPage(thread.ThreadID);
         }
 
         public static ThreadPageMetadata LastPage(this ThreadMetadata thread)
         {
-            return FetchThreadPage(thread.ThreadID, (int)ThreadPageType.Last);
+            return AwfulContentRequest.Threads.LoadThreadLastPostPage(thread.ThreadID);
         }
 
         public static ThreadPageMetadata Refresh(this ThreadPageMetadata page)
         {
-            return FetchThreadPage(page.ThreadID, page.PageNumber);
+            return AwfulContentRequest.Threads.LoadThreadPage(page.ThreadID, page.PageNumber);
         }
 
         public static string Quote(this ThreadPostMetadata post)
         {
-            return ThreadTasks.Quote(post);
+            return AwfulContentRequest.Threads.QuotePost(post.PostID);
         }
 
         public static bool MarkAsRead(this ThreadPostMetadata post)
         {
-            return ThreadTasks.MarkAsLastRead(post);
+            return AwfulContentRequest.Threads.MarkPostAsRead(post.PostID);
         }
 
         public static IThreadPostRequest BeginReply(this ThreadMetadata thread)
         {
-            var request = new ThreadReplyRequest(thread);
-            return request;
+            return AwfulContentRequest.Threads.BeginReplyToThread(thread.ThreadID);
         }
 
         public static IThreadPostRequest BeginEdit(this ThreadPostMetadata post)
         {
-            var request = new ThreadPostEditRequest(post);
-            return request;
+            return AwfulContentRequest.Threads.BeginPostEdit(post.PostID);
         }
 
         #endregion
 
         #region Forum Extensions
 
-        private static ForumPageMetadata LoadPageFromUrl(string forumPageUrl)
-        {
-            var web = new AwfulWebClient();
-            var doc = web.FetchHtml(forumPageUrl);
-            var result = ForumParser.ParseForumPage(doc);
-            return result;
-        }
-
-        private static ForumPageMetadata LoadPageFromForumId(string forumId, int pageNumber)
-        {
-            var url = new StringBuilder();
-            // http://forums.somethingawful.com/forumdisplay.php
-            url.AppendFormat("{0}/{1}", CoreConstants.BASE_URL, CoreConstants.FORUM_PAGE_URI);
-            // ?forumid=<FORUMID>
-            url.AppendFormat("?forumid={0}", forumId);
-            // &daysprune=30&perpage=30&posticon=0sortorder=desc&sortfield=lastpost
-            url.Append("&daysprune=30&perpage=30&posticon=0sortorder=desc&sortfield=lastpost");
-            // &pagenumber=<PAGENUMBER>
-            url.AppendFormat("&pagenumber={0}", pageNumber);
-
-            return LoadPageFromUrl(url.ToString());
-        }
-
         public static ForumPageMetadata Page(this ForumMetadata forum, int pageNumber)
         {
             ForumPageMetadata page = null;
             if (forum is UserBookmarksMetadata)
             {
-                string url = null;
-                url = (forum as UserBookmarksMetadata).Url;
-                page = LoadPageFromUrl(url);
+                page = AwfulContentRequest.Forums.LoadUserBookmarks();
             }
             else
             {
-                page = LoadPageFromForumId(forum.ForumID, pageNumber);
+                page = AwfulContentRequest.Forums.LoadForumPage(forum.ForumID, pageNumber);
             }
             return page;
         }
 
         public static ForumPageMetadata Refresh(this ForumPageMetadata page)
         {
-            return LoadPageFromForumId(page.ForumID, page.PageNumber);
+            return AwfulContentRequest.Forums.LoadForumPage(page.ForumID, page.PageNumber);
         }
 
         #endregion
@@ -378,123 +306,79 @@ namespace Awful
 
         public static PrivateMessageMetadata Refresh(this PrivateMessageMetadata metadata)
         {
-            int id = -1;
-            if (int.TryParse(metadata.PrivateMessageId, out id))
-                return PrivateMessageService.Service.FetchMessage(id);
-            else
-                return null;
+            return AwfulContentRequest.Messaging.LoadMessage(metadata.PrivateMessageId);
         }
 
         public static IPrivateMessageRequest BeginForward(this PrivateMessageMetadata metadata)
         {
-            IPrivateMessageRequest request = null;
-            int id = -1;
-            if (int.TryParse(metadata.PrivateMessageId, out id))
-                request = PrivateMessageService.Service.BeginForwardToMessageRequest(id);
-
+            var request = AwfulContentRequest.Messaging.ForwardMessage(metadata.PrivateMessageId);
             return request;
         }
 
         public static IPrivateMessageRequest BeginReply(this PrivateMessageMetadata metadata)
         {
-            IPrivateMessageRequest request = null;
-            int id = -1;
-            if (int.TryParse(metadata.PrivateMessageId, out id))
-                request = PrivateMessageService.Service.BeginReplyToMessageRequest(id);
-
+            var request = AwfulContentRequest.Messaging.BeginReplyToMessage(metadata.PrivateMessageId);
             return request;
         }
 
         public static bool Send(this IPrivateMessageRequest request)
         {
-            return PrivateMessageService.Service.SendMessage(request);
+            return AwfulContentRequest.Messaging.SendMessageRequest(request);
+            
         }
 
         public static bool Delete(this PrivateMessageMetadata metadata)
         {
-            int id = -1;
-            int folderId = -1;
-            bool success = false;
-            if (int.TryParse(metadata.PrivateMessageId, out id) &&
-                int.TryParse(metadata.FolderId, out folderId))
-            {
-                success = PrivateMessageService.Service.DeleteMessage(id, folderId, folderId);
-            }
-
+            bool success = AwfulContentRequest.Messaging.DeleteMessage(metadata.FolderId, metadata.PrivateMessageId);
             return success;
         }
 
         public static bool MoveTo(this PrivateMessageMetadata metadata, PrivateMessageFolderMetadata folder)
         {
-            int id = int.Parse(metadata.PrivateMessageId);
-            int srcId = int.Parse(metadata.FolderId);
-            int destId = int.Parse(folder.FolderId);
-            return PrivateMessageService.Service.MoveMessage(id, srcId, destId);
+            
+            return AwfulContentRequest.Messaging.MoveMessage(
+                metadata.FolderId,
+                folder.FolderId,
+                metadata.PrivateMessageId);
         }
 
         public static bool MoveTo(this IEnumerable<PrivateMessageMetadata> messages, PrivateMessageFolderMetadata folder)
         {
-            var idList = new List<int>(messages.Count());
+            var idList = new List<string>(messages.Count());
+
             string folderId = messages.First().FolderId;
             foreach (var message in messages)
             {
                 if (folderId.Equals(message.FolderId))
                     throw new Exception("All messages must belong to the same folder.");
 
-                int messageId = int.Parse(message.PrivateMessageId);
-                idList.Add(messageId);
+                idList.Add(message.PrivateMessageId);
             }
 
-            int srcId = int.Parse(folderId);
-            int destId = int.Parse(folder.FolderId);
-            return PrivateMessageService.Service.MoveMessages(idList, srcId, destId);
+            return AwfulContentRequest.Messaging.MoveMessages(folderId, folder.FolderId, idList);
         }
 
         public static PrivateMessageFolderMetadata Refresh(this PrivateMessageFolderMetadata metadata)
         {
-            int id = -1;
-            PrivateMessageFolderMetadata folder = null;
-            if (int.TryParse(metadata.FolderId, out id))
-                folder = PrivateMessageService.Service.FetchFolder(id);
-
-            return folder;
+           
+            return AwfulContentRequest.Messaging.LoadFolder(metadata.FolderId);
         }
 
         public static bool RenameTo(this PrivateMessageFolderMetadata metadata, string name)
         {
-            bool success = false;
-            var editor = PrivateMessageService.Service.BeginEditFolderRequest();
-            editor.RenameFolder(metadata, name);
-            success = editor.SendRequest();
+            bool success = AwfulContentRequest.Messaging.RenameFolder(metadata.FolderId, name);
             return success;
         }
 
         public static bool Delete(this PrivateMessageFolderMetadata metadata)
         {
-            bool success = false;
-            var editor = PrivateMessageService.Service.BeginEditFolderRequest();
-            editor.DeleteFolder(metadata);
-            success = editor.SendRequest();
-            return success;
+            return AwfulContentRequest.Messaging.DeleteFolder(metadata.FolderId);
         }
 
         public static bool DeleteAllMessages(this PrivateMessageFolderMetadata metadata)
         {
-            int folderId = int.Parse(metadata.FolderId);
-            var messageIds = metadata.Messages.Select(message => int.Parse(message.PrivateMessageId)).ToList();
-            return PrivateMessageService.Service.DeleteMessages(messageIds, folderId, folderId);
-        }
-
-        public static bool CreateNew(this PrivateMessageFolderMetadata metadata)
-        {
-            if (metadata.Name == null || metadata.Name == string.Empty)
-                throw new Exception("Cannot create a new folder with no name!");
-
-            bool success = false;
-            var editor = PrivateMessageService.Service.BeginEditFolderRequest();
-            editor.CreateFolder(metadata.Name);
-            success = editor.SendRequest();
-            return success;
+            return AwfulContentRequest.Messaging.DeleteAllMessages(metadata.FolderId,
+                metadata.Messages.Select(messsage => messsage.PrivateMessageId));
         }
 
         #endregion

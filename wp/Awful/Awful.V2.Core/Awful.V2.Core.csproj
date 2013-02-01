@@ -56,7 +56,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\AwfulContentRequest.cs" />
     <Compile Include="Common\BindableBase.cs" />
+    <Compile Include="Common\ContentStrategy\ForumRequestStrategy.cs" />
+    <Compile Include="Common\ContentStrategy\Scraping\HtmlScrapeForumRequest.cs" />
+    <Compile Include="Common\ContentStrategy\Scraping\HtmlScrapeSmileyRequest.cs" />
+    <Compile Include="Common\ContentStrategy\Scraping\HtmlScrapeThreadRequest.cs" />
+    <Compile Include="Common\ContentStrategy\PrivateMessageRequestStrategy.cs" />
+    <Compile Include="Common\ContentStrategy\Scraping\PrivateMessageScrapeStrategy.cs" />
+    <Compile Include="Common\ContentStrategy\SmileyRequestStrategy.cs" />
+    <Compile Include="Common\ContentStrategy\ThreadRequestStrategy.cs" />
     <Compile Include="Helpers\AwfulDebugger.cs" />
     <Compile Include="Helpers\AwfulLoginRequest.cs" />
     <Compile Include="Helpers\AwfulWebClient.cs" />

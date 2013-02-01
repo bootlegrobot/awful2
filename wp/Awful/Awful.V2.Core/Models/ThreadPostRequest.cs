@@ -21,6 +21,8 @@ namespace Awful
     {
         public ThreadReplyRequest(ThreadMetadata thread) { this.Thread = thread; }
 
+        public ThreadReplyRequest(string threadId) : this(new ThreadMetadata() { ThreadID = threadId }) { }
+
         public ThreadMetadata Thread
         {
             get; private set;
@@ -57,6 +59,8 @@ namespace Awful
             this.Post = post;
             Content = ThreadTasks.FetchEditText(post);
         }
+
+        public ThreadPostEditRequest(string postId) : this(new ThreadPostMetadata() { PostID = postId }) { }
 
         public PostRequestType RequestType
         {

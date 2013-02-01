@@ -105,7 +105,7 @@ namespace Awful
         /// <param name="thisFolderID"></param>
         /// <param name="folderID"></param>
         /// <param name="result"></param>
-        public bool DeleteMessages(IList<int> privateMessageIDs, int thisFolderID, int folderID)
+        public bool DeleteMessages(IEnumerable<int> privateMessageIDs, int thisFolderID, int folderID)
         {
             string deleteAction = string.Format("&delete={0}", DELETE_MESSAGE_SUBMIT_ACTION);
             return this.HandleMessages(privateMessageIDs, thisFolderID, folderID, deleteAction);
@@ -250,7 +250,7 @@ namespace Awful
         /// <param name="thisFolderID"></param>
         /// <param name="folderID"></param>
         /// <param name="result"></param>
-        public bool MoveMessages(IList<int> privateMessageIDs, int thisFolderID, int folderID)
+        public bool MoveMessages(IEnumerable<int> privateMessageIDs, int thisFolderID, int folderID)
         {
             string submitMove = string.Format("&move={0}", MOVE_MESSAGE_SUBMIT_VALUE);
             return this.HandleMessages(privateMessageIDs, thisFolderID, folderID, submitMove);
@@ -276,7 +276,7 @@ namespace Awful
 
         #region private methods
 
-        private bool HandleMessages(IList<int> privateMessageIDs, int thisFolderID, int folderID,
+        private bool HandleMessages(IEnumerable<int> privateMessageIDs, int thisFolderID, int folderID,
             string action)
         {
 

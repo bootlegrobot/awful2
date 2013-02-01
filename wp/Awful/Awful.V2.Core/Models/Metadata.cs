@@ -185,6 +185,11 @@ namespace Awful
 
         public static readonly TagMetadata NoTag;
         static TagMetadata() { NoTag = new TagMetadata() { Title = "No Icon", Value = "0", TagUri = string.Empty }; }
+
+        public static IEnumerable<TagMetadata> LoadSmileyList()
+        {
+            return AwfulContentRequest.Smilies.LoadSmilies();
+        }
     }
 
     [DataContract]
@@ -227,5 +232,10 @@ namespace Awful
         public string FolderId { get; set; }
         [DataMember]
         public ICollection<PrivateMessageMetadata> Messages { get; set; }
+
+        public static bool CreateNew(string name)
+        {
+            return AwfulContentRequest.Messaging.CreateNewFolder(name);
+        }
     }
 }
