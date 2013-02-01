@@ -69,7 +69,7 @@ function viewport() {
     window.external.notify('Your viewport width is ' + viewportwidth + 'x' + viewportheight);
 }
 
-function set_styles(foreground, background, accent, chrome, fontsize) {
+function set_styles(foreground, background, accent, seen, chrome, fontsize) {
     try {
 
         // set the foreground color of the view
@@ -84,8 +84,10 @@ function set_styles(foreground, background, accent, chrome, fontsize) {
         // set the font-size
         $("body").css("font-size", fontsize + 'px');
 
+        // set the seen color
+        $(".post_content_seen").css("color", seen);
+
         // set the accents
-        $(".post_content_seen").css("color", accent);
         $(".quote-author").css("color", accent);
         $("blockquote").css("border-left", "2px solid " + accent);
 

@@ -99,19 +99,20 @@ namespace Awful
             }
         }
 
-        public void SetPageStyle(Color foreground, Color background, Color accentColor, int fontSize)
+        public void SetPageStyle(Color foreground, Color background, Color accentColor, Color seenColor, int fontSize)
         {
             string font = fontSize.ToString();
             string fg = ToHtmlColor(foreground);
             string accent = ToHtmlColor(accentColor);
             string bg = ToHtmlColor(background);
+            string seen = ToHtmlColor(seenColor);
 
             // hard coded chrome color for the html background -- makes for a cool look
             // when at the top and bottom of the page
             Color chromeColor = (Color)Application.Current.Resources["PhoneChromeColor"];
             string chrome = ToHtmlColor(chromeColor);
 
-            this._browser.InvokeScript(JS_SET_STYLES_FUNCTION, fg, bg, accent, chrome, font);
+            this._browser.InvokeScript(JS_SET_STYLES_FUNCTION, fg, bg, accent, seen, chrome, font);
             App.Model.ContentFontSize = fontSize;
         }
 
@@ -177,9 +178,12 @@ namespace Awful
         private void OnPageContentLoaded(string response)
         {
             // Set styles
-            SetPageStyle((Color)Application.Current.Resources["PhoneForegroundColor"],
-                (Color)Application.Current.Resources["PhoneBackgroundColor"],
-                (Color)Application.Current.Resources["PhoneAccentColor"],
+            var theme = ThemeManager.Instance.CurrentTheme;
+
+            SetPageStyle(theme.ThreadPageForegroundColor,
+                theme.ThreadPageBackgroundColor,
+                theme.AccentColor,
+                theme.ThreadPageOldPostColor,
                 App.Model.ContentFontSize);
         }
 

@@ -162,6 +162,7 @@ namespace Awful.Common
         public virtual Brush BackgroundBrush { get; set; }
         public virtual Brush AccentBrush { get; set; }
 
+        public virtual Color AccentColor { get; set; }
         public virtual Color ThreadPageForegroundColor { get; set; }
         public virtual Color ThreadPageBackgroundColor { get; set; }
         public virtual Color ThreadPageOldPostColor { get; set; }
@@ -185,5 +186,7 @@ namespace Awful.Common
         {
             return Title;
         }
+
+      
     }
 }

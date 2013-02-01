@@ -237,9 +237,10 @@
                                      ForegroundBrush="{StaticResource PhoneForegroundBrush}"
                                      BackgroundBrush="{StaticResource PhoneBackgroundBrush}"
                                      AccentBrush="{StaticResource PhoneAccentBrush}"
+                                     AccentColor="{StaticResource PhoneAccentColor}"
                                      ThreadPageBackgroundColor="{StaticResource PhoneBackgroundColor}"
                                      ThreadPageForegroundColor="{StaticResource PhoneForegroundColor}"
-                                     ThreadPageOldPostColor="{StaticResource PhoneAccentColor}">
+                                     ThreadPageOldPostColor="DarkGray">
                 
                 
                 <common:ApplicationTheme.BookmarkColors>
