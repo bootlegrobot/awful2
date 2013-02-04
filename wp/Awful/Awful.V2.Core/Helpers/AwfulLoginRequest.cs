@@ -9,7 +9,7 @@ namespace Awful
 {
     public class AwfulLoginClient : Common.BindableBase
     {
-        public const int DefaultTimeoutInMilliseconds = 10000;
+        public const int DefaultTimeoutInMilliseconds = 60000;
         private const string COOKIE_DOMAIN_URL = "http://fake.forums.somethingawful.com";
         private const string LOGIN_URL = "http://forums.somethingawful.com/account.php?";
 

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Text;
 using System.Windows;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 
 
 namespace Awful
@@ -115,10 +116,13 @@ namespace Awful
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Performing authentication check...");
             
             Authenticate();
-            
+
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Authentication check complete.");
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, string.Format("Requesting html from url '{0}'...", url));
 
+            if (!NetworkInterface.GetIsNetworkAvailable())
+                throw new Exception("The network is unavailable. Check your network settings and please try again.");
+            
             if (SimulateTimeout)
             {
                 AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "SimulateTimeout = true.");
