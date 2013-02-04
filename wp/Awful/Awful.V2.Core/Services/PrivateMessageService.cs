@@ -42,7 +42,7 @@ namespace Awful
                 CoreConstants.PRIVATE_MESSAGE_URI,
                 privateMessageId);
 
-            var doc = web.FetchHtml(url);
+            var doc = web.FetchHtml(url).ToHtmlDocument();
             if (doc != null)
                 message = PrivateMessageParser.ParsePrivateMessageDocument(doc);
 
@@ -120,7 +120,7 @@ namespace Awful
             // pull inbox html from server
             string url = string.Format("{0}/{1}?folderid={2}", CoreConstants.BASE_URL, CoreConstants.PRIVATE_MESSAGE_URI, INBOX_MESSAGE_FOLDERID);
             var web = new AwfulWebClient();
-            var doc = web.FetchHtml(url);
+            var doc = web.FetchHtml(url).ToHtmlDocument();
 
             List<PrivateMessageFolderMetadata> folders = null;
             if (doc != null)
@@ -168,7 +168,7 @@ namespace Awful
         {
             string url = string.Format("{0}/{1}?folderid={2}", CoreConstants.BASE_URL, CoreConstants.PRIVATE_MESSAGE_URI, folderID);
             var web = new AwfulWebClient();
-            var doc = web.FetchHtml(url);
+            var doc = web.FetchHtml(url).ToHtmlDocument();
             PrivateMessageFolderMetadata folder = null;
             if (doc != null)
             {
@@ -186,7 +186,7 @@ namespace Awful
         {
             var web = new AwfulWebClient();
             var url = string.Format("{0}/{1}?action=editfolders", CoreConstants.BASE_URL, CoreConstants.PRIVATE_MESSAGE_URI);
-            var doc = web.FetchHtml(url);
+            var doc = web.FetchHtml(url).ToHtmlDocument();
             PrivateMessageFolderEditor editor = null;
             if (doc != null)
             {
@@ -367,7 +367,7 @@ namespace Awful
         private IPrivateMessageRequest GetMessageRequest(string url)
         {
             var web = new AwfulWebClient();
-            var doc = web.FetchHtml(url);
+            var doc = web.FetchHtml(url).ToHtmlDocument();
 
             PrivateMessageRequest request = PrivateMessageParser.ParseNewPrivateMessageFormDocument(doc);
             return request;

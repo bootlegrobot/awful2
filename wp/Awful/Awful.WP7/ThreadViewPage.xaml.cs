@@ -20,14 +20,37 @@ namespace Awful
         public ThreadViewPage()
         {
             InitializeComponent();
+
             viewmodel = new ViewModels.ThreadViewModel();
+            SetThreadNavCommands(viewmodel);
+
+            _threadStack = new Stack<ViewModels.ThreadViewModel>();
+            
+            Commands.EditPostCommand.EditRequested += new ThreadPostRequestEventHandler(OpenEditWindow);
+            Commands.ViewSAThreadCommand.ViewThread += OnSAUriLinkSelected;
+            Commands.ViewSAThreadCommand.ViewLoading += ViewSAThreadCommand_ViewLoading;
+            Commands.ViewSAThreadCommand.ViewFailed += ViewSAThreadCommand_ViewFailed;
+
             viewmodel.ReadyToBind += OnViewModelReadyToBind;
             viewmodel.UpdateFailed += OnViewModelUpdateFailed;
-            SetThreadNavCommands(viewmodel);
-            Commands.EditPostCommand.EditRequested += new ThreadPostRequestEventHandler(OpenEditWindow);
             Loaded += ThreadViewPage_Loaded;
-            
             threadReplyControl.Loaded += WireThreadReplyControl;
+        }
+
+        void ViewSAThreadCommand_ViewFailed(object sender, SAThreadViewEventArgs args)
+        {
+            VisualStateManager.GoToState(this, "Reading", true);
+        }
+
+        void ViewSAThreadCommand_ViewLoading(object sender, SAThreadViewEventArgs args)
+        {
+            VisualStateManager.GoToState(this, "Loading", true);
+        }
+
+        void OnSAUriLinkSelected(object sender, SAThreadViewEventArgs args)
+        {
+            this._threadStack.Push(args.Viewmodel);
+            this.LoadViewmodel(args.Viewmodel);
         }
 
         void WireThreadReplyControl(object sender, RoutedEventArgs e)
@@ -42,6 +65,8 @@ namespace Awful
         {
             ThreadInitializationPane.Visibility = Visibility.Collapsed;
         }
+
+        private readonly Stack<ViewModels.ThreadViewModel> _threadStack;
 
         private ViewModels.ThreadViewModel viewmodel;
         public ViewModels.ThreadViewModel Viewmodel { get { return viewmodel; } }
@@ -189,7 +214,26 @@ namespace Awful
                 e.Cancel = true;
             }
 
+            else if (this._threadStack.Count > 0)
+            {
+                this._threadStack.Pop();
+                if (this._threadStack.Count > 0)
+                {
+                    this.LoadViewmodel(this._threadStack.Peek());
+                    e.Cancel = true;
+                }
+            }
+
             base.OnBackKeyPress(e);
+        }
+
+        private void LoadViewmodel(ViewModels.ThreadViewModel threadViewModel)
+        {
+            this.pagePresenter.ClearHtml();
+            this.SetThreadNavCommands(threadViewModel);
+            this.DataContext = threadViewModel;
+
+            VisualStateManager.GoToState(this, "Reading", true);
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -212,11 +256,14 @@ namespace Awful
             base.OnNavigatingFrom(e);
             if (!e.IsNavigationInitiator)
             {
-                state.Save(this);
+                this.state.Save(this);
             }
 
             else
-                state = null;
+            {
+                this.state = null;
+                this._threadStack.Clear();
+            }
         }
 
         private void BuildStateFromIsoStore()
@@ -243,15 +290,18 @@ namespace Awful
 
         private void OnViewModelReadyToBind(object sender, Common.ThreadReadyToBindEventArgs args)
         {
-            ThreadInitializationPane.Visibility = Visibility.Collapsed;
             this.state = args.State;
+            this._threadStack.Push(viewmodel);
             this.DataContext = viewmodel;
+            this.ThreadInitializationPane.Visibility = System.Windows.Visibility.Collapsed;
             this.GoToIndex(args.State.PageNumber - 1);
+
+            VisualStateManager.GoToState(this, "Reading", true);
         }
 
         private void BuildStateFromNavigationQuery()
         {
-            ThreadInitializationPane.Visibility = Visibility.Visible;
+            VisualStateManager.GoToState(this, "Loading", true);
 
             int pageNumber = int.MinValue;
             string threadId = null;
@@ -291,7 +341,7 @@ namespace Awful
             var request = e.Request;
             if (request != null)
             {
-                this.threadReplyControl.ReplyTextBox.Text = request.Content;
+                this.threadReplyControl.ReplyViewModel.Text = request.Content;
                 this._currentRequest = request;
                 this.ShowThreadReplyPanel(null, null);
             }
@@ -311,9 +361,12 @@ namespace Awful
             if (this.IsReplyViewActive)
             {
                 this.ApplicationBar = this.PageNavBar;
+                VisualStateManager.GoToState(this, "Reading", true);
+                /*
                 this.ThreadReplyPanel.Visibility = System.Windows.Visibility.Collapsed;
                 this.ThreadViewPanel.Visibility = System.Windows.Visibility.Visible;
                 this.PostJumpButtonPanel.Visibility = System.Windows.Visibility.Visible;
+                */
                 this.IsFullscreenActive = this.IsFullscreenActive;
             }
         }
@@ -323,16 +376,19 @@ namespace Awful
             // TODO: Add event handler implementation here.
             if (!this.IsReplyViewActive)
             {
+                VisualStateManager.GoToState(this, "Replying", true);
+                /*
                 this.ThreadViewPanel.Visibility = System.Windows.Visibility.Collapsed;
                 this.ThreadReplyPanel.Visibility = System.Windows.Visibility.Visible;
                 this.PostJumpButtonPanel.Visibility = System.Windows.Visibility.Collapsed;
+                */
 
                 // cancel edit option
                 var menu = this.ReplyBar.MenuItems[1] as IApplicationBarMenuItem;
                 if (CurrentRequest.RequestType == PostRequestType.Edit)
-                    menu.IsEnabled = false;
-                else
                     menu.IsEnabled = true;
+                else
+                    menu.IsEnabled = false;
 
                 this.ApplicationBar = this.ReplyBar;
             }

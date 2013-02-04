@@ -15,7 +15,7 @@ namespace Awful.Common
         public override IEnumerable<TagMetadata> LoadSmilies()
         {
             var url = GetSmileyPageUri().AbsoluteUri;
-            var doc = new AwfulWebClient().FetchHtml(url);
+            var doc = new AwfulWebClient().FetchHtml(url).ToHtmlDocument();
             return SmileyParser.ParseSmiliesFromNode(doc);
         }
     }

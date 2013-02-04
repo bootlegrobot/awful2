@@ -116,7 +116,7 @@ namespace Awful
                 threadID);
 
             var web = new AwfulWebClient();
-            var doc = web.FetchHtml(url);
+            var doc = web.FetchHtml(url).ToHtmlDocument();
 
             reply = GetReplyFormInfo(threadID, doc);
             reply.TEXT = text;
@@ -287,7 +287,7 @@ namespace Awful
         {
             var web = new AwfulWebClient();
             var url = webUrl;
-            var doc = web.FetchHtml(url);
+            var doc = web.FetchHtml(url).ToHtmlDocument();
 
             //Logger.AddEntry(string.Format("ThreadReplyServer - Retrieving text from '{0}'.", url));
 

@@ -26,6 +26,11 @@ namespace Awful.Controls
             this.PageManager.PostSelected += new EventHandler(OnPostSelected);
         }
 
+        public void ClearHtml()
+        {
+            this.PageManager.ClearHtml();
+        }
+
         private RadAnimation FadeInAnimation
         {
             get { return this.Resources["FadeInAnimation"] as RadAnimation; }
@@ -197,7 +202,7 @@ namespace Awful.Controls
                     PageManager.ScrollToPost(unread);
             }
 
-            catch (Exception ex) { }
+            catch (Exception ex) { AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex); }
             finally { this.IsLoading = false; }
         }
 

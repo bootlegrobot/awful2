@@ -383,6 +383,12 @@ namespace Awful.Data
         }
 
         public event EventHandler CanExecuteChanged;
+        protected void OnExecuteChanged()
+        {
+            var eventHandler = CanExecuteChanged;
+            if (eventHandler != null)
+                CanExecuteChanged(this, EventArgs.Empty);
+        }
         
         public bool CanExecute(object parameter)
         {

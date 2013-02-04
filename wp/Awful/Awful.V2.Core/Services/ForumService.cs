@@ -22,7 +22,7 @@ namespace Awful
         private IEnumerable<TagMetadata> Private_FetchAllSmilies()
         {
             var client = new AwfulWebClient();
-            var document = client.FetchHtml(SMILEY_REQUEST_URI);
+            var document = client.FetchHtml(SMILEY_REQUEST_URI).ToHtmlDocument();
             var smilies = SmileyParser.ParseSmiliesFromNode(document);
             return smilies;
         }
@@ -35,7 +35,7 @@ namespace Awful
             
             string url = string.Format("{0}/{1}?forumid=1", CoreConstants.BASE_URL, CoreConstants.FORUM_PAGE_URI);
             var web = new AwfulWebClient();
-            var doc = web.FetchHtml(url);
+            var doc = web.FetchHtml(url).ToHtmlDocument();
 
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Forum fetch complete. Parsing...");
             

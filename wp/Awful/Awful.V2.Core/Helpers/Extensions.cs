@@ -178,6 +178,13 @@ namespace Awful
 
     public static class HtmlExtensions
     {
+        internal static HtmlDocument ToHtmlDocument(this string html)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+            return doc;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -233,6 +240,11 @@ namespace Awful
         public static ThreadPageMetadata Page(this ThreadMetadata thread, int pageNumber)
         {
             return AwfulContentRequest.Threads.LoadThreadPage(thread.ThreadID, pageNumber);
+        }
+
+        public static ThreadPageMetadata ThreadPageFromUri(Uri uri)
+        {
+            return AwfulContentRequest.Threads.LoadThreadPage(uri);
         }
 
         public static ThreadPageMetadata FirstUnreadPost(this ThreadMetadata thread)

@@ -79,6 +79,12 @@ namespace Awful.Commands
         }
 
         public event EventHandler CanExecuteChanged;
+        protected void OnExecuteChanged()
+        {
+            var eventHandler = CanExecuteChanged;
+            if (eventHandler != null)
+                CanExecuteChanged(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {

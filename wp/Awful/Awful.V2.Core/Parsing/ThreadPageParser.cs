@@ -20,6 +20,7 @@ namespace Awful
         private const string THREAD_PAGE_NUMBER_VALUE_2 = "selected";
         private const string THREAD_PAGE_NUMBER_ATTRIBUTE_3 = "value";
 
+        /*
         public static ThreadPageMetadata ParseThreadPage(string threadID)
         {
             ThreadPageMetadata data = null;
@@ -34,18 +35,21 @@ namespace Awful
                 pageNumber);
             return data;
         }
+        */
 
         internal static ThreadPageMetadata ParseThreadPage(HtmlDocument document)
         {
             return ProcessThreadPage(document.DocumentNode);
         }
 
+        /*
         public static ThreadPageMetadata ParseThreadPage(Uri threadPageUri)
         {
             var client = new AwfulWebClient();
             var htmlDoc = client.FetchHtml(threadPageUri.AbsoluteUri);
             return ParseThreadPage(htmlDoc);
         }
+        */
 
         private static ThreadPageMetadata ProcessThreadPage(HtmlNode top)
         {

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Awful
 {
-    internal class AwfulContentRequest
+    public class AwfulContentRequest
     {
         public static ThreadRequestStrategy Threads { get; private set; }
         public static ForumRequestStrategy Forums { get; private set; }

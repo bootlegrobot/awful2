@@ -27,14 +27,14 @@ namespace Awful.Common
         public override ForumPageMetadata LoadUserBookmarks()
         {
             string url = CreateUserBookmarksUri().AbsoluteUri;
-            var doc = new AwfulWebClient().FetchHtml(url);
+            var doc = new AwfulWebClient().FetchHtml(url).ToHtmlDocument();
             return ForumParser.ParseForumPage(doc);
         }
 
         public override ForumPageMetadata LoadForumPage(string forumId, int pageNumber)
         {
             string url = CreateForumPageUri(forumId, pageNumber).AbsoluteUri;
-            var doc = new AwfulWebClient().FetchHtml(url);
+            var doc = new AwfulWebClient().FetchHtml(url).ToHtmlDocument();
             return ForumParser.ParseForumPage(doc);
         }
 

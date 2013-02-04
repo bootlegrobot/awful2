@@ -13,7 +13,7 @@ namespace Awful
 {
     public class AwfulWebClient : Common.BindableBase
     {
-        public const int DefaultTimeoutInMilliseconds = 10000;
+        public const int DefaultTimeoutInMilliseconds = 60000;
 
         /// <summary>
         /// Fires an event anytime the web client needs authentication information to proceed.
@@ -41,7 +41,7 @@ namespace Awful
         /// </summary>
         public static int SimulateTimeoutChance { get; set; }
 
-        private delegate HtmlDocument FetchHtmlDelegate(string url, int timeout);
+        private delegate string FetchHtmlDelegate(string url, int timeout);
 
         private static LoginRequiredEventArgs OnLoginRequired(AwfulWebClient client)
         {
@@ -108,8 +108,8 @@ namespace Awful
         /// <param name="url">The location of the target html.</param>
         /// <param name="timeout">The timeout value, in milliseconds, before cancelling the request.
         /// If no value is supplied, a default value of 10 seconds is used.</param>
-        /// <returns>A HtmlDocument representing the raw html.</returns>
-        public HtmlDocument FetchHtml(string url, int timeout = DefaultTimeoutInMilliseconds)
+        /// <returns>A string representing the raw html.</returns>
+        public string FetchHtml(string url, int timeout = DefaultTimeoutInMilliseconds)
         {
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, string.Format("START FetchHtml({0}, {1})", url, timeout));
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Performing authentication check...");
@@ -146,12 +146,9 @@ namespace Awful
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "End Html.");
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info,  "Request complete.");
 
-            var doc = new HtmlDocument();
-            doc.LoadHtml(html);
-
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, string.Format("END FetchHtml({0}, {1})", url, timeout));
 
-            return doc;
+            return html;
         }
 
 		/// <summary>
@@ -172,7 +169,7 @@ namespace Awful
             return fetch.BeginInvoke(url, timeout, callback, this);
         }
 
-        public HtmlDocument EndFetchHtml(IAsyncResult result)
+        public string EndFetchHtml(IAsyncResult result)
         {
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "START EndFetchHtml()");
             

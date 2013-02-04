@@ -25,6 +25,8 @@
     <SilverlightAppEntry>Awful.WP7.App</SilverlightAppEntry>
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -141,7 +143,6 @@
     <Compile Include="Common\SettingsBase.cs" />
     <Compile Include="Common\ThemeManager.cs" />
     <Compile Include="Controls\ContextMenus.cs" />
-    <Compile Include="Controls\ForumItemControl.cs" />
     <Compile Include="Controls\ForumListControl.xaml.cs">
       <DependentUpon>ForumListControl.xaml</DependentUpon>
     </Compile>
@@ -921,4 +922,5 @@
   </Target>
   -->
   <ProjectExtensions />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
 </Project>

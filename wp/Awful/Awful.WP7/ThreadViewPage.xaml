@@ -71,81 +71,16 @@
         Background="Transparent">
     <VisualStateManager.VisualStateGroups>
       <VisualStateGroup x:Name="VisibilityStates">
-        <VisualStateGroup.Transitions>
-          <VisualTransition From="Reading"
-                            GeneratedDuration="0"
-                            To="Replying">
-            <VisualTransition.GeneratedEasingFunction>
-              <CircleEase EasingMode="EaseIn" />
-            </VisualTransition.GeneratedEasingFunction>
-            <Storyboard>
-              <DoubleAnimation Duration="0"
-                               To="0.5"
-                               Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.CenterOfRotationY)"
-                               Storyboard.TargetName="ThreadViewPanel"
-                               d:IsOptimized="True" />
-              <DoubleAnimation Duration="0"
-                               To="0"
-                               Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.CenterOfRotationX)"
-                               Storyboard.TargetName="ThreadViewPanel"
-                               d:IsOptimized="True" />
-              <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)"
-                                             Storyboard.TargetName="ThreadViewPanel">
-                <EasingDoubleKeyFrame KeyTime="0"
-                                      Value="0" />
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5"
-                                      Value="90" />
-              </DoubleAnimationUsingKeyFrames>
-              <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
-                                             Storyboard.TargetName="ThreadReplyPanel">
-                <DiscreteObjectKeyFrame KeyTime="0:0:0.2">
-                  <DiscreteObjectKeyFrame.Value>
-                    <Visibility>Visible</Visibility>
-                  </DiscreteObjectKeyFrame.Value>
-                </DiscreteObjectKeyFrame>
-              </ObjectAnimationUsingKeyFrames>
-            </Storyboard>
-          </VisualTransition>
-          <VisualTransition From="Replying"
-                            GeneratedDuration="0:0:0.3"
-                            To="Reading">
-            <VisualTransition.GeneratedEasingFunction>
-              <CircleEase EasingMode="EaseIn" />
-            </VisualTransition.GeneratedEasingFunction>
-            <Storyboard>
-              <DoubleAnimation Duration="0"
-                               To="0"
-                               Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.CenterOfRotationX)"
-                               Storyboard.TargetName="ThreadViewPanel"
-                               d:IsOptimized="True" />
-              <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)"
-                                             Storyboard.TargetName="ThreadViewPanel">
-                <EasingDoubleKeyFrame KeyTime="0"
-                                      Value="90" />
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5"
-                                      Value="0" />
-              </DoubleAnimationUsingKeyFrames>
-              <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
-                                             Storyboard.TargetName="ThreadViewPanel">
-                <DiscreteObjectKeyFrame KeyTime="0">
-                  <DiscreteObjectKeyFrame.Value>
-                    <Visibility>Visible</Visibility>
-                  </DiscreteObjectKeyFrame.Value>
-                </DiscreteObjectKeyFrame>
-              </ObjectAnimationUsingKeyFrames>
-              <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
-                                             Storyboard.TargetName="ThreadReplyPanel">
-                <DiscreteObjectKeyFrame KeyTime="0:0:0.333">
-                  <DiscreteObjectKeyFrame.Value>
-                    <Visibility>Collapsed</Visibility>
-                  </DiscreteObjectKeyFrame.Value>
-                </DiscreteObjectKeyFrame>
-              </ObjectAnimationUsingKeyFrames>
-            </Storyboard>
-          </VisualTransition>
-        </VisualStateGroup.Transitions>
         <VisualState x:Name="Reading">
           <Storyboard>
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+										   Storyboard.TargetName="ContentRoot">
+			 <DiscreteObjectKeyFrame KeyTime="0">
+                <DiscreteObjectKeyFrame.Value>
+                  <Visibility>Visible</Visibility>
+                </DiscreteObjectKeyFrame.Value>
+              </DiscreteObjectKeyFrame>
+			</ObjectAnimationUsingKeyFrames>	
             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.IsHitTestVisible)"
                                            Storyboard.TargetName="TitleText">
               <DiscreteObjectKeyFrame KeyTime="0">
@@ -158,6 +93,14 @@
         </VisualState>
         <VisualState x:Name="Replying">
           <Storyboard>
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+										   Storyboard.TargetName="ContentRoot">
+			 <DiscreteObjectKeyFrame KeyTime="0">
+                <DiscreteObjectKeyFrame.Value>
+                  <Visibility>Visible</Visibility>
+                </DiscreteObjectKeyFrame.Value>
+              </DiscreteObjectKeyFrame>
+			</ObjectAnimationUsingKeyFrames>	
             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
                                            Storyboard.TargetName="ThreadViewPanel">
               <DiscreteObjectKeyFrame KeyTime="0">
@@ -184,23 +127,35 @@
             </ObjectAnimationUsingKeyFrames>
           </Storyboard>
         </VisualState>
+        <VisualState x:Name="Loading">
+        	<Storyboard>
+        			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+										   Storyboard.TargetName="ContentRoot">
+			 <DiscreteObjectKeyFrame KeyTime="0">
+                <DiscreteObjectKeyFrame.Value>
+                  <Visibility>Collapsed</Visibility>
+                </DiscreteObjectKeyFrame.Value>
+              </DiscreteObjectKeyFrame>
+			</ObjectAnimationUsingKeyFrames>	
+        		<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="ThreadInitializationPane">
+        			<DiscreteObjectKeyFrame KeyTime="0">
+        				<DiscreteObjectKeyFrame.Value>
+        					<Visibility>Visible</Visibility>
+        				</DiscreteObjectKeyFrame.Value>
+        			</DiscreteObjectKeyFrame>
+        		</ObjectAnimationUsingKeyFrames>
+        	</Storyboard>
+        </VisualState>
       </VisualStateGroup>
     </VisualStateManager.VisualStateGroups>
-    <Grid.RowDefinitions>
+    
+    <Grid x:Name="ContentRoot" Visibility="Collapsed">
+		
+	
+	<Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-
-        <StackPanel x:Name="ThreadInitializationPane"
-                    Visibility="Collapsed"
-                    Grid.RowSpan="2"
-                    VerticalAlignment="Center">   
-            <TextBlock Style="{StaticResource PhoneTextNormalStyle}" Text="Loading Thread..."
-                       TextAlignment="Center"/>
-            
-            <ProgressBar IsIndeterminate="True" Margin="{StaticResource PhoneTouchTargetOverhang}"/>
-            
-        </StackPanel>
 
         <!--TitlePanel contains the name of the application and page title-->
 
@@ -661,6 +616,15 @@
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Stretch" />
     </Border>
+  </Grid>
+    <StackPanel x:Name="ThreadInitializationPane"
+    	VerticalAlignment="Center" Visibility="Collapsed">   
+    	<TextBlock Style="{StaticResource PhoneTextNormalStyle}" Text="Loading Thread..."
+    		TextAlignment="Center"/>
+            
+    	<ProgressBar IsIndeterminate="True" Margin="{StaticResource PhoneTouchTargetOverhang}"/>
+            
+    </StackPanel>
   </Grid>
 
 </phone:PhoneApplicationPage>

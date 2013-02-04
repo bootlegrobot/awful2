@@ -10,6 +10,7 @@ namespace Awful
         protected abstract Uri CreateThreadLastPostPageUri(string threadId);
         protected abstract Uri CreateThreadPageByUserUri(string threadId, string userId);
 
+        public abstract ThreadPageMetadata LoadThreadPage(Uri uri);
         public abstract ThreadPageMetadata LoadThreadPage(string threadId, int pageNumber);
         public abstract ThreadPageMetadata LoadThreadUnreadPostPage(string threadId);
         public abstract ThreadPageMetadata LoadThreadLastPostPage(string threadId);

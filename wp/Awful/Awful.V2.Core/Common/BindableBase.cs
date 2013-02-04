@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using System.Windows;
 
 namespace Awful.Common
 {
@@ -49,9 +50,21 @@ namespace Awful.Common
         protected void OnPropertyChanged(string propertyName = null)
         {
             var eventHandler = this.PropertyChanged;
+
             if (eventHandler != null)
             {
-                eventHandler(this, new PropertyChangedEventArgs(propertyName));
+                try
+                {
+                    eventHandler(this, new PropertyChangedEventArgs(propertyName));
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, ex);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            eventHandler(this, new PropertyChangedEventArgs(propertyName));
+                        });
+                }
             }
         }
     }

@@ -15,18 +15,21 @@ namespace Awful.Commands
 {
     public class ViewSAThreadCommand : BackgroundWorkerCommand<Uri>
     {
-        public event SAThreadViewEventHandler ViewThread;
+        public static event SAThreadViewEventHandler ViewThread;
+        public static event SAThreadViewEventHandler ViewLoading;
+        public static event SAThreadViewEventHandler ViewFailed;
 
-        private void OnViewThread(ViewModels.ThreadViewModel viewmodel)
+        private static void FireEvent(object sender, ViewModels.ThreadViewModel viewmodel,
+            SAThreadViewEventHandler handler)
         {
-            if (ViewThread != null)
-                ViewThread(this, new SAThreadViewEventArgs(viewmodel));
+            if (handler != null)
+                handler(sender, new SAThreadViewEventArgs(viewmodel));
         }
 
         protected override object DoWork(Uri parameter)
         {
             // try and parse a thread page from the html
-            var page = ThreadPageParser.ParseThreadPage(parameter);
+            ThreadPageMetadata page = MetadataExtensions.ThreadPageFromUri(parameter);
 
             // since we have a page, create thread metadata from it
             ThreadMetadata thread = new ThreadMetadata()
@@ -48,7 +51,13 @@ namespace Awful.Commands
 
             // set the current page to page source
             viewmodel.SelectedItem = viewmodel.Pages[pageIndex];
+            viewmodel.SelectedIndex = pageIndex;
             return viewmodel;
+        }
+
+        protected override void PreWork(Uri item)
+        {
+            FireEvent(this, null, ViewLoading);
         }
 
         public override bool CanExecute(object parameter)
@@ -60,6 +69,7 @@ namespace Awful.Commands
         protected override void OnError(Exception ex)
         {
             Notification.ShowError("Navigation failed.", "Hyperlink");
+            FireEvent(this, null, ViewFailed);
         }
 
         protected override void OnCancel()
@@ -69,7 +79,7 @@ namespace Awful.Commands
 
         protected override void OnSuccess(object arg)
         {
-            OnViewThread(arg as ViewModels.ThreadViewModel);
+            FireEvent(this, arg as ViewModels.ThreadViewModel, ViewThread);        
         }
 
         protected override bool PreCondition(Uri item)
@@ -101,7 +111,7 @@ namespace Awful.Commands
             WebBrowserTask task = new WebBrowserTask();
             task.Uri = uri;
             try { task.Show(); }
-            catch (Exception ex) { }
+            catch (Exception ex) { AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex); }
         }
 
         protected override bool PreCondition(Uri item)

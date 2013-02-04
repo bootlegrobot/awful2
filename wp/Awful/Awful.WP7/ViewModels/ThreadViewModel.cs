@@ -61,7 +61,6 @@ namespace Awful.ViewModels
             set { SetProperty(ref _customPageCommand, value, "CustomPageCommand"); }
         }
 
-        private Data.ThreadPageDataProxy _proxy;
         private int _selectedIndex;
         public int SelectedIndex
         {

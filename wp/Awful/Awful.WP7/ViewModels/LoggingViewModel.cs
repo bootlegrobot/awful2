@@ -122,6 +122,7 @@ namespace Awful.ViewModels
             }
             catch (IsolatedStorageException ex)
             {
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex);
                 AwfulDebugger.SaveAndDispose();
                 ReadTextFromFile(path);
             }

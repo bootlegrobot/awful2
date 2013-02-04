@@ -61,6 +61,8 @@ namespace Awful.Commands
 
         protected abstract bool PreCondition(T item);
 
+        protected virtual void PreWork(T item) { }
+
         protected virtual BackgroundWorker CreateBackgroundWorker()
         {
             return new BackgroundWorker();
@@ -86,6 +88,7 @@ namespace Awful.Commands
                 && PreCondition((T)parameter))
             {
                 this.IsRunning = true;
+                PreWork((T)parameter);
                 Worker.RunWorkerAsync(parameter);
                 OnCanExecuteChanged();
             }

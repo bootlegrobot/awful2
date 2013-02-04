@@ -37,25 +37,26 @@ namespace Awful.Common
                 userId));
         }
 
+        public override ThreadPageMetadata LoadThreadPage(Uri uri)
+        {
+            string url = uri.AbsoluteUri;
+            var doc = new AwfulWebClient().FetchHtml(url).ToHtmlDocument();
+            return ThreadPageParser.ParseThreadPage(doc);
+        }
+
         public override ThreadPageMetadata LoadThreadPage(string threadId, int pageNumber)
         {
-            string url = CreateThreadPageUri(threadId, pageNumber).AbsoluteUri;
-            var doc = new AwfulWebClient().FetchHtml(url);
-            return ThreadPageParser.ParseThreadPage(doc);
+            return LoadThreadPage(CreateThreadPageUri(threadId, pageNumber));
         }
 
         public override ThreadPageMetadata LoadThreadUnreadPostPage(string threadId)
         {
-            string url = CreateThreadNewPostPageUri(threadId).AbsoluteUri;
-            var doc = new AwfulWebClient().FetchHtml(url);
-            return ThreadPageParser.ParseThreadPage(doc);
+            return LoadThreadPage(CreateThreadNewPostPageUri(threadId));
         }
 
         public override ThreadPageMetadata LoadThreadLastPostPage(string threadId)
         {
-            string url = CreateThreadLastPostPageUri(threadId).AbsoluteUri;
-            var doc = new AwfulWebClient().FetchHtml(url);
-            return ThreadPageParser.ParseThreadPage(doc);
+            return LoadThreadPage(CreateThreadLastPostPageUri(threadId));
         }
 
         public override IThreadPostRequest BeginReplyToThread(string threadId)
