@@ -289,6 +289,8 @@
     <Content Include="ApplicationIcon.png" />
     <Content Include="Assets\AppBar\appbar.add.rest.png" />
     <Content Include="Assets\AppBar\appbar.back.rest.png" />
+    <Content Include="Assets\AppBar\appbar.delete.rest.png" />
+    <Content Include="Assets\AppBar\appbar.download.rest.png" />
     <Content Include="Assets\AppBar\appbar.favs.rest.png" />
     <Content Include="Assets\AppBar\appbar.goto.rest.png" />
     <Content Include="Assets\AppBar\appbar.minus.rest.png" />
@@ -297,6 +299,7 @@
     <Content Include="Assets\AppBar\appbar.save.rest.png" />
     <Content Include="Assets\AppBar\appbar.transport.ff.rest.png" />
     <Content Include="Assets\AppBar\appbar.transport.rew.rest.png" />
+    <Content Include="Assets\AppBar\appbar.upload.rest.png" />
     <Content Include="Assets\AppBar\BookmarkIcon.png" />
     <Content Include="Assets\ForumIcons\1.png" />
     <Content Include="Assets\ForumIcons\122.png" />

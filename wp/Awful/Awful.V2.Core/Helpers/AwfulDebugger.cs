@@ -39,6 +39,8 @@ namespace Awful
             }
         }
 
+        public static string CurrentFilePath { get; private set; }
+
         public static void SaveAndDispose()
         {
             Instance.Dispose();
@@ -57,6 +59,16 @@ namespace Awful
         public static string ViewLog(DateTime date)
         {
             return Instance.LoadLogFrom(date);
+        }
+
+        public static void StopLogging()
+        {
+            try
+            {
+                AwfulDebugger.SaveAndDispose();
+            }
+
+            catch (Exception) { }
         }
 
         private AwfulDebugger()
@@ -91,6 +103,8 @@ namespace Awful
 
             this._logStream = storageFile.OpenFile(filePath,
                 FileMode.Append, FileAccess.Write, FileShare.Read);
+
+            CurrentFilePath = filePath;
 
 #if DEBUG
             Debug.WriteLine(string.Format("AwfulDebugger: log file size: {0}", _logStream.Length));

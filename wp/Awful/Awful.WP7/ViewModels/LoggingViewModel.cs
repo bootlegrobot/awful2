@@ -10,19 +10,57 @@ using System.Net;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 using Telerik.Windows.Data;
+using Microsoft.Phone.Shell;
 
 namespace Awful.ViewModels
 {
-    public class LoggingViewModel : ListViewModel<LoggingItem>
+    public class LoggingViewModel : ListViewModel<LogViewModel>
     {
         private int _index = -1;
-        private LoggingItem _item = null;
+        private LogViewModel _item = null;
+
+        private IApplicationBar _appBar;
+        public IApplicationBar AppBar
+        {
+            get { return _appBar; }
+            set { _appBar = value; }
+        }
        
         public LoggingViewModel() : base() 
         {
-            
+            LogViewModel.Directory = CoreConstants.LOG_DIRECTORY;
         }
-       
+
+        public void ScrollCurrentLogToTop()
+        {
+            var current = SelectedItem;
+            if (current != null && current.Content != null)
+                current.SelectedItem = current.Content.First();
+        }
+
+        public void ScrollCurrentLogToBottom()
+        {
+            var current = SelectedItem;
+            if (current != null && current.Content != null)
+                current.SelectedItem = current.Content.Last();
+        }
+
+        public bool DeleteCurrentLog()
+        {
+            var current = SelectedItem;
+            if (SelectedItem != null)
+                return SelectedItem.DeleteLog();
+
+            return false;
+        }
+
+        public void Refresh()
+        {
+            this.SelectedItem = null;
+            this.SelectedItemIndex = -1;
+            this.LoadDataAsync();
+        }
+
         protected override void OnError(Exception exception)
         {
             //throw new NotImplementedException();
@@ -33,13 +71,17 @@ namespace Awful.ViewModels
             //throw new NotImplementedException();
         }
 
-        protected override System.Collections.Generic.IEnumerable<LoggingItem> LoadDataInBackground()
+        protected override System.Collections.Generic.IEnumerable<LogViewModel> LoadDataInBackground()
         {
-            List<LoggingItem> items = new List<LoggingItem>();
+            // stop debugger to read current log file
+            AwfulDebugger.StopLogging();
+
+            // initialize
+            List<LogViewModel> items = new List<LogViewModel>();
             var storage = IsolatedStorageFile.GetUserStoreForApplication();
             var files = storage.GetFileNames(CoreConstants.LOG_DIRECTORY + "/*");
             foreach (var file in files)
-                items.Add(new LoggingItem(CoreConstants.LOG_DIRECTORY) { Filename = file });
+                items.Add(new LogViewModel{ Filename = file });
 
             return items;
         }
@@ -52,12 +94,16 @@ namespace Awful.ViewModels
                 SetProperty(ref _index, value, "SelectedItemIndex");
                 if (value != -1 || Items.IsNullOrEmpty())
                 {
-                    SelectedItem = Items[value];
+                    try { SelectedItem = Items[value]; }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        SelectedItem = null;
+                    }
                 }
             }
         }
 
-        public LoggingItem SelectedItem
+        public LogViewModel SelectedItem
         {
             get
             {
@@ -69,137 +115,6 @@ namespace Awful.ViewModels
         protected override void OnSuccess()
         {
            
-        }
-    }
-
-    public sealed class LoggingItem1 : Common.BindableBase
-    {
-        public delegate void LogContentDelegate(object content);
-        private string _filename = string.Empty;
-        private object _content = null;
-        private string _dir = string.Empty;
-        private BackgroundWorker _worker = new BackgroundWorker();
-
-        public LoggingItem1(string directory) 
-        { 
-            _dir = directory;
-            _worker.DoWork += new DoWorkEventHandler(OnDoWork);
-            _worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(OnWorkCompleted);
-        }
-
-        public void LoadContentAsync(LogContentDelegate view)
-        {
-            if (this.IsContentLoaded)
-                view(this.Content);
-
-            else if (!this._worker.IsBusy)
-            {
-                this._worker.RunWorkerAsync(view);
-            }
-        }
-
-        void OnWorkCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Error != null)
-            {
-                Notification.Show(NotificationMethod.MessageBox, e.Error.Message, "Log");
-            }
-
-            else if (!e.Cancelled && e.Error == null)
-            {
-                LogContentDelegate ViewContent = e.Result as LogContentDelegate;
-                ViewContent(this.Content);
-            }
-        }
-
-        void OnDoWork(object sender, DoWorkEventArgs e)
-        {
-            e.Result = e.Argument as LogContentDelegate;
-            var path = string.Format("{0}/{1}", this.Directory, this.Filename);
-            try
-            {
-                ReadTextFromFile(path);
-            }
-            catch (IsolatedStorageException ex)
-            {
-                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex);
-                AwfulDebugger.SaveAndDispose();
-                ReadTextFromFile(path);
-            }
-
-            catch (Exception)
-            {
-                throw new Exception("Could not load the target file.");
-            }
-        }
-
-        private void ReadTextFromFile(string path)
-        {
-            var store = IsolatedStorageFile.GetUserStoreForApplication();
-            using (var stream = store.OpenFile(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                using (var reader = new StreamReader(stream))
-                {
-                    StackPanel panel = new StackPanel();
-                    string line;
-                    do
-                    {
-                        line = reader.ReadLine();
-                        if (string.IsNullOrEmpty(line))
-                        {
-                            panel.Children.Add(new Rectangle { Height = 20.0 });
-                        }
-                        else
-                        {
-                            var textBlock = new TextBlock
-                            {
-                                TextWrapping = TextWrapping.Wrap,
-                                Text = line,
-                                FontSize = 22,
-                            };
-                            panel.Children.Add(textBlock);
-                        }
-                    } while (line != null);
-
-                    this._content = panel;
-                  
-                    // Gives the UI a bit of breathing room.
-                    Thread.Sleep(500);
-                }
-            }
-        }
-
-        public string Directory { get { return this._dir; } }
-
-        public string Filename
-        {
-            get { return _filename; }
-            set
-            {
-                SetProperty(ref _filename, value, "Filename");
-            }
-        }
-
-        public object Content
-        {
-            get 
-            {
-                return _content;
-            }
-            set
-            {
-                SetProperty(ref _content, value, "Content");
-            }
-        }
-
-        public bool IsContentLoaded
-        {
-            get { return this._content != null; }
-        }
-
-        public override string ToString()
-        {
-            return Filename;
         }
     }
 
@@ -305,6 +220,123 @@ namespace Awful.ViewModels
         public override string ToString()
         {
             return Filename;
+        }
+    }
+
+    public sealed class LogViewModel : Commands.BackgroundWorkerCommand<string>
+    {
+        private string _filename = string.Empty;
+        private static string directory = string.Empty;
+        private List<string> _content;
+        private string _selectedItem = null;
+
+        public LogViewModel() : base() {  }
+
+        public static string Directory
+        {
+            get { return directory; }
+            set { directory = value; }
+        }
+
+        public string Filename
+        {
+            get { return _filename; }
+            set { _filename = value; }
+        }
+
+        public string FilePath
+        {
+            get { return Directory + "/" + Filename; }
+        }
+
+        public List<string> Content
+        {
+            get
+            {
+                // if content is null (file hasn't been loaded)
+                // begin loading thread
+                if (_content == null)
+                    this.Execute(this.FilePath);
+
+                return _content;
+            }
+            set { SetProperty(ref _content, value, "Content"); }
+        }
+
+        public string SelectedItem
+        {
+            get { return _selectedItem; }
+            set { SetProperty(ref _selectedItem, value, "SelectedItem"); }
+        }
+
+        public bool DeleteLog()
+        {
+            var storage = IsolatedStorageFile.GetUserStoreForApplication();
+            bool value = false;
+            try 
+            { 
+                storage.DeleteFile(this.FilePath);
+                value = !storage.FileExists(this.FilePath);
+            }
+
+            catch (Exception) { }
+
+            return value;
+        }
+
+        public override string ToString()
+        {
+            return this.Filename;
+        }
+
+        protected override object DoWork(string parameter)
+        {
+            UpdateStatus("Loading file...");
+
+            var storage = IsolatedStorageFile.GetUserStoreForApplication();
+            var list = new List<string>(10000);
+            using (Stream fs = storage.OpenFile(parameter, FileMode.Open, FileAccess.Read, FileShare.None))
+            {
+                using (StreamReader fsReader = new StreamReader(fs))
+                {
+                    string text = string.Empty;
+                    while ((text = fsReader.ReadLine()) != null)
+                        list.Add(text);
+                }
+            }
+
+            return list;
+        }
+
+        protected override void OnError(Exception ex)
+        {
+            UpdateStatus("Load failed.");
+
+            // notify the user that loading the file failed.
+            Notification.ShowError(NotificationMethod.MessageBox,
+                string.Format("Could not open the log file '{0}'.", this.Filename),
+                "Error");
+        }
+
+        protected override void OnCancel()
+        {
+            UpdateStatus(string.Empty);
+
+            // empty content buffer for reloading on next binding query
+            this._content = null;
+        }
+
+        protected override void OnSuccess(object arg)
+        {
+            var list = arg as List<string>;
+            if (list != null)
+                this.Content = list;
+        }
+
+        protected override bool PreCondition(string item)
+        {
+            var storage = IsolatedStorageFile.GetUserStoreForApplication();
+            return storage.FileExists(this.FilePath);
         }
     }
 }

@@ -26,14 +26,28 @@ namespace Awful
             get { return LayoutRoot.Resources["LoggingDataSource"] as ViewModels.LoggingViewModel; }
         }
 
+        private readonly DispatcherTimer _timer;
+
         public SettingsPage()
         {
             InitializeComponent();
             MainPivot.SelectionChanged += new SelectionChangedEventHandler(MainPivot_SelectionChanged);
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(200);
-            timer.Tick += (o, e) => { this.ContentFilterSwitch.IsChecked = SettingsDataSource.ContentFilterEnabled; };
-            timer.Start();
+            _timer = new DispatcherTimer();
+            _timer.Interval = TimeSpan.FromMilliseconds(200);
+            _timer.Tick += (o, e) => { this.ContentFilterSwitch.IsChecked = SettingsDataSource.ContentFilterEnabled; };
+            
+            Loaded += SettingsPage_Loaded;
+            Unloaded += SettingsPage_Unloaded;
+        }
+
+        void SettingsPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _timer.Stop();
+        }
+
+        void SettingsPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            _timer.Start();
         }
 
         private void MainPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -42,18 +56,17 @@ namespace Awful
             {
                 if (!LoggingDataSource.IsDataLoaded)
                     LoggingDataSource.LoadData();
+
+                this.ApplicationBar = LoggingDataSource.AppBar;
             }
+
+            else
+                this.ApplicationBar = null;
         }
 
         private void LogFilePicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var collection = LoggingDataSource.SelectedItem.LoadTextAsync();
-            this.LogFileViewer.ItemsSource = collection;
-        }
-
-        private void ViewLogContent(object content)
-        {
-            
+           
         }
 
         private void LockPivot(object sender, ManipulationStartedEventArgs e)
@@ -64,6 +77,38 @@ namespace Awful
         private void UnlockPivot(object sender, ManipulationCompletedEventArgs e)
         {
             this.MainPivot.IsLocked = false;
+        }
+
+        private void ScrollLogToTop(object sender, EventArgs e)
+        {
+            LoggingDataSource.ScrollCurrentLogToTop();
+            LogFileViewer.BringIntoView(LogFileViewer.SelectedItem);
+        }
+
+        private void ScrollLogToBottom(object sender, EventArgs e)
+        {
+            LoggingDataSource.ScrollCurrentLogToBottom();
+            LogFileViewer.BringIntoView(LogFileViewer.SelectedItem);
+        }
+
+        private void RefreshLogFileList(object sender, EventArgs e)
+        {
+            LoggingDataSource.Refresh();
+        }
+
+        private void DeleteSelectedLogFile(object sender, EventArgs e)
+        {
+            var response = 
+                MessageBox.Show("Are you sure you want to delete the selected log file?", 
+                ":o", 
+                MessageBoxButton.OKCancel);
+
+            if (response == MessageBoxResult.OK)
+            {
+                bool deleted = LoggingDataSource.DeleteCurrentLog();
+                if (deleted)
+                    LoggingDataSource.Refresh();
+            }
         }
     }
 }

@@ -9,14 +9,21 @@ namespace Awful.Commands
 {
     public abstract class BackgroundWorkerCommand<T> : Common.BindableBase, ICommand
     {
-        private bool _isRunning;
+        private bool _isRunning = false;
         public bool IsRunning
         {
             get { return _isRunning; }
             protected set { SetProperty(ref _isRunning, value, "IsRunning"); }
         }
 
-        private BackgroundWorker _worker;
+        private string _status = string.Empty;
+        public string Status
+        {
+            get { return _status; }
+            protected set { SetProperty(ref _status, value, "Status"); }
+        }
+
+        private BackgroundWorker _worker = null;
         private BackgroundWorker Worker
         {
             get
@@ -26,16 +33,31 @@ namespace Awful.Commands
                     _worker = CreateBackgroundWorker();
                     _worker.DoWork += OnWorkerDoWork;
                     _worker.RunWorkerCompleted += OnRunWorkerCompleted;
+                    _worker.ProgressChanged += OnProgressChanged;
                 }
 
                 return _worker;
             }
         }
 
+        private void OnProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            string value = e.UserState as string;
+            Status = value;
+        }
+
+        protected void UpdateStatus(string value)
+        {
+            if (Worker.IsBusy)
+                Worker.ReportProgress(0, value);
+            else
+                Status = value;
+        }
+
         private void OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             OnCanExecuteChanged();
-
+            
             if (e.Cancelled)
                 OnCancel();
 
@@ -43,6 +65,8 @@ namespace Awful.Commands
                 OnError(e.Error);
             else
                 OnSuccess(e.Result);
+
+            this.IsRunning = false;
         }
 
         private void OnWorkerDoWork(object sender, DoWorkEventArgs e)
@@ -65,7 +89,11 @@ namespace Awful.Commands
 
         protected virtual BackgroundWorker CreateBackgroundWorker()
         {
-            return new BackgroundWorker();
+            return new BackgroundWorker()
+            {
+                WorkerReportsProgress = true,
+                WorkerSupportsCancellation = true
+            };
         }
 
         public virtual bool CanExecute(object parameter)
