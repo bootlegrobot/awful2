@@ -22,6 +22,14 @@ namespace System.Windows
             Instance.ShowMessage(method, message, caption);
         }
 
+        public static void Show(NotificationMethod method, string message, string caption,
+            Action notificationTapped)
+        {
+            Awful.AppDataModel model = Awful.WP7.App.Model;
+            Instance.ShowMessage(method, message, caption, notificationTapped);
+
+        }
+
         public static void Show(string message, string caption)
         {
             Awful.AppDataModel model = Awful.WP7.App.Model;
@@ -38,61 +46,77 @@ namespace System.Windows
 
         private Notification() { }
 
-        private void ShowMessage(NotificationMethod method, string message, string caption)
+        private void ShowMessage(NotificationMethod method, string message, string caption, Action notificationTapped = null)
         {
             switch (method)
             {
                 // send toast, or message box if failure
                 case NotificationMethod.Toast:
-                    try { ShowToastMessage(message, caption); }
-                    catch (Exception) { ShowMessageBox(message, caption); }
+                    try { ShowToastMessage(message, caption, notificationTapped); }
+                    catch (Exception) { ShowMessageBox(message, caption, notificationTapped); }
                     break;
 
                 // send message box
                 case NotificationMethod.MessageBox:
-                    ShowMessageBox(message, caption);
+                    ShowMessageBox(message, caption, notificationTapped);
                     break;
             }
         }
 
-        private void ShowErrorMessage(NotificationMethod method, string message, string caption)
+        private void ShowErrorMessage(NotificationMethod method, string message, string caption, Action notificationTapped)
         {
             switch (method)
             {
                 // send toast, or message box if failure
                 case NotificationMethod.Toast:
-                    try { ShowToastError(message, caption); }
-                    catch (Exception) { ShowMessageBoxError(message, caption); }
+                    try { ShowToastError(message, caption, notificationTapped); }
+                    catch (Exception) { ShowMessageBoxError(message, caption, notificationTapped); }
                     break;
 
                 // send message box
                 case NotificationMethod.MessageBox:
-                    ShowMessageBoxError(message, caption);
+                    ShowMessageBoxError(message, caption, notificationTapped);
                     break;
             }
         }
 
-        private void ShowMessageBox(string message, string caption)
+        private void ShowMessageBox(string message, string caption, Action onTap = null)
         {
             MessageBox.Show(message, caption, MessageBoxButton.OK);
+            if (onTap != null)
+                onTap();
         }
 
-        private void ShowToastMessage(string message, string caption)
-        {
-            CreateToast(message, caption).Show();
-        }
-
-        private void ShowToastError(string message, string caption)
+        private void ShowToastMessage(string message, string caption, Action onTap = null)
         {
             var toast = CreateToast(message, caption);
+            toast.Tap += (o, e) => 
+            { 
+                if (onTap != null)
+                    onTap(); 
+            };
+
+            toast.Show();
+        }
+
+        private void ShowToastError(string message, string caption, Action onTap = null)
+        {
+            var toast = CreateToast(message, caption);
+            
+            toast.Tap += (o, e) =>
+            {
+                if (onTap != null)
+                    onTap();
+            };
+
             toast.Background = new System.Windows.Media.SolidColorBrush(Media.Color.FromArgb(255, 255, 0, 0));
             toast.Show();
         }
 
-        private void ShowMessageBoxError(string message, string caption) 
+        private void ShowMessageBoxError(string message, string caption, Action onTap = null) 
         {
             caption = string.Format("Error: {0}", caption); 
-            ShowMessageBox(message, caption); 
+            ShowMessageBox(message, caption, onTap); 
         }
 
         private Coding4Fun.Phone.Controls.ToastPrompt CreateToast(string message, string caption)
@@ -108,9 +132,9 @@ namespace System.Windows
             return toast;
         }
 
-        public static void ShowError(NotificationMethod notificationMethod, string p1, string p2)
+        public static void ShowError(NotificationMethod notificationMethod, string p1, string p2, Action onTap = null)
         {
-            Instance.ShowErrorMessage(notificationMethod, p1, p2);
+            Instance.ShowErrorMessage(notificationMethod, p1, p2, onTap);
         }
     }
 }

@@ -437,10 +437,15 @@ namespace Awful
 
         private void NotifyUserOfResult(bool success)
         {
-            string message = success ? "request successful!" : "request failed.";
+            string message = success ? "Request successful!" : "request failed.";
             string caption = "Thread Post";
             if (success)
-                Notification.Show(message, caption);
+            {
+                Notification.Show(App.Model.DefaultNotification,
+                    message,
+                    caption);
+            }
+
             else
                 Notification.ShowError(message, caption);
         }
