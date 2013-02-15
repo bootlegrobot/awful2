@@ -218,7 +218,7 @@ namespace Awful
             // example: link##$$##http://www.contoso.com
             // example #2 link##$$##http://forums.somethingawful.com/showthread.php?threadid=3030303
 
-            var delim = JS_ARG_DELIMITER.ToCharArray();
+            var delim = new string[] { JS_ARG_DELIMITER };
             string url = response.Split(delim, StringSplitOptions.RemoveEmptyEntries).Last();
 
             this.SelectedLinkUrl = url;

@@ -276,7 +276,7 @@ namespace Awful
 
         public static bool MarkAsRead(this ThreadPostMetadata post)
         {
-            return AwfulContentRequest.Threads.MarkPostAsRead(post.PostID);
+            return AwfulContentRequest.Threads.MarkPostAsRead(post);
         }
 
         public static IThreadPostRequest BeginReply(this ThreadMetadata thread)

@@ -37,6 +37,14 @@ namespace Awful.Common
                 userId));
         }
 
+        protected override Uri CreatePostMarkAsReadUri(string threadId, string index)
+        {
+            return new Uri(string.Format(
+                "http://forums.somethingawful.com/showthread.php?setseen&threadid={0}&index={1}",
+                threadId,
+                index));
+        }
+
         public override ThreadPageMetadata LoadThreadPage(Uri uri)
         {
             string url = uri.AbsoluteUri;
@@ -70,9 +78,15 @@ namespace Awful.Common
             return ThreadTasks.Quote(post);
         }
 
-        public override bool MarkPostAsRead(string postId)
+        public override bool MarkPostAsRead(string threadId, string index)
         {
-            return ThreadTasks.MarkAsLastRead(new ThreadPostMetadata() { PostID = postId });
+            var markUri = CreatePostMarkAsReadUri(threadId, index);
+            return ThreadTasks.MarkAsLastRead(new ThreadPostMetadata() { MarkPostUri = markUri });
+        }
+
+        public override bool MarkPostAsRead(ThreadPostMetadata post)
+        {
+            return ThreadTasks.MarkAsLastRead(post);
         }
 
         public override IThreadPostRequest BeginPostEdit(string postId)
