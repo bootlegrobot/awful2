@@ -700,13 +700,24 @@ namespace Awful.Data
 
         public void NavigateToThreadView(NavigationDelegate nav, int pageNumber = (int)ThreadPageType.NewPost)
         {
+            /*
             string uri = string.Format("/ThreadViewPage.xaml?ForumID={0}&ThreadID={1}&Page={2}",
                 this.ForumID,
                 this.ThreadID,
                 pageNumber);
+            */
+
+            StringBuilder uriBuilder = new StringBuilder("/ThreadDetails.xaml?");
+
+            if (pageNumber == (int)ThreadPageType.NewPost)
+                uriBuilder.AppendFormat("id={0}&nav=unread", this.ThreadID);
+            else if (pageNumber == (int)ThreadPageType.Last)
+                uriBuilder.AppendFormat("id={0}&nav=last", this.ThreadID);
+            else
+                uriBuilder.AppendFormat("id={0}&nav=page&pageNumber={1}", this.ThreadID, pageNumber);
 
             this.HasBeenNavigatedTo = true;
-            nav(new Uri(uri, UriKind.RelativeOrAbsolute));
+            nav(new Uri(uriBuilder.ToString(), UriKind.RelativeOrAbsolute));
         }
 
         private void FormatRatingView(ThreadMetadata metadata)
@@ -816,6 +827,11 @@ namespace Awful.Data
         }
 
         public ThreadPageDataObject() : this(null) { }
+
+        public static ThreadPageDataObject CreateSampleObject()
+        {
+            return new ThreadPageDataObject(new ThreadPageMetadata().AsSample());
+        }
 
         #region properties
 

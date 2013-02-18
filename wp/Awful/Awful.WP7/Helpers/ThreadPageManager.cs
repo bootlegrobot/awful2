@@ -19,16 +19,75 @@ using Awful.WP7;
 
 namespace Awful
 {
-    public class ThreadPageManager
+    public class ThreadPageManager : DependencyObject
     {
-        public ThreadPageManager(WebBrowser browser, ThreadPageContextMenuProvider threadMenu)
-        {
-            IntializeEventManager();
-            AttachBrowser(browser);
+        public static ThreadPageManager Instance { get; private set; }
 
-            this._browser = browser;
-            this._threadMenu = threadMenu;
-            this.IsReady = false;
+        #region IsPage Property
+
+        public static readonly DependencyProperty IsPageProperty = DependencyProperty.RegisterAttached(
+            "IsPage", typeof(bool), typeof(ThreadPageManager), new PropertyMetadata(false));
+
+        public static bool GetIsPage(WebBrowser browser)
+        {
+            return Instance._browser != null &&
+                Instance._browser.Equals(browser);
+        }
+
+        public static void SetIsPage(WebBrowser target, bool value)
+        {
+            if (value)
+            {
+                Instance.InitializeBrowser(target);
+            }
+        }
+
+        #endregion
+
+        #region ThreadMenu Property
+
+        public static readonly DependencyProperty ThreadMenuProperty = DependencyProperty.RegisterAttached(
+            "ThreadMenu", typeof(object), typeof(ThreadPageManager), new PropertyMetadata(null));
+
+        public static object GetThreadMenu(WebBrowser menu)
+        { 
+            return Instance._threadMenu; 
+        }
+
+        public static void SetThreadMenu(WebBrowser target, object value)
+        {
+            Instance.InitializeThreadMenu(value as ThreadPageContextMenuProvider);
+        }
+
+        #endregion
+
+        static ThreadPageManager() { Instance = new ThreadPageManager(); }
+
+        public ThreadPageManager(WebBrowser browser, ThreadPageContextMenuProvider threadMenu) : this()
+        {
+            InitializeBrowser(browser);
+            InitializeThreadMenu(threadMenu);
+        }
+
+        public ThreadPageManager() 
+        { 
+            InitializeEventManager();
+            IsReady = false;
+        }
+
+        private void InitializeBrowser(WebBrowser browser)
+        {
+            // check if browser has been attached already
+            if (browser != null && this._browser != browser)
+            {
+                AttachBrowser(browser);
+                this._browser = browser;
+            }
+        }
+
+        private void InitializeThreadMenu(ThreadPageContextMenuProvider menu)
+        {
+            this._threadMenu = menu;
         }
 
         // javascript callback strings
@@ -121,7 +180,7 @@ namespace Awful
             return string.Format("#{0}", color.ToString().Substring(3));
         }
 
-        private void IntializeEventManager()
+        private void InitializeEventManager()
         {
             this._eventManager = new Dictionary<string, ScriptEventDelegate>();
             this._eventManager.Add(JS_HTML_LOADING_CALLBACK, OnPageContentLoading);
@@ -251,6 +310,9 @@ namespace Awful
 
         private void ManageScriptAction(string action)
         {
+            if (IgnoreInteractions)
+                return;
+
             if (this._eventManager.ContainsKey(action))
                 this._eventManager[action](null);
             else
@@ -341,5 +403,7 @@ namespace Awful
                 App.Model.ContentFontSize = fontSize;
             }
         }
+
+        public bool IgnoreInteractions { get; set; }
     }
 }

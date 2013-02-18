@@ -298,6 +298,8 @@
                                         ItemRealizationMode="ViewportItem"
                                         SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                                         ItemsSource="{Binding Items}"
+                                        SlideAnimationStarted="ThreadPageSlideView_SlideAnimationStarted_1"
+                                        SlideAnimationCompleted="ThreadPageSlideView_SlideAnimationCompleted_1"
                                         IsLoopingEnabled="False"
                                         Margin="0,1">
 

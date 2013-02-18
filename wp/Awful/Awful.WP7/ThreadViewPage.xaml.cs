@@ -586,6 +586,16 @@ namespace Awful
             if (element != null)
                 Telerik.Windows.Controls.RadAnimationManager.Play(element, FadeOutAnimation);
         }
+
+        private void ThreadPageSlideView_SlideAnimationStarted_1(object sender, EventArgs e)
+        {
+            MessageBox.Show("Slide Started!");
+        }
+
+        private void ThreadPageSlideView_SlideAnimationCompleted_1(object sender, EventArgs e)
+        {
+            MessageBox.Show("Slide Completed");
+        }
         
     }
 

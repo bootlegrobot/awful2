@@ -250,8 +250,6 @@
                     <common:BookmarkColorMapping Category="Category2" CategoryBrush="{StaticResource RedBrush}"/>
                 </common:ApplicationTheme.BookmarkColors>
                
-                
-            
             </common:ApplicationTheme>
 
         </common:ThemeManager.Themes>

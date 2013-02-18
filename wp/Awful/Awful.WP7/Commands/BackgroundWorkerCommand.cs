@@ -13,8 +13,14 @@ namespace Awful.Commands
         public bool IsRunning
         {
             get { return _isRunning; }
-            protected set { SetProperty(ref _isRunning, value, "IsRunning"); }
+            protected set 
+            { 
+                SetProperty(ref _isRunning, value, "IsRunning");
+                OnStateChanged();
+            }
         }
+
+        public bool IsBusy { get { return this.Worker.IsBusy; } }
 
         private string _status = string.Empty;
         public string Status
@@ -108,6 +114,13 @@ namespace Awful.Commands
         {
             if (CanExecuteChanged != null)
                 CanExecuteChanged(this, EventArgs.Empty);
+        }
+
+        public event EventHandler StateChanged;
+        protected virtual void OnStateChanged()
+        {
+            if (StateChanged != null)
+                StateChanged(this, EventArgs.Empty);
         }
 
         public void Execute(object parameter)

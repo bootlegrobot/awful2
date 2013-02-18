@@ -157,6 +157,9 @@
     <Compile Include="Controls\ThreadPagePresenter.xaml.cs">
       <DependentUpon>ThreadPagePresenter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ThreadPageSlideView.xaml.cs">
+      <DependentUpon>ThreadPageSlideView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ThreadRatingControl.xaml.cs">
       <DependentUpon>ThreadRatingControl.xaml</DependentUpon>
     </Compile>
@@ -191,6 +194,9 @@
     <Compile Include="SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ThreadDetails.xaml.cs">
+      <DependentUpon>ThreadDetails.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ThreadViewPage.xaml.cs">
       <DependentUpon>ThreadViewPage.xaml</DependentUpon>
     </Compile>
@@ -205,6 +211,7 @@
     <Compile Include="ViewModels\ReplyViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\SmileyListViewModel.cs" />
+    <Compile Include="ViewModels\ThreadPageSlideViewModel.cs" />
     <Compile Include="ViewModels\ThreadViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -231,6 +238,10 @@
     <Page Include="Controls\ThreadPagePresenter.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ThreadPageSlideView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ThreadRatingControl.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -271,6 +282,10 @@
     <Page Include="Themes\layout.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ThreadDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ThreadViewPage.xaml">
       <Generator>MSBuild:Compile</Generator>

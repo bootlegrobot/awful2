@@ -232,6 +232,58 @@ namespace Awful
     {
         #region Thread Extensions
 
+        public static ThreadMetadata AsSample(this ThreadMetadata data)
+        {
+            data.ThreadID = "1";
+            data.Title = "Sample Thread Title";
+            data.IsNew = true;
+            data.IsSticky = true;
+            data.Rating = 5;
+            data.LastUpdated = DateTime.Now;
+            data.ColorCategory = BookmarkColorCategory.Category0;
+            data.Author = "Sample Thread Author";
+            data.PageCount = 10;
+            return data;
+        }
+
+        public static ThreadPostMetadata AsSample(this ThreadPostMetadata data)
+        {
+            var random = new Random();
+            data.Author = "Sample Author";
+            data.AuthorType = ThreadPostMetadata.PostType.Moderator;
+            data.IsNew = true;
+            data.PostID = random.Next().ToString();
+            data.ThreadIndex = random.Next(0, 100);
+            data.PostDate = DateTime.Now;
+            data.PostBody = HtmlTextNode.CreateNode("<p>Sample Post Body.</p>");
+            return data;
+        }
+
+        public static ThreadPageMetadata AsSample(this ThreadPageMetadata data)
+        {
+            data.ThreadTitle = "Sample Thread Title";
+            data.ThreadID = "1";
+            data.LastPage = 10;
+            data.PageNumber = 1;
+            data.RawHtml = "<html><head/><body>Sample Page Html</body></html>";
+            data.Posts = new List<ThreadPostMetadata>(10);
+            for (int i = 0; i < 10; i++)
+            {
+                var post = new ThreadPostMetadata().AsSample();
+                post.PageIndex = i + 1;
+                data.Posts.Add(post);
+            }
+            return data;
+        }
+
+        public static ThreadMetadata FromPageMetadata(this ThreadMetadata data, ThreadPageMetadata page)
+        {
+            data.ThreadID = page.ThreadID;
+            data.Title = page.ThreadTitle;
+            data.PageCount = page.LastPage;
+            return data;
+        }
+
         public static string ToMetroStyle(this ThreadPageMetadata page)
         {
             return MetroStyler.Metrofy(page.Posts);
@@ -292,6 +344,15 @@ namespace Awful
         #endregion
 
         #region Forum Extensions
+
+        public static ForumMetadata AsSample(this ForumMetadata forum)
+        {
+            forum.ForumName = "Sample Forum";
+            forum.ForumID = "1";
+            forum.ForumGroup = ForumGroup.MAIN;
+            forum.LevelCount = 1;
+            return forum;
+        }
 
         public static ForumPageMetadata Page(this ForumMetadata forum, int pageNumber)
         {

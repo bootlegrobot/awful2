@@ -125,6 +125,7 @@ namespace Awful
         public int LastPage { get; set; }
         public int PageNumber { get; set; }
         public string RawHtml { get; set; }
+        public string StyledHtml { get; set; }
         public IList<ThreadPostMetadata> Posts { get; set; }
     }
 

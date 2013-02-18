@@ -135,21 +135,21 @@ namespace Awful.WP7
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
-            string stackTrace = e.ExceptionObject.StackTrace == null ? string.Empty : e.ExceptionObject.StackTrace.ToString();
-            string message = e.ExceptionObject.Message == null ? string.Empty : e.ExceptionObject.Message;
+            string stackTrace = e.ExceptionObject.StackTrace == null 
+                ? e.ExceptionObject.InnerException.StackTrace.ToString() 
+                : e.ExceptionObject.StackTrace.ToString();
+
+            string message = e.ExceptionObject.Message == null 
+                ? e.ExceptionObject.InnerException.Message
+                : e.ExceptionObject.Message;
+
             AwfulDebugger.AddLog(sender, AwfulDebugger.Level.Critical, e.ExceptionObject);
-
-            MessageBox.Show(e.ExceptionObject.StackTrace, e.ExceptionObject.Message, MessageBoxButton.OK);
-
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            MessageBox.Show(stackTrace, message, MessageBoxButton.OK);
+            if (System.Diagnostics.Debugger.IsAttached)
             {
-                MessageBox.Show(stackTrace, message, MessageBoxButton.OK);
-                if (System.Diagnostics.Debugger.IsAttached)
-                {
-                    // An unhandled exception has occurred; break into the debugger
-                    System.Diagnostics.Debugger.Break();
-                }
-            });
+                // An unhandled exception has occurred; break into the debugger
+                System.Diagnostics.Debugger.Break();
+            }
         }
 
         #region Phone application initialization

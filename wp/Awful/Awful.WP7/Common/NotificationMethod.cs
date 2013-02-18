@@ -134,7 +134,9 @@ namespace System.Windows
 
         public static void ShowError(NotificationMethod notificationMethod, string p1, string p2, Action onTap = null)
         {
-            Instance.ShowErrorMessage(notificationMethod, p1, p2, onTap);
+            string caption = p2 == null ? string.Empty : p2;
+            string message = p1 == null ? string.Empty : p1;
+            Instance.ShowErrorMessage(notificationMethod, message, caption, onTap);
         }
     }
 }
