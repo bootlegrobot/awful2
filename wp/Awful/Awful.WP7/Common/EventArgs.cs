@@ -22,10 +22,13 @@ namespace Awful.Common
     public sealed class SAThreadViewEventArgs : EventArgs
     {
         public ViewModels.ThreadViewModel Viewmodel { get; private set; }
+        public Uri PageUri { get; private set; }
         public SAThreadViewEventArgs(ViewModels.ThreadViewModel viewmodel)
         {
             Viewmodel = viewmodel;
         }
+
+        public SAThreadViewEventArgs(Uri pageUri) { this.PageUri = pageUri; }
     }
 
     public delegate void SAThreadViewEventHandler(object sender, SAThreadViewEventArgs args);

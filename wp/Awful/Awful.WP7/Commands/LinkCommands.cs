@@ -19,14 +19,36 @@ namespace Awful.Commands
         public static event SAThreadViewEventHandler ViewLoading;
         public static event SAThreadViewEventHandler ViewFailed;
 
-        private static void FireEvent(object sender, ViewModels.ThreadViewModel viewmodel,
-            SAThreadViewEventHandler handler)
+        public enum CommandType { Viewmodel, Uri };
+        private delegate SAThreadViewEventArgs CommandTypeDelgate(Uri parameter);
+
+        private CommandTypeDelgate GenerateThreadView
         {
-            if (handler != null)
-                handler(sender, new SAThreadViewEventArgs(viewmodel));
+            get
+            {
+                if (ResultType == CommandType.Uri)
+                    return new CommandTypeDelgate(RouteUri);
+                else
+                    return new CommandTypeDelgate(CreateViewmodel);
+            }
         }
 
-        protected override object DoWork(Uri parameter)
+        private CommandType _resultType = CommandType.Uri;
+        public CommandType ResultType
+        {
+            get { return _resultType; }
+            set { _resultType = value; }
+        }
+        
+        private static void FireEvent(object sender, 
+            SAThreadViewEventHandler handler,
+            SAThreadViewEventArgs args)
+        {
+            if (handler != null)
+                handler(sender, args);
+        }
+
+        private SAThreadViewEventArgs CreateViewmodel(Uri parameter)
         {
             // try and parse a thread page from the html
             ThreadPageMetadata page = MetadataExtensions.ThreadPageFromUri(parameter);
@@ -52,12 +74,22 @@ namespace Awful.Commands
             // set the current page to page source
             viewmodel.SelectedItem = viewmodel.Pages[pageIndex];
             viewmodel.SelectedIndex = pageIndex;
-            return viewmodel;
+            return new SAThreadViewEventArgs(viewmodel);
+        }
+
+        private SAThreadViewEventArgs RouteUri(Uri parameter)
+        {
+            return new SAThreadViewEventArgs(parameter);
+        }
+
+        protected override object DoWork(Uri parameter)
+        {
+            return GenerateThreadView(parameter);
         }
 
         protected override void PreWork(Uri item)
         {
-            FireEvent(this, null, ViewLoading);
+            FireEvent(this, ViewLoading, null);
         }
 
         public override bool CanExecute(object parameter)
@@ -69,7 +101,7 @@ namespace Awful.Commands
         protected override void OnError(Exception ex)
         {
             Notification.ShowError("Navigation failed.", "Hyperlink");
-            FireEvent(this, null, ViewFailed);
+            FireEvent(this, ViewFailed, null);
         }
 
         protected override void OnCancel()
@@ -79,7 +111,8 @@ namespace Awful.Commands
 
         protected override void OnSuccess(object arg)
         {
-            FireEvent(this, arg as ViewModels.ThreadViewModel, ViewThread);        
+            var eventArgs = arg as SAThreadViewEventArgs;
+            FireEvent(this, ViewThread, eventArgs);        
         }
 
         protected override bool PreCondition(Uri item)
