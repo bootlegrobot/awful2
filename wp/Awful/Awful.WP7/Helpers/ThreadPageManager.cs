@@ -166,7 +166,6 @@ namespace Awful
         {
             if (html != null)
             {
-                this._browser.Opacity = 1.0;
                 this._browser.InvokeScript(JS_LOAD_HTML_FUNCTION, html);
             }
         }
@@ -386,8 +385,7 @@ namespace Awful
 
         private void PageBrowser_Loaded(object sender, RoutedEventArgs e)
         {
-            //this.InitializeBrowserForPageView(sender as WebBrowser);
-            _browser.NavigateToString("<html><head /><body>Yo, I'm text.</body></html>");
+            this.InitializeBrowserForPageView(sender as WebBrowser);
         }
 
         private void PageBrowser_ScriptNotify(object sender, NotifyEventArgs e)

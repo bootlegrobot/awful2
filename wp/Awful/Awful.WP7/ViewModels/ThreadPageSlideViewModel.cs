@@ -45,7 +45,8 @@ namespace Awful.ViewModels
         }
     }
 
-    public sealed class ThreadPageSlideViewItem : Common.BindableBase
+    public sealed class ThreadPageSlideViewItem : Common.BindableBase, 
+        IEquatable<ThreadPageSlideViewItem>
     {
         public int Index { get; set; }
 
@@ -62,6 +63,24 @@ namespace Awful.ViewModels
         {
             get { return _name; }
             set { SetProperty(ref _name, value, "Name"); }
+        }
+
+        public bool Equals(ThreadPageSlideViewItem other)
+        {
+            return Index == other.Index;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ThreadPageSlideViewItem)
+                return this.Equals((ThreadPageSlideViewItem)obj);
+
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Index.GetHashCode();
         }
     }
 
@@ -115,7 +134,12 @@ namespace Awful.ViewModels
     {
         public ThreadPageSlideViewModel() : base()
         {
-            PopulateForDesignTool();
+            if (!PopulateForDesignTool())
+            {
+                this._items = new List<ThreadPageSlideViewItem>() { new ThreadPageSlideViewItem() };
+                this._ignoreSelectionChange = true;
+            }
+            
             this._firstPageCommand = new Common.ActionCommand(LoadFirstPageAction);
             this._lastPageCommand = new Common.ActionCommand(LoadLasPageAction);
             this._customPageCommand = new Common.ActionCommand(LoadPageNumberAction);
@@ -229,9 +253,7 @@ namespace Awful.ViewModels
             { 
                 SetProperty(ref _selectedItem, value, "SelectedItem");
 
-                if (_ignoreSelectionChange)
-                    _ignoreSelectionChange = false;
-                else
+                if (CurrentState == ViewStates.Ready)
                 {
                     CurrentState = ViewStates.Switching;
                     LoadPageNumber(CurrentThread, value.Index + 1);
@@ -265,7 +287,7 @@ namespace Awful.ViewModels
 
         #endregion
 
-        private void PopulateForDesignTool()
+        private bool PopulateForDesignTool()
         {
             if (System.ComponentModel.DesignerProperties.IsInDesignTool)
             {
@@ -281,7 +303,10 @@ namespace Awful.ViewModels
                 this.Status = "Loading...";
                 this.IsRunning = true;
                 this.Items = new ThreadPageSlideViewList(this.TotalPages);
+                return true;
             }
+
+            return false;
         }
 
         public void RefreshCurrentPage()
@@ -454,22 +479,18 @@ namespace Awful.ViewModels
             OnPropertyChanged("CurrentThread");
             OnPropertyChanged("CurrentPage");
             OnPropertyChanged("CurrentThreadPage");
+            Status = string.Empty;
 
             if (TotalPages != page.Data.LastPage)
             {
                 // ignore the selected item change when we bind new items to view
-                if (CurrentPage != 1) 
-                    this._ignoreSelectionChange = true;
-                
                 TotalPages = page.Data.LastPage;
-                OnPropertyChanged("Items");
                 CurrentState = ViewStates.New;
+                OnPropertyChanged("Items");
+                SelectedItem = Items[CurrentPage - 1];
             }
 
-            else
-                CurrentState = ViewStates.Ready;
-
-            Status = string.Empty;
+            CurrentState = ViewStates.Ready;
         }
 
         protected override bool PreCondition(LoadPageCommandArgs item)

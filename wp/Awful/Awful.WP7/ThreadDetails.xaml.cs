@@ -16,16 +16,20 @@ namespace Awful
         public ThreadDetails()
         {
             InitializeComponent();
+            ThreadPageManager.Instance.ReadyForContent += OnViewReadyForContent;
+        }
+
+        void OnViewReadyForContent(object sender, EventArgs e)
+        {
+            LoadFromQuery();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (e.IsNavigationInitiator)
-                LoadFromQuery(e);
         }
 
-        private void LoadFromQuery(NavigationEventArgs e)
+        private void LoadFromQuery()
         {
             var query = NavigationContext.QueryString;
 

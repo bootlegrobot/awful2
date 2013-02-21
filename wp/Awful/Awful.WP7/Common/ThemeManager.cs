@@ -38,13 +38,16 @@ namespace Awful.Common
         {
             _ThemeUpdateTimer = new DispatcherTimer();
             _ThemeUpdateTimer.Interval = TimeSpan.FromSeconds(0.25);
-            _ThemeUpdateTimer.Tick += (o, e) =>
-                {
-                    Instance.CurrentTheme.Initialize();
-                    Instance.OnPropertyChanged("CurrentTheme");
-                };
-
+            _ThemeUpdateTimer.Tick += UpdateTheme;
             _ThemeUpdateTimer.Start();
+        }
+
+        private static void UpdateTheme(object sender, EventArgs args)
+        {
+            _ThemeUpdateTimer.Tick -= UpdateTheme;
+            _ThemeUpdateTimer.Stop();
+            Instance.CurrentTheme.Initialize();
+            Instance.OnPropertyChanged("CurrentTheme");
         }
 
         public static ThemeManager Instance

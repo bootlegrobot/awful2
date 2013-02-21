@@ -25,7 +25,7 @@ namespace Awful.Controls
         public ThreadPageSlideViewModel ControlViewModel { get { return this.Resources["PageDataSource"] as ThreadPageSlideViewModel; } }
         private ThreadPageContextMenuProvider MenuProvider { get { return this.Resources["ThreadContextMenu"] as ThreadPageContextMenuProvider; } }
 
-        private ThreadPageManager PageManager { get { return ThreadPageManager.Instance; } }
+        public ThreadPageManager PageManager { get { return ThreadPageManager.Instance; } }
         private bool _measurePinch;
 
         public ThreadPageSlideView()
@@ -33,7 +33,7 @@ namespace Awful.Controls
             InitializeComponent();
             
             VisualStateManager.GoToState(this, "HideTitle", false);
-            VisualStateManager.GoToState(this, "ShowPage", false);
+            VisualStateManager.GoToState(this, "Loading", false);
 
             var gestures = GestureService.GetGestureListener(this.LayoutRoot);
             gestures.DoubleTap += ShowThreadTitle;
@@ -155,15 +155,11 @@ namespace Awful.Controls
                     break;
 
                 case ThreadPageSlideViewModel.ViewStates.Loading:
-                    //VisualStateManager.GoToState(this, "Loading", true);
+                    VisualStateManager.GoToState(this, "Loading", true);
                     break;
 
                 case ThreadPageSlideViewModel.ViewStates.Ready:
-                    if (PageManager.IsReady)
-                    {
-                        this.PageManager.LoadHtml(this.ControlViewModel.CurrentThreadPage.Html);
-                        VisualStateManager.GoToState(this, "ShowPage", true);
-                    }
+                    this.PageManager.LoadHtml(this.ControlViewModel.CurrentThreadPage.Html);
                     break;
             }
         }
@@ -195,8 +191,8 @@ namespace Awful.Controls
             if (this.PageManager.IsReady)
             {
                 // process state
-                PageManager.ClearHtml();
-                this.pageSlideControl.PageProvider.CurrentIndex = ControlViewModel.CurrentPage - 1;
+                // PageManager.ClearHtml();
+                // this.pageSlideControl.PageProvider.CurrentIndex = ControlViewModel.CurrentPage - 1;
             }
         }
 
