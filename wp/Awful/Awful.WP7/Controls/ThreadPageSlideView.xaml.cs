@@ -33,7 +33,7 @@ namespace Awful.Controls
             InitializeComponent();
             
             VisualStateManager.GoToState(this, "HideTitle", false);
-            VisualStateManager.GoToState(this, "Loading", false);
+            VisualStateManager.GoToState(this, "ShowPage", false);
 
             var gestures = GestureService.GetGestureListener(this.LayoutRoot);
             gestures.DoubleTap += ShowThreadTitle;
@@ -45,6 +45,8 @@ namespace Awful.Controls
             Loaded += OnLoad;
             Unloaded += OnUnload;
         }
+
+        #region Pinch Events
 
         void OnLayoutPinchCompleted(object sender, PinchGestureEventArgs e)
         {
@@ -99,6 +101,8 @@ namespace Awful.Controls
             PageManager.IgnoreInteractions = true;
         }
 
+        #endregion
+
         private void OnUnload(object sender, RoutedEventArgs e)
         {
             VisualStateManager.GoToState(this, "ShowPage", false);
@@ -151,12 +155,15 @@ namespace Awful.Controls
                     break;
 
                 case ThreadPageSlideViewModel.ViewStates.Loading:
-                    VisualStateManager.GoToState(this, "Loading", true);
+                    //VisualStateManager.GoToState(this, "Loading", true);
                     break;
 
                 case ThreadPageSlideViewModel.ViewStates.Ready:
                     if (PageManager.IsReady)
+                    {
                         this.PageManager.LoadHtml(this.ControlViewModel.CurrentThreadPage.Html);
+                        VisualStateManager.GoToState(this, "ShowPage", true);
+                    }
                     break;
             }
         }

@@ -11,16 +11,6 @@
                     mc:Ignorable="d">
 
     <!-- Rating Colors -->
-    <SolidColorBrush x:Key="ThreadRating1Brush"
-                     Color="#FFA5B667" />
-    <SolidColorBrush x:Key="ThreadRating2Brush"
-                     Color="#FFB69363" />
-    <SolidColorBrush x:Key="ThreadRating3Brush"
-                     Color="#FFF4AD09" />
-    <SolidColorBrush x:Key="ThreadRating4Brush"
-                     Color="#FFFFDD15" />
-    <SolidColorBrush x:Key="ThreadRating5Brush"
-                     Color="gold" />
     
     <!-- Category colors -->
     <SolidColorBrush x:Key="OrangeBrush" Color="Orange"/>

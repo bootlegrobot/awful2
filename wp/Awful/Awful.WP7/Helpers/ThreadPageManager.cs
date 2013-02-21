@@ -49,14 +49,35 @@ namespace Awful
         public static readonly DependencyProperty ThreadMenuProperty = DependencyProperty.RegisterAttached(
             "ThreadMenu", typeof(object), typeof(ThreadPageManager), new PropertyMetadata(null));
 
-        public static object GetThreadMenu(WebBrowser menu)
+        public static object GetThreadMenu(UIElement menu)
         { 
             return Instance._threadMenu; 
         }
 
-        public static void SetThreadMenu(WebBrowser target, object value)
+        public static void SetThreadMenu(UIElement target, object value)
         {
             Instance.InitializeThreadMenu(value as ThreadPageContextMenuProvider);
+        }
+
+        #endregion
+
+        #region IsContainer Property
+
+        public static readonly DependencyProperty IsContainerProperty = DependencyProperty.RegisterAttached(
+            "IsContainer", typeof(bool), typeof(ThreadPageManager), new PropertyMetadata(false));
+
+        public static bool GetIsContainer(ContentControl element)
+        {
+            WebBrowser browser = element.Content as WebBrowser;
+            return browser != null && Instance._browser != null && Instance._browser.Equals(browser);
+        }
+
+        public static void SetIsContainer(ContentControl element, bool value)
+        {
+            if (value)
+            {
+              element.Content = Instance._browser;
+            }
         }
 
         #endregion
@@ -75,14 +96,31 @@ namespace Awful
             IsReady = false;
         }
 
+        public void InitializeBrowser()
+        {
+            if (this._browser == null)
+            {
+                WebBrowser pageView = new WebBrowser();
+                
+                // set background to transparent color
+                KollaSoft.KSWebBrowserHelper.SetBrowserBackground(pageView,
+                    new SolidColorBrush(Color.FromArgb(0,255,255,255)));
+
+                // disable double tap
+                KollaSoft.KSWebBrowserHelper.SetSupressDoubleTap(pageView, true);
+                // suppress pan and zoom
+                KollaSoft.KSWebBrowserHelper.SetSuppressPanAndZoom(pageView, true);
+                // attach events
+                InitializeBrowser(pageView);
+                InitializeBrowserForPageView(pageView);
+            }
+        }
+
         private void InitializeBrowser(WebBrowser browser)
         {
             // check if browser has been attached already
             if (browser != null && this._browser != browser)
-            {
-                AttachBrowser(browser);
-                this._browser = browser;
-            }
+                this._browser = AttachBrowser(browser);
         }
 
         private void InitializeThreadMenu(ThreadPageContextMenuProvider menu)
@@ -193,9 +231,11 @@ namespace Awful
             this._eventManager.Add(JS_ERROR_CALLBACK, OnErrorGenerated);
         }
 
-        private void AttachBrowser(WebBrowser browser)
+        private WebBrowser AttachBrowser(WebBrowser browser)
         {
-            if (browser == null) return;
+            if (browser == null)
+                throw new ArgumentNullException("browser is null.");
+
             browser.Base = Constants.THREAD_VIEWER_WEB_FOLDER;
             browser.IsScriptEnabled = true;
             browser.IsGeolocationEnabled = false;
@@ -204,16 +244,20 @@ namespace Awful
             browser.Navigating += new EventHandler<NavigatingEventArgs>(PageBrowser_Navigating);
             browser.NavigationFailed += new System.Windows.Navigation.NavigationFailedEventHandler(PageBrowser_NavigationFailed);
             browser.ScriptNotify += new EventHandler<NotifyEventArgs>(PageBrowser_ScriptNotify);
+            return browser;
         }
 
-        private void DetachBrowser(WebBrowser browser)
+        private WebBrowser DetachBrowser(WebBrowser browser)
         {
-            if (browser == null) return;
+            if (browser == null)
+                throw new ArgumentNullException("browser is null.");
+
             browser.Loaded -= new RoutedEventHandler(PageBrowser_Loaded);
             browser.ScriptNotify -= new EventHandler<NotifyEventArgs>(PageBrowser_ScriptNotify);
             browser.Navigated -= new EventHandler<System.Windows.Navigation.NavigationEventArgs>(PageBrowser_Navigated);
             browser.Navigating -= new EventHandler<NavigatingEventArgs>(PageBrowser_Navigating);
             browser.NavigationFailed -= new System.Windows.Navigation.NavigationFailedEventHandler(PageBrowser_NavigationFailed);
+            return browser;
         }
 
 
@@ -342,7 +386,8 @@ namespace Awful
 
         private void PageBrowser_Loaded(object sender, RoutedEventArgs e)
         {
-            this.InitializeBrowserForPageView(sender as WebBrowser);
+            //this.InitializeBrowserForPageView(sender as WebBrowser);
+            _browser.NavigateToString("<html><head /><body>Yo, I'm text.</body></html>");
         }
 
         private void PageBrowser_ScriptNotify(object sender, NotifyEventArgs e)
@@ -359,18 +404,23 @@ namespace Awful
         {
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Event: PageBrowser_NavigationFailed");
 
-            // ignore javascript uri navigation failures
-            if (e.Uri.AbsoluteUri.Contains("javascript"))
-                return;
-            
-            else if (e.Uri.OriginalString.Contains(Constants.THREAD_VIEWER_FILENAME))
+            try
             {
-                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, "Thread View Initialization failed.");
-                this.InitializeBrowserForPageView(sender as WebBrowser);
+                // ignore javascript uri navigation failures
+                if (e.Uri.AbsoluteUri.Contains("javascript"))
+                    return;
+
+                else if (e.Uri.OriginalString.Contains(Constants.THREAD_VIEWER_FILENAME))
+                {
+                    AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, "Thread View Initialization failed.");
+                    this.InitializeBrowserForPageView(sender as WebBrowser);
+                }
+
+                else
+                    this.IsReady = false;
             }
 
-            else
-                this.IsReady = false;
+            catch (Exception ex) { this.IsReady = false; }
         }
 
         void PageBrowser_Navigating(object sender, NavigatingEventArgs e)

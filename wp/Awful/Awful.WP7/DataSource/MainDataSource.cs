@@ -710,11 +710,19 @@ namespace Awful.Data
             StringBuilder uriBuilder = new StringBuilder("/ThreadDetails.xaml?");
 
             if (pageNumber == (int)ThreadPageType.NewPost)
-                uriBuilder.AppendFormat("id={0}&nav=unread", this.ThreadID);
+            {
+                // only go to unread pages if the thread in question has been
+                // read by the user. otherwise, load first page.
+                uriBuilder.AppendFormat(!this.Data.IsNew 
+                    ? "id={0}&nav=unread"
+                    : "id={0}&nav=page&pagenumber=1", 
+                    this.ThreadID);
+            }
+
             else if (pageNumber == (int)ThreadPageType.Last)
                 uriBuilder.AppendFormat("id={0}&nav=last", this.ThreadID);
             else
-                uriBuilder.AppendFormat("id={0}&nav=page&pageNumber={1}", this.ThreadID, pageNumber);
+                uriBuilder.AppendFormat("id={0}&nav=page&pagenumber={1}", this.ThreadID, pageNumber);
 
             this.HasBeenNavigatedTo = true;
             nav(new Uri(uriBuilder.ToString(), UriKind.RelativeOrAbsolute));

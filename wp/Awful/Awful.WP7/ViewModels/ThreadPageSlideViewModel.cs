@@ -6,6 +6,7 @@ using System.Windows;
 using Awful.Data;
 using System.Collections.ObjectModel;
 using KollaSoft;
+using System.Windows.Input;
 
 namespace Awful.ViewModels
 {
@@ -115,6 +116,9 @@ namespace Awful.ViewModels
         public ThreadPageSlideViewModel() : base()
         {
             PopulateForDesignTool();
+            this._firstPageCommand = new Common.ActionCommand(LoadFirstPageAction);
+            this._lastPageCommand = new Common.ActionCommand(LoadLasPageAction);
+            this._customPageCommand = new Common.ActionCommand(LoadPageNumberAction);
         }
 
         public enum ViewStates
@@ -229,12 +233,34 @@ namespace Awful.ViewModels
                     _ignoreSelectionChange = false;
                 else
                 {
-                    if (CurrentState != ViewStates.New)
-                        CurrentState = ViewStates.Switching;
-                    
+                    CurrentState = ViewStates.Switching;
                     LoadPageNumber(CurrentThread, value.Index + 1);
                 }
             }
+        }
+
+        private readonly Commands.RateThreadCommand _ratingCommand = new Commands.RateThreadCommand();
+        public ICommand RatingCommand
+        {
+            get { return _ratingCommand; }
+        }
+
+        private readonly Common.ActionCommand _firstPageCommand;
+        public ICommand FirstPageCommand
+        {
+            get { return _firstPageCommand; }
+        }
+
+        private readonly Common.ActionCommand _lastPageCommand;
+        public ICommand LastPageCommand
+        {
+            get { return _lastPageCommand; }
+        }
+
+        private readonly Common.ActionCommand _customPageCommand;
+        public ICommand CustomPageCommand
+        {
+            get { return _customPageCommand; }
         }
 
         #endregion
@@ -274,6 +300,14 @@ namespace Awful.ViewModels
             args.State = pageNumber;
             Execute(args);
         }
+
+        #region Command Actions
+
+        private void LoadPageNumberAction(object state) { LoadPageNumber(CurrentThread, (int)state); }
+        private void LoadFirstPageAction(object state) { LoadPageNumber(CurrentThread, 1); }
+        private void LoadLasPageAction(object state) { LoadLastPost(CurrentThread); }
+
+        #endregion
 
         public void LoadPageFromUri(Uri uri)
         {
@@ -389,7 +423,15 @@ namespace Awful.ViewModels
             }
 
             UpdateStatus("Rendering...");
-            var dataObject = new ThreadPageDataObject(page);
+
+            ThreadPageDataObject dataObject = new ThreadPageDataObject(page);
+            this._currentThread = MetadataExtensions.FromPageMetadata(page);
+            this._currentPage = page.PageNumber;
+            this._currentThreadPage = dataObject;
+
+            if (TotalPages != page.LastPage)
+                _items = new ThreadPageSlideViewList(page.LastPage);
+
             return dataObject;
         }
 
@@ -409,16 +451,18 @@ namespace Awful.ViewModels
         {
             // set current 
             ThreadPageDataSource page = arg as ThreadPageDataSource;
-            CurrentThread = new ThreadMetadata().FromPageMetadata(page.Data);
-            CurrentThreadPage = page;
-            CurrentPage = page.PageNumber;
+            OnPropertyChanged("CurrentThread");
+            OnPropertyChanged("CurrentPage");
+            OnPropertyChanged("CurrentThreadPage");
+
             if (TotalPages != page.Data.LastPage)
             {
                 // ignore the selected item change when we bind new items to view
-                this._ignoreSelectionChange = true;
+                if (CurrentPage != 1) 
+                    this._ignoreSelectionChange = true;
+                
                 TotalPages = page.Data.LastPage;
-
-                Items = new ThreadPageSlideViewList(TotalPages);
+                OnPropertyChanged("Items");
                 CurrentState = ViewStates.New;
             }
 

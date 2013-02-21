@@ -12,6 +12,7 @@ namespace Awful
 {
     public partial class ThreadDetails : PhoneApplicationPage
     {
+        private ViewModels.ThreadDetailsViewModel DataSource { get { return this.Resources["ThreadDetailsDataSource"] as ViewModels.ThreadDetailsViewModel; } }
         public ThreadDetails()
         {
             InitializeComponent();
@@ -50,6 +51,46 @@ namespace Awful
                         break;
                 }
             }
+        }
+
+        private void ToggleBookmarks(object sender, System.EventArgs e)
+        {
+        	// TODO: Add event handler implementation here.
+        }
+
+        private void ShowReplyView(object sender, System.EventArgs e)
+        {
+        	// TODO: Add event handler implementation here.
+        }
+
+        private void RefreshThread(object sender, System.EventArgs e)
+        {
+        	// TODO: Add event handler implementation here.
+        }
+
+        private void ShowNavControl(object sender, System.EventArgs e)
+        {
+        	// TODO: Add event handler implementation here.
+        }
+
+        private void SaveDraft(object sender, System.EventArgs e)
+        {
+        	// TODO: Add event handler implementation here.
+        }
+
+        private void SendReply(object sender, System.EventArgs e)
+        {
+        	// TODO: Add event handler implementation here.
+        }
+
+        private void ToggleOrientation(object sender, System.EventArgs e)
+        {
+        	// TODO: Add event handler implementation here.
+        }
+
+        private void ShowRatingPanel(object sender, System.EventArgs e)
+        {
+        	// TODO: Add event handler implementation here.
         }
     }
 }

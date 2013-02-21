@@ -276,12 +276,19 @@ namespace Awful
             return data;
         }
 
-        public static ThreadMetadata FromPageMetadata(this ThreadMetadata data, ThreadPageMetadata page)
+        public static ThreadMetadata FromPageMetadata(ThreadPageMetadata page)
         {
+            var data = new ThreadMetadata();
             data.ThreadID = page.ThreadID;
             data.Title = page.ThreadTitle;
             data.PageCount = page.LastPage;
             return data;
+        }
+
+        public static int Rate(this ThreadMetadata thread, int rating)
+        {
+             bool success = ThreadTasks.Rate(thread, rating);
+             return success ? rating : -1;
         }
 
         public static string ToMetroStyle(this ThreadPageMetadata page)

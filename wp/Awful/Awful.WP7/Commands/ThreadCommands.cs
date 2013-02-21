@@ -157,6 +157,37 @@ namespace Awful.Commands
         }
     }
 
+    public class RateThreadCommand : BackgroundWorkerCommand<int>
+    {
+        public string ThreadId { get; set; }
+        
+        protected override object DoWork(int parameter)
+        {
+            var thread = new ThreadMetadata() { ThreadID = ThreadId };
+            return thread.Rate(parameter);
+        }
+
+        protected override void OnError(Exception ex)
+        {
+            Notification.ShowError("Request failed.", "Rate Thread");
+        }
+
+        protected override void OnCancel()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void OnSuccess(object arg)
+        {
+            int rating = (int)arg;
+            Notification.Show(string.Format("You rated this thread '{0}'! Go hog wild!", rating), "Rate Thread");
+        }
+
+        protected override bool PreCondition(int item)
+        {
+            return item > 0 && item < 6;
+        }
+    }
 
     public class EditPostCommand : BackgroundWorkerCommand<Data.ThreadPostSource>
     {

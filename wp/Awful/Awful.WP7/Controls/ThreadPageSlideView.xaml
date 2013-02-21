@@ -11,6 +11,7 @@
              xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
              xmlns:kollasoft="clr-namespace:KollaSoft;assembly=KollaSoft.WP7"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
              xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
              x:Class="Awful.Controls.ThreadPageSlideView"
              mc:Ignorable="d"
@@ -32,8 +33,10 @@
 
         <!-- The thread page context menu -->
         <controls:ThreadPageContextMenuProvider x:Key="ThreadContextMenu" />
-        
 
+		<!-- The thread page nav height -->
+		<System:Double x:Key="threadNavHeight">-342</System:Double>
+        
     </UserControl.Resources>
 
     <UserControl.FontFamily>
@@ -77,6 +80,15 @@
                         <VisualTransition.GeneratedEasingFunction>
                             <CircleEase EasingMode="EaseOut" />
                         </VisualTransition.GeneratedEasingFunction>
+                    	<Storyboard>
+                    		<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="titleGrid">
+                    			<DiscreteObjectKeyFrame KeyTime="0">
+                    				<DiscreteObjectKeyFrame.Value>
+                    					<Visibility>Visible</Visibility>
+                    				</DiscreteObjectKeyFrame.Value>
+                    			</DiscreteObjectKeyFrame>
+                    		</ObjectAnimationUsingKeyFrames>
+                    	</Storyboard>
                     </VisualTransition>
                 </VisualStateGroup.Transitions>
                 <VisualState x:Name="ShowTitle">
@@ -86,20 +98,29 @@
                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
                                          Storyboard.TargetName="titleGrid"
                                          d:IsOptimized="True" />
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="titleGrid">
+                        	<DiscreteObjectKeyFrame KeyTime="0">
+                        		<DiscreteObjectKeyFrame.Value>
+                        			<Visibility>Visible</Visibility>
+                        		</DiscreteObjectKeyFrame.Value>
+                        	</DiscreteObjectKeyFrame>
+                        </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>
                 <VisualState x:Name="HideTitle">
                     <Storyboard>
                         <DoubleAnimation Duration="0"
-                                         To="0"
-                                         Storyboard.TargetProperty="(FrameworkElement.Height)"
-                                         Storyboard.TargetName="titleGrid"
-                                         d:IsOptimized="True" />
-                        <DoubleAnimation Duration="0"
-                                         To="-150"
+                                         To="-342"
                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
                                          Storyboard.TargetName="titleGrid"
                                          d:IsOptimized="True" />
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="titleGrid">
+                        	<DiscreteObjectKeyFrame KeyTime="0">
+                        		<DiscreteObjectKeyFrame.Value>
+                        			<Visibility>Collapsed</Visibility>
+                        		</DiscreteObjectKeyFrame.Value>
+                        	</DiscreteObjectKeyFrame>
+                        </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>
             </VisualStateGroup>
@@ -208,6 +229,7 @@
                         <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ContentPanel" d:IsOptimized="True"/>
                         <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="PageViewPanel" d:IsOptimized="True"/>
                         <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="PageViewPanel" d:IsOptimized="True"/>
+                        <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="pageSlideView" d:IsOptimized="True"/>
                     </Storyboard>
                 </VisualState>
                 <VisualState x:Name="ShowJumpList">
@@ -268,7 +290,7 @@
                 <Grid.Resources>
                     <DataTemplate x:Key="slideViewItemTemplate">
 
-                        <Grid>
+                        <Grid d:DesignWidth="480" d:DesignHeight="800">
 
                             <Grid.ColumnDefinitions>
 
@@ -288,18 +310,15 @@
                                        ManipulationStarted="PrimeLeftSwipe"
                                        ManipulationDelta="MonitorSwipeDelta"
                                        ManipulationCompleted="SwipeComplete" />
-                            
-                            <phone:WebBrowser x:Name="threadPageBrowser"
-                                              Grid.ColumnSpan="3"
-                                              HorizontalAlignment="Stretch"
-                                              VerticalAlignment="Stretch"
-                                              IsScriptEnabled="True"
-                                              kollasoft:KSWebBrowserHelper.BrowserBackground="Transparent"
-                                              kollasoft:KSWebBrowserHelper.SuppressPanAndZoom="True"
-                                              kollasoft:KSWebBrowserHelper.SupressDoubleTap="True"
-                                              local:ThreadPageManager.ThreadMenu="{StaticResource ThreadContextMenu}"
-                                              local:ThreadPageManager.IsPage="True" />
-                                
+
+                            <ContentControl x:Name="threadPageBrowser"
+                                            Grid.ColumnSpan="3"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            Background="Aqua"
+                                            local:ThreadPageManager.ThreadMenu="{StaticResource ThreadContextMenu}"
+                                            local:ThreadPageManager.IsContainer="true"/>
+
                             <Rectangle x:Name="rightSwipeGlyph"
                                        Grid.Column="2"
                                        Canvas.ZIndex="10"
@@ -345,47 +364,69 @@
                                                 ItemRealizationMode="ViewportItem"
                                                 ItemTemplate="{StaticResource slideViewItemTemplate}"
                                                 ItemPreviewTemplate="{StaticResource previewItemTemplate}"
-                                                Canvas.ZIndex="-30" />
+                                                Canvas.ZIndex="-30" Opacity="0" />
 
                 <telerikPrimitives:RadPaginationControl x:Name="pageSlideControl"
                                                         PageProvider="{Binding ElementName=pageSlideView}"
                                                         Visibility="Collapsed" />
+                <Grid x:Name="titleGrid" 
+					Margin="0" 
+					VerticalAlignment="Top"
+					Canvas.ZIndex="-20"
+					Opacity="0.95"
+					RenderTransformOrigin="0.5,0.5" Height="342">
+					
+                	<Grid.RowDefinitions>
+                		<RowDefinition/>
+                		<RowDefinition Height="4"/>
+                	</Grid.RowDefinitions>
 
-                <Grid x:Name="titleGrid"
-                      Height="140"
-                      VerticalAlignment="Top"
-                      RenderTransformOrigin="0.5,0.5"
-                      Canvas.ZIndex="-20" Opacity="0.95">
-                    <Grid.Background>
-                        <SolidColorBrush Color="{StaticResource PhoneBackgroundColor}" />
-                    </Grid.Background>
-                    <Grid.RenderTransform>
-                        <CompositeTransform />
-                    </Grid.RenderTransform>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="2" />
-                    </Grid.RowDefinitions>
-                    <TextBlock x:Name="threadTitle"
-                               Text="{Binding CurrentThread.Title}"
-                               Style="{StaticResource PhoneTextLargeStyle}"
-                               Margin="12,0,48,0"
-                               TextTrimming="WordEllipsis"
-                               TextWrapping="Wrap" />
-                    <TextBlock x:Name="threadInfo"
-                               HorizontalAlignment="Left"
-                               TextWrapping="Wrap"
-                               Text="{Binding Info, Mode=OneWay}"
-                               VerticalAlignment="Top"
-                               Grid.Row="1"
-                               Style="{StaticResource PhoneTextTitle3Style}"
-                               FontFamily="Segoe WP Semibold"
-                               Margin="12,-6,12,6"
-                               Foreground="{StaticResource PhoneSubtleBrush}" />
-                    <Rectangle x:Name="titleSeparator"
-                               Fill="{StaticResource PhoneAccentBrush}"
-                               Grid.Row="2" />
+					<Grid.RenderTransform>
+                			<CompositeTransform />
+                		</Grid.RenderTransform>
+
+                	<Grid x:Name="titleContent">
+                		<Grid.Background>
+                			<SolidColorBrush Color="{StaticResource PhoneBackgroundColor}" />
+                		</Grid.Background>
+                		
+                		<Grid.RowDefinitions>
+                			<RowDefinition />
+                			<RowDefinition Height="Auto"/>
+                			<RowDefinition Height="Auto"/>
+                			<RowDefinition Height="Auto"/>
+                		</Grid.RowDefinitions>
+                		<TextBlock x:Name="threadTitle"
+                			Text="{Binding CurrentThread.Title}"
+                			Style="{StaticResource PhoneTextLargeStyle}"
+                			Margin="12,0,48,12"
+                			TextTrimming="WordEllipsis"
+                			TextWrapping="Wrap" MaxHeight="128" />
+                		<TextBlock x:Name="threadInfo"
+                			HorizontalAlignment="Left"
+                			TextWrapping="Wrap"
+                			Text="{Binding Info, Mode=OneWay}"
+                			VerticalAlignment="Top"
+                			Grid.Row="1"
+                			Style="{StaticResource PhoneTextTitle3Style}"
+                			FontFamily="Segoe WP Semibold"
+                			Margin="12,0,12,6"
+                			Foreground="{StaticResource PhoneSubtleBrush}" />
+                		<telerikPrimitives:RadUniformGrid x:Name="threadNavigationGrid" Grid.Row="2" NumberOfColumns="4">
+                			<Button x:Name="FirstPageButton" Content="&lt;&lt;"/>
+                			<TextBox x:Name="CustomPageText" TextWrapping="Wrap" Text="999" TextAlignment="Center"/>
+                			<Button x:Name="CustomPageButton" Content="&gt;"/>
+                			<Button x:Name="LastPageText" Content="&gt;&gt;"/>
+                		</telerikPrimitives:RadUniformGrid>
+                		<controls:ThreadRatingControl x:Name="threadRatingControl" Grid.Row="3" Margin="0" RenderTransformOrigin="0.5,0.5">
+                			<controls:ThreadRatingControl.RenderTransform>
+                				<CompositeTransform ScaleX="0.95" ScaleY="0.95"/>
+                			</controls:ThreadRatingControl.RenderTransform>
+                		</controls:ThreadRatingControl>
+                	</Grid>
+                	<Rectangle x:Name="titleSeparator"
+                		Fill="{StaticResource PhoneAccentBrush}" Grid.Row="1" />
+                
                 </Grid>
                 
                 <telerikPrimitives:RadImageButton x:Name="postJumpListShowButton"

@@ -211,6 +211,7 @@
     <Compile Include="ViewModels\ReplyViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\SmileyListViewModel.cs" />
+    <Compile Include="ViewModels\ThreadDetailsViewModel.cs" />
     <Compile Include="ViewModels\ThreadPageSlideViewModel.cs" />
     <Compile Include="ViewModels\ThreadViewModel.cs" />
   </ItemGroup>
