@@ -137,12 +137,12 @@ namespace Awful.ViewModels
             if (!PopulateForDesignTool())
             {
                 this._items = new List<ThreadPageSlideViewItem>() { new ThreadPageSlideViewItem() };
-                this._ignoreSelectionChange = true;
             }
             
             this._firstPageCommand = new Common.ActionCommand(LoadFirstPageAction);
             this._lastPageCommand = new Common.ActionCommand(LoadLasPageAction);
             this._customPageCommand = new Common.ActionCommand(LoadPageNumberAction);
+            Commands.ViewSAThreadCommand.ViewThread += OnPageFromLinkAvailable;
         }
 
         public enum ViewStates
@@ -156,7 +156,6 @@ namespace Awful.ViewModels
         public event EventHandler ViewStateChanged;
 
         private readonly ThreadPageCache _pageCache = new ThreadPageCache();
-        private bool _ignoreSelectionChange = false;
 
         #region Properties
 
@@ -286,6 +285,12 @@ namespace Awful.ViewModels
         }
 
         #endregion
+
+        private void OnPageFromLinkAvailable(object sender, Common.SAThreadViewEventArgs args)
+        {
+            Uri pageUri = args.PageUri;
+            LoadPageFromUri(pageUri);
+        }
 
         private bool PopulateForDesignTool()
         {
