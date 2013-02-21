@@ -12,14 +12,21 @@ namespace Awful
 {
     public partial class ThreadDetails : PhoneApplicationPage
     {
-        private ViewModels.ThreadDetailsViewModel DataSource { get { return this.Resources["ThreadDetailsDataSource"] as ViewModels.ThreadDetailsViewModel; } }
+        private ViewModels.ThreadDetailsViewModel DataSource 
+        {
+            get 
+            { 
+                return this.Resources["ThreadDetailsDataSource"] as ViewModels.ThreadDetailsViewModel; 
+            } 
+        }
+
         public ThreadDetails()
         {
             InitializeComponent();
             ThreadPageManager.Instance.ReadyForContent += OnViewReadyForContent;
         }
 
-        void OnViewReadyForContent(object sender, EventArgs e)
+        private void OnViewReadyForContent(object sender, EventArgs e)
         {
             LoadFromQuery();
         }
@@ -69,7 +76,7 @@ namespace Awful
 
         private void RefreshThread(object sender, System.EventArgs e)
         {
-        	// TODO: Add event handler implementation here.
+            this.threadSlideView.ControlViewModel.RefreshCurrentPage();
         }
 
         private void ShowNavControl(object sender, System.EventArgs e)
