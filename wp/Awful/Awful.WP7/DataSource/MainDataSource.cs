@@ -570,7 +570,8 @@ namespace Awful.Data
     #region Thread related
 
     [DataContract]
-    public class ThreadDataSource : CommonDataObject
+    public class ThreadDataSource : CommonDataObject, 
+        IEquatable<ThreadDataSource>
     {
         public ThreadDataSource(ThreadMetadata data)
             : base()
@@ -803,6 +804,30 @@ namespace Awful.Data
                 this.Tag = filename;
                 this.SetImage("/Assets/ThreadIcons/" + filename + ".png");
             }
+        }
+
+        public bool Equals(ThreadDataSource other)
+        {
+            return this.ThreadID == other.ThreadID;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ThreadDataSource)
+                return this.Equals((ThreadDataSource)obj);
+            else
+                return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = -1;
+            if (string.IsNullOrEmpty(ThreadID))
+                hash = base.GetHashCode();
+            else
+                hash = ThreadID.GetHashCode();
+
+            return hash;
         }
     }
 
