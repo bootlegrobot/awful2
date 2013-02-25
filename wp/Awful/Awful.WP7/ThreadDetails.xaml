@@ -24,7 +24,20 @@
 					<shell:ApplicationBarIconButton x:Name="replyButton" IconUri="/Assets/AppBar/appbar.add.rest.png" Text="reply" Click="ShowReplyView"/>
 					<shell:ApplicationBarIconButton x:Name="refreshButton" IconUri="/Assets/AppBar/appbar.refresh.rest.png" Text="refresh" Click="RefreshThread"/>
 					<shell:ApplicationBarIconButton x:Name="gotoButton" IconUri="/Assets/AppBar/appbar.next.rest.png" Text="goto" Click="ShowNavControl"/>
-				</shell:ApplicationBar>
+                    <shell:ApplicationBar.MenuItems>
+                        <shell:ApplicationBarMenuItem x:Name="toggleOrientation"
+                                                      Text="lock orientation"
+                                                      Click="ToggleViewOrientation" />
+
+                        <shell:ApplicationBarMenuItem x:Name="increaseFont"
+                                                      Text="increase font"
+                                                      Click="IncreaseFontSize" />
+                        
+                        <shell:ApplicationBarMenuItem x:Name="decreaseFont"
+                                                      Text="decrease font"
+                                                      Click="DecreaseFontSize" />
+                    </shell:ApplicationBar.MenuItems>
+                </shell:ApplicationBar>
 			</ViewModels:ThreadDetailsViewModel.ThreadViewBar>
 		</ViewModels:ThreadDetailsViewModel>
 		

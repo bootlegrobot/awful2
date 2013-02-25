@@ -359,7 +359,12 @@ namespace Awful.ViewModels
 
         #region Command Actions
 
-        private void LoadPageNumberAction(object state) { LoadPageNumber(CurrentThread, (int)state); }
+        private void LoadPageNumberAction(object state) 
+        {
+            int page = -1;
+            if (int.TryParse(state as string, out page))
+                LoadPageNumber(CurrentThread, page); 
+        }
         private void LoadFirstPageAction(object state) { LoadPageNumber(CurrentThread, 1); }
         private void LoadLasPageAction(object state) { LoadLastPost(CurrentThread); }
 
@@ -509,7 +514,7 @@ namespace Awful.ViewModels
             ThreadPageDataObject dataObject = new ThreadPageDataObject(page);
             this._currentThread = MetadataExtensions.FromPageMetadata(page);
             this._ratingCommand.ThreadId = page.ThreadID;
-            this._currentPage = page.PageNumber;
+            this._rating = 0;
             this._currentThreadPage = dataObject;
 
             if (TotalPages != page.LastPage)
@@ -520,7 +525,8 @@ namespace Awful.ViewModels
 
         protected override void OnError(Exception ex)
         {
-            Notification.ShowError(NotificationMethod.MessageBox, ex.Message, "View Page");
+            string message = "Could not load the requested page.";
+            Notification.ShowError(NotificationMethod.MessageBox, message, "View Page");
             this.CurrentState = ViewStates.Ready;
             this.Status = string.Empty;
         }
@@ -534,9 +540,11 @@ namespace Awful.ViewModels
         {
             // notify ui bindings
             ThreadPageDataSource page = arg as ThreadPageDataSource;
+            CurrentPage = page.PageNumber;
+
             OnPropertyChanged("CurrentThread");
-            OnPropertyChanged("CurrentPage");
             OnPropertyChanged("CurrentThreadPage");
+            OnPropertyChanged("Rating");
 
             // empty loading text
             Status = string.Empty;

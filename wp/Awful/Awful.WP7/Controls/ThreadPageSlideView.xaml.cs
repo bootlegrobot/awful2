@@ -17,21 +17,39 @@ namespace Awful.Controls
 {
     public partial class ThreadPageSlideView : UserControl
     {
-        private bool _validPrev = false;
-        private bool _validNext = false;
-
         private RadAnimation FadeInAnimation { get { return this.Resources["fadeInAnimation"] as RadAnimation; } }
         private RadAnimation FadeOutAnimation { get { return this.Resources["fadeOutAnimation"] as RadAnimation; } }
         public ThreadPageSlideViewModel ControlViewModel { get { return this.Resources["PageDataSource"] as ThreadPageSlideViewModel; } }
         private ThreadPageContextMenuProvider MenuProvider { get { return this.Resources["ThreadContextMenu"] as ThreadPageContextMenuProvider; } }
 
+        public bool IsPostJumpListVisible
+        {
+            get { return this.PostJumpListPanel.Visibility == System.Windows.Visibility.Visible; }
+            set
+            {
+                if (value)
+                    VisualStateManager.GoToState(this, "ShowJumpList", true);
+                else
+                    VisualStateManager.GoToState(this, "ShowPage", true);
+            }
+        }
+
         public ThreadPageManager PageManager { get { return ThreadPageManager.Instance; } }
         private bool _measurePinch;
+        private readonly DispatcherTimer _hideTitleTimer;
 
         public ThreadPageSlideView()
         {
             InitializeComponent();
-            
+
+            this._hideTitleTimer = new DispatcherTimer();
+            this._hideTitleTimer.Interval = TimeSpan.FromSeconds(2);
+            this._hideTitleTimer.Tick += (o, te) =>
+            {
+                (o as DispatcherTimer).Stop();
+                VisualStateManager.GoToState(this, "HideTitle", true);
+            };
+
             VisualStateManager.GoToState(this, "HideTitle", false);
             VisualStateManager.GoToState(this, "Loading", false);
 
@@ -276,17 +294,34 @@ namespace Awful.Controls
 
         private void ShowThreadTitle(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            var timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(2);
-            timer.Tick += (o, te) => 
-            {
-                (o as DispatcherTimer).Stop();
-                VisualStateManager.GoToState(this, "HideTitle", true); 
-            };
             VisualStateManager.GoToState(this, "ShowTitle", true);
-            timer.Start();
+            this._hideTitleTimer.Start();
         }
 
         #endregion
+
+        private void OnCustomPageNavTextLostFocus(object sender, RoutedEventArgs e)
+        {
+            // set the timer to 2 seconds again and start
+            this._hideTitleTimer.Interval = TimeSpan.FromSeconds(2);
+            this._hideTitleTimer.Start();
+        }
+
+        private void OnCustomPageNavTextGotFocus(object sender, RoutedEventArgs e)
+        {
+            this._hideTitleTimer.Stop();
+        }
+
+        private void ScrollToTop(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ThreadPageManager.Instance.ScrollToPost(ControlViewModel.CurrentThreadPage.Posts.First());
+            HidePostJumpList(sender, null);
+        }
+
+        private void ScrollToBottom(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ThreadPageManager.Instance.ScrollToPost(ControlViewModel.CurrentThreadPage.Posts.Last());
+            HidePostJumpList(sender, null);
+        }
     }
 }

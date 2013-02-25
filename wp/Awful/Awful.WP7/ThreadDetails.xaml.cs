@@ -55,6 +55,7 @@ namespace Awful
         public ThreadDetails()
         {
             InitializeComponent();
+
             Loaded += OnPageLoaded;
             OrientationChanged += OnOrientationChanged;
             ThreadPageManager.Instance.ReadyForContent += OnViewReadyForContent;
@@ -109,6 +110,12 @@ namespace Awful
             {
                 e.Cancel = true;
                 IsReplyViewActive = false;
+            }
+
+            else if (threadSlideView.IsPostJumpListVisible)
+            {
+                e.Cancel = true;
+                threadSlideView.IsPostJumpListVisible = false;
             }
 
             else if (threadSlideView.ControlViewModel.MoveToPreviousHistory())
@@ -210,14 +217,19 @@ namespace Awful
             this.threadReplyView.ReplyViewModel.SendThreadRequestAsync();
         }
 
-        private void ToggleOrientation(object sender, System.EventArgs e)
+        private void ToggleViewOrientation(object sender, EventArgs e)
         {
-            OrientationLocked = !OrientationLocked;
+            this.OrientationLocked = !this.OrientationLocked;
         }
 
-        private void ShowRatingPanel(object sender, System.EventArgs e)
+        private void IncreaseFontSize(object sender, EventArgs e)
         {
-        	// TODO: Add event handler implementation here.
+            ThreadPageManager.Instance.ZoomIn();
+        }
+
+        private void DecreaseFontSize(object sender, EventArgs e)
+        {
+            ThreadPageManager.Instance.ZoomOut();
         }
     }
 }
