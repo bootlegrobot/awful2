@@ -13,6 +13,7 @@
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
              xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+             xmlns:telerikInput="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Input"
              x:Class="Awful.Controls.ThreadPageSlideView"
              mc:Ignorable="d"
              d:DesignHeight="800"
@@ -397,12 +398,15 @@
                 			<RowDefinition Height="Auto"/>
                 			<RowDefinition Height="Auto"/>
                 		</Grid.RowDefinitions>
-                		<TextBlock x:Name="threadTitle"
-                			Text="{Binding CurrentThread.Title}"
-                			Style="{StaticResource PhoneTextLargeStyle}"
-                			Margin="12,0,48,12"
-                			TextTrimming="WordEllipsis"
-                			TextWrapping="Wrap" MaxHeight="128" />
+                		<StackPanel Margin="0,0,64,0">
+                			<TextBlock x:Name="threadTitle"
+                				Text="{Binding CurrentThread.Title}"
+                				Style="{StaticResource PhoneTextLargeStyle}"
+                				Margin="6,0,0,0"
+                				TextTrimming="WordEllipsis"
+                				TextWrapping="Wrap" MaxHeight="128" VerticalAlignment="Top" />
+                			<telerikInput:RadRating x:Name="threadRatingControl" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,12,0,0"/>
+                		</StackPanel>
                 		<TextBlock x:Name="threadInfo"
                 			HorizontalAlignment="Left"
                 			TextWrapping="Wrap"
@@ -414,16 +418,11 @@
                 			Margin="12,0,12,6"
                 			Foreground="{StaticResource PhoneSubtleBrush}" />
                 		<telerikPrimitives:RadUniformGrid x:Name="threadNavigationGrid" Grid.Row="2" NumberOfColumns="4">
-                			<Button x:Name="FirstPageButton" Content="&lt;&lt;"/>
-                			<TextBox x:Name="CustomPageText" TextWrapping="Wrap" Text="999" TextAlignment="Center"/>
-                			<Button x:Name="CustomPageButton" Content="&gt;"/>
-                			<Button x:Name="LastPageText" Content="&gt;&gt;"/>
+                			<Button x:Name="FirstPageButton" Content="&lt;&lt;" Command="{Binding FirstPageCommand, Mode=OneWay}"/>
+                			<TextBox x:Name="CustomPageText" TextWrapping="Wrap" Text="{Binding CurrentPage, Mode=TwoWay}" TextAlignment="Center"/>
+                			<Button x:Name="CustomPageButton" Content="&gt;" Command="{Binding CustomPageCommand, Mode=OneWay}"/>
+                			<Button x:Name="LastPageText" Content="&gt;&gt;" Command="{Binding LastPageCommand, Mode=OneWay}"/>
                 		</telerikPrimitives:RadUniformGrid>
-                		<controls:ThreadRatingControl x:Name="threadRatingControl" Grid.Row="3" Margin="0" RenderTransformOrigin="0.5,0.5">
-                			<controls:ThreadRatingControl.RenderTransform>
-                				<CompositeTransform ScaleX="0.95" ScaleY="0.95"/>
-                			</controls:ThreadRatingControl.RenderTransform>
-                		</controls:ThreadRatingControl>
                 	</Grid>
                 	<Rectangle x:Name="titleSeparator"
                 		Fill="{StaticResource PhoneAccentBrush}" Grid.Row="1" />

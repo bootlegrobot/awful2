@@ -162,6 +162,20 @@ namespace Awful.ViewModels
 
         #region Properties
 
+        private int _rating = 0;
+        public int Rating
+        {
+            get { return _rating; }
+            set
+            {
+                if (_rating != value)
+                {
+                    SetProperty(ref _rating, value, "Rating");
+                    RatingCommand.Execute(value);
+                }
+            }
+        }
+
         private IList<ThreadPageSlideViewItem> _items;
         public IList<ThreadPageSlideViewItem> Items
         {
@@ -494,6 +508,7 @@ namespace Awful.ViewModels
 
             ThreadPageDataObject dataObject = new ThreadPageDataObject(page);
             this._currentThread = MetadataExtensions.FromPageMetadata(page);
+            this._ratingCommand.ThreadId = page.ThreadID;
             this._currentPage = page.PageNumber;
             this._currentThreadPage = dataObject;
 
@@ -517,11 +532,13 @@ namespace Awful.ViewModels
 
         protected override void OnSuccess(object arg)
         {
-            // set current 
+            // notify ui bindings
             ThreadPageDataSource page = arg as ThreadPageDataSource;
             OnPropertyChanged("CurrentThread");
             OnPropertyChanged("CurrentPage");
             OnPropertyChanged("CurrentThreadPage");
+
+            // empty loading text
             Status = string.Empty;
 
             if (TotalPages != page.Data.LastPage)
@@ -533,6 +550,7 @@ namespace Awful.ViewModels
                 SelectedItem = Items[CurrentPage - 1];
             }
 
+            // we are ready to show the view
             CurrentState = ViewStates.Ready;
         }
 
