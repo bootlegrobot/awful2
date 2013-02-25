@@ -79,7 +79,6 @@ namespace Awful
             this.IsReplyViewActive = true;
         }
 
-
         private void OnThreadReplyViewLoaded(object sender, RoutedEventArgs e)
         {
             this.threadReplyView.ReplyClick = SendReply;
@@ -111,6 +110,9 @@ namespace Awful
                 e.Cancel = true;
                 IsReplyViewActive = false;
             }
+
+            else if (threadSlideView.ControlViewModel.MoveToPreviousHistory())
+                e.Cancel = true;
 
             base.OnBackKeyPress(e);
         }

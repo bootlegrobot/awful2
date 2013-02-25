@@ -84,6 +84,8 @@ namespace Awful.ViewModels
         }
     }
 
+    public sealed class ThreadPageStack : Stack<ThreadPageMetadata> { }
+
     public sealed class ThreadPageSlideViewList : KSVirtualizedList<ThreadPageSlideViewItem>
     {
 
@@ -156,6 +158,7 @@ namespace Awful.ViewModels
         public event EventHandler ViewStateChanged;
 
         private readonly ThreadPageCache _pageCache = new ThreadPageCache();
+        private readonly ThreadPageStack _pageStack = new ThreadPageStack();
 
         #region Properties
 
@@ -286,8 +289,75 @@ namespace Awful.ViewModels
 
         #endregion
 
+        public bool MoveToPreviousHistory()
+        {
+            bool moved = false;
+            if (this._pageStack.Count > 0)
+            {
+                var page = this._pageStack.Pop();
+                moved = true;
+                LoadPage(page);
+            }
+
+            return moved;
+        }
+
+        public void RefreshCurrentPage()
+        {
+            LoadPageCommandArgs args = new LoadPageCommandArgs();
+            args.LoadPage = RefreshCurrentPageDelegate;
+            args.State = CurrentThreadPage.Data;
+            Execute(args);
+        }
+
+        public void LoadPageNumber(ThreadMetadata thread, int pageNumber)
+        {
+            this.CurrentThread = thread;
+            LoadPageCommandArgs args = new LoadPageCommandArgs();
+            args.LoadPage = LoadPageNumberDelegate;
+            args.State = pageNumber;
+            Execute(args);
+        }
+
+        public void LoadPageFromUri(Uri uri)
+        {
+            LoadPageCommandArgs args = new LoadPageCommandArgs();
+            args.LoadPage = LoadPageFromUriDelegate;
+            args.State = uri;
+            Execute(args);
+        }
+
+        public void LoadFirstUnreadPost(ThreadMetadata thread)
+        {
+            LoadPageCommandArgs args = new LoadPageCommandArgs();
+            args.LoadPage = LoadFirstUnreadPostDelegate;
+            args.State = thread;
+            Execute(args);
+        }
+
+        public void LoadLastPost(ThreadMetadata thread)
+        {
+            LoadPageCommandArgs args = new LoadPageCommandArgs();
+            args.LoadPage = LoadLastPostDelegate;
+            args.State = thread;
+            Execute(args);
+        }
+
+        #region Command Actions
+
+        private void LoadPageNumberAction(object state) { LoadPageNumber(CurrentThread, (int)state); }
+        private void LoadFirstPageAction(object state) { LoadPageNumber(CurrentThread, 1); }
+        private void LoadLasPageAction(object state) { LoadLastPost(CurrentThread); }
+
+        #endregion
+
+        #region Nonpublic Methods
+
         private void OnPageFromLinkAvailable(object sender, Common.SAThreadViewEventArgs args)
         {
+            // add current page to the stack
+            this._pageStack.Push(CurrentThreadPage.Data);
+
             Uri pageUri = args.PageUri;
             LoadPageFromUri(pageUri);
         }
@@ -314,52 +384,11 @@ namespace Awful.ViewModels
             return false;
         }
 
-        public void RefreshCurrentPage()
+        private void LoadPage(ThreadPageMetadata page)
         {
             LoadPageCommandArgs args = new LoadPageCommandArgs();
-            args.LoadPage = RefreshCurrentPage;
-            args.State = CurrentThreadPage.Data;
-            Execute(args);
-        }
-
-        public void LoadPageNumber(ThreadMetadata thread, int pageNumber)
-        {
-            this.CurrentThread = thread;
-            LoadPageCommandArgs args = new LoadPageCommandArgs();
-            args.LoadPage = LoadPageNumber;
-            args.State = pageNumber;
-            Execute(args);
-        }
-
-        #region Command Actions
-
-        private void LoadPageNumberAction(object state) { LoadPageNumber(CurrentThread, (int)state); }
-        private void LoadFirstPageAction(object state) { LoadPageNumber(CurrentThread, 1); }
-        private void LoadLasPageAction(object state) { LoadLastPost(CurrentThread); }
-
-        #endregion
-
-        public void LoadPageFromUri(Uri uri)
-        {
-            LoadPageCommandArgs args = new LoadPageCommandArgs();
-            args.LoadPage = LoadPageFromUri;
-            args.State = uri;
-            Execute(args);
-        }
-
-        public void LoadFirstUnreadPost(ThreadMetadata thread)
-        {
-            LoadPageCommandArgs args = new LoadPageCommandArgs();
-            args.LoadPage = LoadFirstUnreadPost;
-            args.State = thread;
-            Execute(args);
-        }
-
-        public void LoadLastPost(ThreadMetadata thread)
-        {
-            LoadPageCommandArgs args = new LoadPageCommandArgs();
-            args.LoadPage = LoadLastPost;
-            args.State = thread;
+            args.LoadPage = LoadPageDelegate;
+            args.State = page;
             Execute(args);
         }
 
@@ -367,13 +396,15 @@ namespace Awful.ViewModels
         {
             if (IsRunning)
                 this.CurrentState = ViewStates.Loading;
-            
+
             base.OnStateChanged();
         }
 
+        #endregion
+
         #region LoadPage delegates
 
-        private ThreadPageMetadata LoadFirstUnreadPost(object state)
+        private ThreadPageMetadata LoadFirstUnreadPostDelegate(object state)
         {
             var thread = state as ThreadMetadata;
             if (thread == null)
@@ -383,7 +414,7 @@ namespace Awful.ViewModels
             return thread.FirstUnreadPost();
         }
 
-        private ThreadPageMetadata LoadLastPost(object state)
+        private ThreadPageMetadata LoadLastPostDelegate(object state)
         {
             var thread = state as ThreadMetadata;
             if (thread == null)
@@ -392,7 +423,14 @@ namespace Awful.ViewModels
             return thread.LastPage();
         }
 
-        private ThreadPageMetadata LoadPageNumber(object state)
+        private ThreadPageMetadata LoadPageDelegate(object state)
+        {
+            ThreadPageMetadata page = null;
+            page = state as ThreadPageMetadata;
+            return page;
+        }
+
+        private ThreadPageMetadata LoadPageNumberDelegate(object state)
         {
             try
             {
@@ -413,7 +451,7 @@ namespace Awful.ViewModels
             }
         }
 
-        private ThreadPageMetadata LoadPageFromUri(object state)
+        private ThreadPageMetadata LoadPageFromUriDelegate(object state)
         {
             var uri = state as Uri;
             if (uri == null)
@@ -424,7 +462,7 @@ namespace Awful.ViewModels
             return page;
         }
 
-        private ThreadPageMetadata RefreshCurrentPage(object state)
+        private ThreadPageMetadata RefreshCurrentPageDelegate(object state)
         {
             var page = state as ThreadPageMetadata;
             if (page == null)
