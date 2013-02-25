@@ -17,13 +17,6 @@ namespace Awful.ViewModels
             set { SetProperty(ref _threadViewBar, value, "ThreadViewBar"); }
         }
 
-        private IApplicationBar _replyViewBar;
-        public IApplicationBar ReplyViewBar
-        {
-            get { return _replyViewBar; }
-            set { SetProperty(ref _replyViewBar, value, "ReplyViewBar"); }
-        }
-
         private ICommand _ratingCommand;
         public ICommand RatingCommand
         {
@@ -68,6 +61,12 @@ namespace Awful.ViewModels
             {
                 SetProperty(ref _customPage, value, "CustomPageCommand");
             }
+        }
+
+        private ICommand _bookmarkCommand = new Commands.ToggleBookmarkCommand();
+        public ICommand BookmarkCommand
+        {
+            get { return _bookmarkCommand; }
         }
     }
 }

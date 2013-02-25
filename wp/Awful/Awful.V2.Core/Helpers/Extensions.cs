@@ -31,6 +31,23 @@ namespace Awful
             return source.Skip((page - 1) * pageSize).Take(pageSize);
         }
 
+        public static bool DeleteFileFromStorage(string filepath)
+        {
+            bool deleted = false;
+            try
+            {
+                IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication();
+               
+                if (storage.FileExists(filepath))
+                {
+                    storage.DeleteFile(filepath);
+                    deleted = true;
+                }
+            }
+            catch (Exception ex) { AwfulDebugger.AddLog(new object(), AwfulDebugger.Level.Critical, ex); }
+            return deleted;
+        }
+
         private static bool BuildPath(this IsolatedStorageFile storage, string path)
         {
             bool success = false;
@@ -338,7 +355,7 @@ namespace Awful
             return AwfulContentRequest.Threads.MarkPostAsRead(post);
         }
 
-        public static IThreadPostRequest BeginReply(this ThreadMetadata thread)
+        public static IThreadPostRequest CreateReplyRequest(this ThreadMetadata thread)
         {
             return AwfulContentRequest.Threads.BeginReplyToThread(thread.ThreadID);
         }

@@ -26,27 +26,10 @@
 					<shell:ApplicationBarIconButton x:Name="gotoButton" IconUri="/Assets/AppBar/appbar.next.rest.png" Text="goto" Click="ShowNavControl"/>
 				</shell:ApplicationBar>
 			</ViewModels:ThreadDetailsViewModel.ThreadViewBar>
-			<ViewModels:ThreadDetailsViewModel.ReplyViewBar>
-				<shell:ApplicationBar>
-					<shell:ApplicationBarIconButton x:Name="saveButton" IconUri="/Assets/AppBar/appbar.save.rest.png" Text="save" Click="SaveDraft"/>
-					<shell:ApplicationBarIconButton x:Name="sendButton" IconUri="/Toolkit.Content/ApplicationBar.Check.png" Text="send" Click="SendReply"/>
-				</shell:ApplicationBar>
-			</ViewModels:ThreadDetailsViewModel.ReplyViewBar>
 		</ViewModels:ThreadDetailsViewModel>
 		
     </phone:PhoneApplicationPage.Resources>
-	<phone:PhoneApplicationPage.ApplicationBar>
-		<shell:ApplicationBar>
-			<shell:ApplicationBar.MenuItems>
-				<shell:ApplicationBarMenuItem x:Name="rateMenu" Text="rate thread..." Click="ShowRatingPanel"/>
-				<shell:ApplicationBarMenuItem Text="lock orientation" Click="ToggleOrientation"/>
-			</shell:ApplicationBar.MenuItems>
-					<shell:ApplicationBarIconButton  IconUri="/Assets/AppBar/appbar.favs.rest.png" Text="bookmark" Click="ToggleBookmarks"/>
-					<shell:ApplicationBarIconButton  IconUri="/Assets/AppBar/appbar.add.rest.png" Text="reply" Click="ShowReplyView"/>
-					<shell:ApplicationBarIconButton IconUri="/Assets/AppBar/appbar.refresh.rest.png" Text="refresh" Click="RefreshThread"/>
-					<shell:ApplicationBarIconButton  IconUri="/Assets/AppBar/appbar.next.rest.png" Text="goto" Click="ShowNavControl"/>
-				</shell:ApplicationBar>
-	</phone:PhoneApplicationPage.ApplicationBar>
+	
 	<phone:PhoneApplicationPage.DataContext>
 		<Binding Source="{StaticResource ThreadDetailsDataSource}"/>
 	</phone:PhoneApplicationPage.DataContext>

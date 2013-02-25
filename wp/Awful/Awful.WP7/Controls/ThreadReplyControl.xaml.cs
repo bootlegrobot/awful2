@@ -15,6 +15,12 @@ namespace Awful.Controls
         public ThreadReplyControl()
         {
             InitializeComponent();
+            Commands.EditPostCommand.EditRequested += OnEditRequestRecieved;
+        }
+
+        private void OnEditRequestRecieved(object sender, Common.ThreadPostRequestEventArgs args)
+        {
+            this.ReplyViewModel.Request = args.Request;
         }
 
         public delegate void ButtonClickDelgate(object sender, System.EventArgs e);
@@ -31,6 +37,11 @@ namespace Awful.Controls
         public ViewModels.ReplyViewModel ReplyViewModel
         {
             get { return this.Resources["replyViewModel"] as ViewModels.ReplyViewModel; }
+        }
+
+        public IApplicationBar ReplyAppBar
+        {
+            get { return this.Resources["ReplyAppBar"] as IApplicationBar; }
         }
 
         private void ClearAllReplyText(object sender, System.EventArgs e)

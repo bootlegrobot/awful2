@@ -140,7 +140,7 @@
     </UserControl.Resources>
     <controls:Pivot x:Name="LayoutRoot" Background="{x:Null}" HeaderTemplate="{StaticResource ThreadReplyHeaderTemplate}">
 		<controls:PivotItem x:Name="TextSection"
-			Header="reply">
+			Header="{Binding RequestType, Source={StaticResource replyViewModel}}">
 		
 			<Grid Margin="{StaticResource PhoneTouchTargetOverhang}"
                   DataContext="{StaticResource replyViewModel}">
@@ -148,6 +148,7 @@
 
                     <telerikPrimitives:RadTextBox x:Name="ReplyTextBox"
                                                   AcceptsReturn="True"
+                                                  IsEnabled="{Binding CanReply}"
                                                   TextWrapping="Wrap"
                                                   TextInput="UpdateTextCount"
                                                   TextInputStart="ScrollReplyBoxToBottom"

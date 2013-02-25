@@ -582,6 +582,15 @@ namespace Awful.Data
 
         public ThreadDataSource() : this(null) { }
 
+        public static ThreadDataSource FromThreadId(string threadId)
+        { 
+            ThreadMetadata data = new ThreadMetadata() { ThreadID = threadId };
+            ThreadDataSource thread = new ThreadDataSource();
+            thread._data = data;
+            thread.ThreadID = data.ThreadID;
+            return thread;
+        }
+
         #region Properties
 
         [IgnoreDataMember]

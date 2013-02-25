@@ -318,7 +318,7 @@ namespace Awful.ViewModels
         {
             LoadPageCommandArgs args = new LoadPageCommandArgs();
             args.LoadPage = RefreshCurrentPage;
-            args.State = CurrentThreadPage;
+            args.State = CurrentThreadPage.Data;
             Execute(args);
         }
 

@@ -17,11 +17,11 @@ namespace Awful
         bool Send();
     }
 
-    internal class ThreadReplyRequest : IThreadPostRequest
+    public class ThreadReplyRequest : IThreadPostRequest
     {
-        public ThreadReplyRequest(ThreadMetadata thread) { this.Thread = thread; }
+        internal ThreadReplyRequest(ThreadMetadata thread) { this.Thread = thread; }
 
-        public ThreadReplyRequest(string threadId) : this(new ThreadMetadata() { ThreadID = threadId }) { }
+        internal ThreadReplyRequest(string threadId) : this(new ThreadMetadata() { ThreadID = threadId }) { }
 
         public ThreadMetadata Thread
         {
@@ -33,7 +33,7 @@ namespace Awful
             get { return PostRequestType.Reply; }
         }
 
-        private string _content;
+        private string _content = string.Empty;
         public string Content
         {
             get
@@ -52,15 +52,15 @@ namespace Awful
         }
     }
 
-    internal class ThreadPostEditRequest : IThreadPostRequest
+    public class ThreadPostEditRequest : IThreadPostRequest
     {
-        public ThreadPostEditRequest(ThreadPostMetadata post)
+        internal ThreadPostEditRequest(ThreadPostMetadata post)
         {
             this.Post = post;
             Content = ThreadTasks.FetchEditText(post);
         }
 
-        public ThreadPostEditRequest(string postId) : this(new ThreadPostMetadata() { PostID = postId }) { }
+        internal ThreadPostEditRequest(string postId) : this(new ThreadPostMetadata() { PostID = postId }) { }
 
         public PostRequestType RequestType
         {
@@ -73,7 +73,7 @@ namespace Awful
             private set;
         }
 
-        private string _content;
+        private string _content = string.Empty;
         public string Content
         {
             get

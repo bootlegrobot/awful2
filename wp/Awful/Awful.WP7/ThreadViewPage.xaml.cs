@@ -89,7 +89,7 @@ namespace Awful
             get
             {
                 if (_currentRequest == null)
-                    _currentRequest = viewmodel.Thread.Data.BeginReply();
+                    _currentRequest = viewmodel.Thread.Data.CreateReplyRequest();
 
                 return _currentRequest;
             }

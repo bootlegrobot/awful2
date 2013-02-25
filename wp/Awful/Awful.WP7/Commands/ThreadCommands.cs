@@ -231,8 +231,67 @@ namespace Awful.Commands
 
         protected override bool PreCondition(Data.ThreadPostSource item)
         {
-            var response = MessageBox.Show("Are you sure you wish to edit this post? Any current in the reply window will be erased.", ":o", MessageBoxButton.OKCancel);
+            var response = MessageBox.Show("Are you sure you wish to edit this post? Any current text in the reply window will be erased.", ":o", MessageBoxButton.OKCancel);
             return response == MessageBoxResult.OK;
+        }
+    }
+
+    public class SendThreadResponseCommand : BackgroundWorkerCommand<IThreadPostRequest>
+    {
+        public event EventHandler Success;
+        public event EventHandler Failure;
+
+        public static void FireEvent(object sender, EventHandler handler)
+        {
+            if (handler != null)
+                handler(sender, EventArgs.Empty);
+        }
+    
+        protected override object DoWork(IThreadPostRequest parameter)
+        {
+            bool success = parameter.Send();
+            if (!success)
+                throw new Exception("Post failed to send.");
+
+            return parameter;
+        }
+
+        protected override void OnError(Exception ex)
+        {
+            string message = "Request failed.";
+            Notification.ShowError(message, "Post failed.");
+            FireEvent(this, Failure);
+        }
+
+        protected override void OnCancel()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void OnSuccess(object arg)
+        {
+            var request = arg as IThreadPostRequest;
+            string message = string.Format("You made a successful {0}! Great job!",
+                request.RequestType == PostRequestType.Edit
+                ? "edit"
+                : "post");
+
+            Notification.Show(message, "Success!");
+            FireEvent(this, Success);
+        }
+
+        protected override bool PreCondition(IThreadPostRequest item)
+        {
+            return ConfirmSend(item);
+        }
+
+        private bool ConfirmSend(IThreadPostRequest Request)
+        {
+            string message = Request.RequestType == PostRequestType.Edit
+                ? "Send edit?"
+                : "Send reply?";
+
+            return MessageBox.Show(message, "Confirm", MessageBoxButton.OKCancel) == MessageBoxResult.OK;
         }
     }
 }
