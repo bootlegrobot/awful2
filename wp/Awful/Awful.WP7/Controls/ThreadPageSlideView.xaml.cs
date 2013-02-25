@@ -28,9 +28,9 @@ namespace Awful.Controls
             set
             {
                 if (value)
-                    VisualStateManager.GoToState(this, "ShowJumpList", true);
+                    ShowPostJumpList(this, null);
                 else
-                    VisualStateManager.GoToState(this, "ShowPage", true);
+                    HidePostJumpList(this, null);
             }
         }
 

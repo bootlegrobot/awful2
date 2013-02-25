@@ -23,10 +23,10 @@
 					<shell:ApplicationBarIconButton x:Name="bookmarkButton" IconUri="/Assets/AppBar/appbar.favs.rest.png" Text="bookmark" Click="ToggleBookmarks"/>
 					<shell:ApplicationBarIconButton x:Name="replyButton" IconUri="/Assets/AppBar/appbar.add.rest.png" Text="reply" Click="ShowReplyView"/>
 					<shell:ApplicationBarIconButton x:Name="refreshButton" IconUri="/Assets/AppBar/appbar.refresh.rest.png" Text="refresh" Click="RefreshThread"/>
-					<shell:ApplicationBarIconButton x:Name="gotoButton" IconUri="/Assets/AppBar/appbar.next.rest.png" Text="goto" Click="ShowNavControl"/>
+					<shell:ApplicationBarIconButton IconUri="/Assets/AppBar/appbar.feature.search.rest.png" Text="post jump" Click="ShowPostJumpList"/>
                     <shell:ApplicationBar.MenuItems>
                         <shell:ApplicationBarMenuItem x:Name="toggleOrientation"
-                                                      Text="lock orientation"
+                                                      Text="unlock orientation"
                                                       Click="ToggleViewOrientation" />
 
                         <shell:ApplicationBarMenuItem x:Name="increaseFont"

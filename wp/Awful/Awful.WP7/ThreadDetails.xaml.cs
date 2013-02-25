@@ -21,7 +21,25 @@ namespace Awful
             } 
         }
         private PageOrientation CurrentOrientation { get; set; }
-        private bool OrientationLocked { get; set; }
+
+        private bool OrientationLocked
+        {
+            get
+            {
+                return SupportedOrientations == SupportedPageOrientation.Landscape ||
+                    SupportedOrientations == SupportedPageOrientation.Portrait;
+            }
+
+            set
+            {
+                if (value)
+                    SupportedOrientations = this.Orientation.IsPortrait()
+                        ? SupportedPageOrientation.Portrait
+                        : SupportedPageOrientation.Landscape;
+                else
+                    SupportedOrientations = SupportedPageOrientation.PortraitOrLandscape;
+            }
+        }
 
         private bool IsReplyViewActive
         {
@@ -192,9 +210,11 @@ namespace Awful
             this.threadSlideView.ControlViewModel.RefreshCurrentPage();
         }
 
-        private void ShowNavControl(object sender, System.EventArgs e)
+        private void ShowPostJumpList(object sender, System.EventArgs e)
         {
         	// TODO: Add event handler implementation here.
+            if (!threadSlideView.IsPostJumpListVisible)
+                threadSlideView.IsPostJumpListVisible = true;
         }
 
         private void SaveDraft(object sender, System.EventArgs e)
@@ -220,6 +240,10 @@ namespace Awful
         private void ToggleViewOrientation(object sender, EventArgs e)
         {
             this.OrientationLocked = !this.OrientationLocked;
+            if (this.OrientationLocked)
+                (sender as IApplicationBarMenuItem).Text = "unlock orientation";
+            else
+                (sender as IApplicationBarMenuItem).Text = "lock orientation";
         }
 
         private void IncreaseFontSize(object sender, EventArgs e)

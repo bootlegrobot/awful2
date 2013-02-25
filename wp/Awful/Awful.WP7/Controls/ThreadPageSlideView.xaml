@@ -457,7 +457,7 @@
                                                   BorderThickness="2,2,2,0"
                                                   Click="ShowPostJumpList"
                                                   Opacity="0.75"
-                                                  Canvas.ZIndex="-10" />
+                                                  Canvas.ZIndex="-10" Visibility="Collapsed" />
 
             </Grid>
             
