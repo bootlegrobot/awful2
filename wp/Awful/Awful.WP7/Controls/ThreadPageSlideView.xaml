@@ -33,7 +33,9 @@
                                       FillBehavior="HoldEnd" />
 
         <!-- The thread page context menu -->
-        <controls:ThreadPageContextMenuProvider x:Key="ThreadContextMenu" />
+        <controls:ThreadPageContextMenuProvider x:Key="ThreadContextMenu">
+          
+        </controls:ThreadPageContextMenuProvider>
 
 		<!-- The thread page nav height -->
 		<System:Double x:Key="threadNavHeight">-342</System:Double>
@@ -430,6 +432,7 @@
                             <TextBox x:Name="CustomPageText"
                                      TextWrapping="Wrap"
                                      Text="{Binding CurrentPage, Mode=OneWay}"
+                                     InputScope="Number"
                                      TextAlignment="Center"
                                      LostFocus="OnCustomPageNavTextLostFocus"
                                      GotFocus="OnCustomPageNavTextGotFocus" />

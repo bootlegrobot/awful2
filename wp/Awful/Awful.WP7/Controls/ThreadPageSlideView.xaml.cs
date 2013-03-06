@@ -189,12 +189,11 @@ namespace Awful.Controls
         private void OnPageLoaded(object sender, EventArgs e)
         {
             // process posts - scroll to first unread post or last read post
-            var unread = ControlViewModel.CurrentThreadPage.Posts
-                .Where(post => post.IsNew)
-                .FirstOrDefault();
+            int targetPostIndex = ControlViewModel.CurrentThreadPage.Data.TargetPostIndex;
+            var targetPost = ControlViewModel.CurrentThreadPage.Posts[targetPostIndex];
 
-            if (unread != null)
-                this.PageManager.ScrollToPost(unread);
+            if (targetPost != null)
+                this.PageManager.ScrollToPost(targetPost);
             else
                 this.PageManager.ScrollToPost(ControlViewModel.CurrentThreadPage.Posts.First());
 

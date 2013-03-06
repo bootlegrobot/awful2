@@ -295,8 +295,13 @@ namespace Awful.Controls
         private RadContextMenu _image;
         public RadContextMenu ImageMenu
         {
-            get { return _image; }
-            set { SetProperty(ref _image, value, "ImageMenu"); }
+            get
+            {
+                if (_image == null)
+                    _image = CreateImageMenu(new RadContextMenu());
+
+                return _image;
+            }
         }
 
         private RadContextMenu _link;
@@ -311,13 +316,23 @@ namespace Awful.Controls
             }
         }
 
+        private RadContextMenuItem openInBrowser;
+        private System.Windows.Input.ICommand _webCommand = new Commands.OpenWebBrowserCommand();
+
+        private RadContextMenu CreateImageMenu(RadContextMenu radContextMenu)
+        {
+            openInBrowser = new RadContextMenuItem() { Content = "open in web browser", Command = _webCommand };
+            radContextMenu.Items.Add(openInBrowser);
+            return radContextMenu;
+        }
+
         private RadContextMenuItem viewOnSA;
         private RadContextMenuItem viewOnWeb;
 
         private RadContextMenu CreateLinkMenu(RadContextMenu radContextMenu)
         {
             var saCommand = new Commands.ViewSAThreadCommand();
-            var webCommand = new Commands.OpenWebBrowserCommand();
+            var webCommand = _webCommand;
 
             viewOnSA = new RadContextMenuItem() { Content = "open in Awful!", Command = saCommand };
             viewOnWeb = new RadContextMenuItem() { Content = "open in web browser", Command = webCommand };
@@ -361,13 +376,21 @@ namespace Awful.Controls
             this.Menu.IsOpen = true;
         }
 
-        public void ShowImageMenu()
+        public void ShowImageMenu(string url)
         {
-            if (this.Menu != null)
-                this.Menu.IsOpen = false;
+            try
+            {
+                if (this.Menu != null)
+                    this.Menu.IsOpen = false;
 
-            this.Menu = ImageMenu;
-            this.Menu.IsOpen = true;
+                this.Menu = ImageMenu;
+                openInBrowser.CommandParameter = new Uri(url);
+                this.Menu.IsOpen = true;
+            }
+            catch (Exception ex)
+            {
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex);
+            }
         }
 
         private RadContextMenuItem quoteMenu;

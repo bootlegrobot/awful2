@@ -435,11 +435,11 @@ namespace Awful
                     NotifyUserOfResult(success));
         }
 
-        private void NotifyUserOfResult(bool success)
+        private void NotifyUserOfResult(Uri success)
         {
-            string message = success ? "Request successful!" : "request failed.";
+            string message = success == null? "Request successful!" : "request failed.";
             string caption = "Thread Post";
-            if (success)
+            if (success != null)
             {
                 Notification.Show(App.Model.DefaultNotification,
                     message,

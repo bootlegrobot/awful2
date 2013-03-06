@@ -112,7 +112,10 @@ namespace Awful.Commands
         protected override void OnSuccess(object arg)
         {
             var eventArgs = arg as SAThreadViewEventArgs;
-            FireEvent(this, ViewThread, eventArgs);        
+            FireEvent(this, ViewThread, eventArgs);  
+
+            // linking to other pages isn't a redirect so don't use this.
+            // RedirectionListener.Notify(eventArgs.PageUri);
         }
 
         protected override bool PreCondition(Uri item)

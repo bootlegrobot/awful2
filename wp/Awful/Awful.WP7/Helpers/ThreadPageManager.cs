@@ -336,7 +336,7 @@ namespace Awful
             string index = response.Split(delim, StringSplitOptions.RemoveEmptyEntries).Last();
             
             this.SelectedImageUrl = index;
-            _threadMenu.ShowImageMenu();
+            _threadMenu.ShowImageMenu(this.SelectedImageUrl);
         }
 
         private void OnPostSelected(string response)

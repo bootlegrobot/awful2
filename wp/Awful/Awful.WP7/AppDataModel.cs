@@ -211,8 +211,6 @@ namespace Awful
             {
                 AddOrUpdateValue(CONTENTFILTERENABLED_KEY, value);
                 Helpers.ContentFilter.IsContentFilterEnabled = value;
-                HideThreadIcons = value;
-
                 NotifyPropertyChanged("IsContentFilterEnabled");
             }
         }

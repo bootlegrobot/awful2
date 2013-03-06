@@ -13,10 +13,16 @@ namespace Awful.ViewModels
         private AppDataModel appModel;
         private List<AwfulDebugger.Level> _levels = null;
         private List<AppDataModel.ThreadViewMode> _modes = null;
+        private Awful.Commands.LogoutCommand _logout = new Commands.LogoutCommand();
       
         public SettingsViewModel()
         {
             appModel = App.Model;
+        }
+
+        public Awful.Commands.LogoutCommand LogoutCommand
+        {
+            get { return _logout; }
         }
 
         public List<AppDataModel.HomePageSection> HomePages
@@ -107,6 +113,8 @@ namespace Awful.ViewModels
             {
                 bool enabled = VerifyContentFilter(value);
                 appModel.IsContentFilterEnabled = enabled;
+                HideThreadTags = appModel.IsContentFilterEnabled;
+                OnPropertyChanged("ModifyThreadTags");
             }
         }
 
@@ -126,6 +134,11 @@ namespace Awful.ViewModels
             return value;
         }
 
+        public bool ModifyThreadTags
+        {
+            get { return ContentFilterEnabled == false; }
+        }
+
         public bool HideThreadTags
         {
             get { return appModel.HideThreadIcons; }
@@ -134,6 +147,16 @@ namespace Awful.ViewModels
                 appModel.HideThreadIcons = value;
                 OnPropertyChanged("HideThreadTags");
             }
+        }
+
+        internal void Refresh()
+        {
+            OnPropertyChanged("HomePages");
+            OnPropertyChanged("SelectedHomePage");
+            OnPropertyChanged("DebugItems");
+            OnPropertyChanged("SelectedDebugLevel");
+            OnPropertyChanged("ViewModes");
+            OnPropertyChanged("SelectedViewMode");
         }
     }
 }

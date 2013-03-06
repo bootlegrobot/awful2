@@ -139,36 +139,64 @@
 
     </UserControl.Resources>
     <controls:Pivot x:Name="LayoutRoot" Background="{x:Null}" HeaderTemplate="{StaticResource ThreadReplyHeaderTemplate}">
+    	<VisualStateManager.VisualStateGroups>
+    		<VisualStateGroup x:Name="ActiveStates">
+    			<VisualState x:Name="Ready"/>
+    		</VisualStateGroup>
+    	</VisualStateManager.VisualStateGroups>
+
 		<controls:PivotItem x:Name="TextSection"
 			Header="{Binding RequestType, Source={StaticResource replyViewModel}}">
 		
 			<Grid Margin="{StaticResource PhoneTouchTargetOverhang}"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch"
                   DataContext="{StaticResource replyViewModel}">
+                 
                 <ScrollViewer x:Name="replyScroll" Margin="-12,0">
 
-                    <telerikPrimitives:RadTextBox x:Name="ReplyTextBox"
-                                                  AcceptsReturn="True"
-                                                  IsEnabled="{Binding CanReply}"
-                                                  TextWrapping="Wrap"
-                                                  TextInput="UpdateTextCount"
-                                                  TextInputStart="ScrollReplyBoxToBottom"
-                                                  InputScope="Text"
-                                                  Text="{Binding Text, Mode=TwoWay}"
-                                                  FontSize="{StaticResource PhoneFontSizeSmall}"
-                                                  VerticalAlignment="Stretch">
-                        <telerikPrimitives:RadTextBox.Header>
-                            <TextBlock x:Name="CharacterCountLabel"
-                                       HorizontalAlignment="Right"
-                                       TextWrapping="NoWrap"
-                                       VerticalAlignment="Top"
-                                       Style="{StaticResource PhoneTextSubtleStyle}"
-                                       TextAlignment="Right">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <telerikPrimitives:RadTextBox x:Name="ReplyTextBox"
+                                                      Grid.Row="1"
+                                                      AcceptsReturn="True"
+                                                      IsEnabled="{Binding IsEnabled}"
+                                                      TextWrapping="Wrap"
+                                                      TextInput="UpdateTextCount"
+                                                      TextInputStart="ScrollReplyBoxToBottom"
+                                                      InputScope="Text"
+                                                      Text="{Binding Text, Mode=TwoWay}"
+                                                      FontSize="{StaticResource PhoneFontSizeSmall}"
+                                                      VerticalAlignment="Stretch">
+                            <telerikPrimitives:RadTextBox.Header>
+                                <TextBlock x:Name="CharacterCountLabel"
+                                           HorizontalAlignment="Right"
+                                           TextWrapping="NoWrap"
+                                           VerticalAlignment="Top"
+                                           Style="{StaticResource PhoneTextSubtleStyle}"
+                                           TextAlignment="Right">
 								<Run Text="Character count: " />
 								<Run Text="{Binding Count}" />
-                            </TextBlock>
-                        </telerikPrimitives:RadTextBox.Header>
-                    </telerikPrimitives:RadTextBox>
+                                </TextBlock>
+                            </telerikPrimitives:RadTextBox.Header>
+                        </telerikPrimitives:RadTextBox>
+
+                        <telerikPrimitives:RadBusyIndicator x:Name="busyIndicator"
+                                                            Grid.Row="0"
+                                                            Content="{Binding Status}"
+                                                            IsRunning="{Binding IsRunning}"
+                                                            VerticalAlignment="Top"
+                                                            AnimationStyle="AnimationStyle9" />
+                    </Grid>
+                    
+                 
                 </ScrollViewer>
+
+               
             </Grid>
 
         </controls:PivotItem>
@@ -205,17 +233,34 @@
                 <Grid.Resources>
                     <imagetools:ImageConverter x:Key="gifConverter" />
                 </Grid.Resources>
-                
-				<telerikPrimitives:RadDataBoundListBox x:Name="SmiliesListBox"
-					DataContext="{StaticResource smileyViewModel}"
-					Style="{StaticResource ThreadReplyControlListBoxStyle}"
-					IsAsyncBalanceEnabled="True"
-					DataVirtualizationMode="OnDemandAutomatic" 
-					EmptyContent="loading..." 
-					ItemTap="AppendSmilieyToReplyText" 
-					DataRequested="SmileyDataRequested" ItemsSource="{Binding Items}">
-						
-					<telerikPrimitives:RadDataBoundListBox.ItemTemplate>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <telerikInput:RadAutoCompleteBox x:Name="SmileyAutoComplete"
+                                                 DataContext="{StaticResource smileyViewModel}"
+                                                 Grid.Row="0"
+                                                 Header="Filter:"
+                                                 AutoCompleteMode="Contains"
+                                                 FilterDelay="0:0:0.5"
+                                                 SuggestionsSource="{Binding Suggestions}"
+                                                 AutoCompletePopupDisplayMode="None"
+                                                 EmptyFilterBehavior="ShowAll"/>
+
+                <telerikPrimitives:RadDataBoundListBox x:Name="SmiliesListBox"
+                                                       DataContext="{StaticResource smileyViewModel}"
+                                                       Grid.Row="1"
+                                                       Margin="12,0,0,0"
+                                                       Style="{StaticResource ThreadReplyControlListBoxStyle}"
+                                                       IsAsyncBalanceEnabled="True"
+                                                       EmptyContent="loading..."
+                                                       ItemTap="AppendSmilieyToReplyText"
+                                                       DataRequested="SmileyDataRequested"
+                                                       ItemsSource="{Binding FilteredSuggestions, ElementName=SmileyAutoComplete}">
+
+                    <telerikPrimitives:RadDataBoundListBox.ItemTemplate>
 						<DataTemplate>
 							<Border Width="130" Height="130">
 								<Grid>
@@ -225,13 +270,15 @@
 									</Grid.RowDefinitions>
 									<Border 
                                         Background="{StaticResource PhoneChromeBrush}" BorderThickness="1" BorderBrush="{StaticResource PhoneSubtleBrush}" Grid.RowSpan="2" >
-                                        <imagetools:AnimatedImage Height="45"
+                                        
+										<imagetools:AnimatedImage Height="45"
                                                                   Width="45"
                                                                   AnimationMode="None"
                                                                   Source="{Binding ImageUri, Converter={StaticResource gifConverter} }"
                                                                   HorizontalAlignment="Center"
                                                                   VerticalAlignment="Center"
                                                                   Margin="0" />
+										
                                     </Border>
 									<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" Text="{Binding Title}" VerticalAlignment="Top" Grid.Row="1" Style="{StaticResource PhoneTextSmallStyle}" Margin="0,0,6,3" TextAlignment="Right"/>
 								</Grid>

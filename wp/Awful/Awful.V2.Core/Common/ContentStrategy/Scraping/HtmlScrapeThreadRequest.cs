@@ -49,7 +49,22 @@ namespace Awful.Common
         {
             string url = uri.AbsoluteUri;
             var doc = new AwfulWebClient().FetchHtml(url).ToHtmlDocument();
-            return ThreadPageParser.ParseThreadPage(doc);
+            var page = ThreadPageParser.ParseThreadPage(doc);
+
+            // check for post id
+            QueryString query = new QueryString(url);
+
+            if (page != null && query.ContainsKey("postid"))
+            {
+                string id = query["postid"];
+                var targetPost = page.Posts.Where(post => post.PostID.Equals(id)).SingleOrDefault();
+                if (targetPost != null)
+                {
+                    page.TargetPostIndex = page.Posts.IndexOf(targetPost);
+                }
+            }
+
+            return page;
         }
 
         public override ThreadPageMetadata LoadThreadPage(string threadId, int pageNumber)

@@ -14,7 +14,7 @@ namespace Awful
     {
         PostRequestType RequestType { get; }
         string Content { get; set; }
-        bool Send();
+        Uri Send();
     }
 
     public class ThreadReplyRequest : IThreadPostRequest
@@ -46,7 +46,7 @@ namespace Awful
             }
         }
 
-        public bool Send()
+        public Uri Send()
         {
             return ThreadTasks.Reply(this.Thread, Content);
         }
@@ -86,7 +86,7 @@ namespace Awful
             }
         }
 
-        public bool Send()
+        public Uri Send()
         {
             return ThreadTasks.Edit(Post, Content);
         }

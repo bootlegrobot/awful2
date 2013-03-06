@@ -18,3 +18,5 @@ marketplace/
 lib/private/
 # Thumbnail cache
 [Tt]humbs.db
+# backup folder
+backup/

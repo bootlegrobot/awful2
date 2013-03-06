@@ -15,7 +15,25 @@ namespace Awful.Controls
         public ThreadReplyControl()
         {
             InitializeComponent();
+            InitializeSmilieyAutoComplete();
+
+            Loaded += ThreadReplyControl_Loaded;
             Commands.EditPostCommand.EditRequested += OnEditRequestRecieved;
+        }
+
+        private void InitializeSmilieyAutoComplete()
+        {   
+            SmileyAutoComplete.FilterKeyProvider = (object item) =>
+                {
+                    var smiley = item as Data.SmilieyDataModel;
+                    return smiley.Code;
+                };
+        }
+
+        private void ThreadReplyControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!SmileyViewModel.IsDataLoaded)
+                SmileyViewModel.LoadData();
         }
 
         private void OnEditRequestRecieved(object sender, Common.ThreadPostRequestEventArgs args)

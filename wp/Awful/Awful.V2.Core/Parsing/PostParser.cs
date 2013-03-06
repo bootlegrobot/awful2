@@ -19,7 +19,26 @@ namespace Awful
                 .ParsePostID(postNode)
                 .ParseUserID(postNode)
                 .ParsePostThreadIndexAndMarkUrl(postNode)
+                .ParseIsEditable(postNode)
                 .ParseHasSeen(postNode);
+
+            return post;
+        }
+
+        private static ThreadPostMetadata ParseIsEditable(this ThreadPostMetadata post, HtmlNode postNode)
+        {
+            var postbuttons = postNode.Descendants("ul")
+                .Where(node => node.GetAttributeValue("class", string.Empty).Equals("postbuttons"))
+                .SingleOrDefault();
+
+            if (postbuttons != null)
+            {
+                var editButton = postbuttons.Descendants("img")
+                    .Where(node => node.GetAttributeValue("alt", string.Empty).Contains("Edit"))
+                    .SingleOrDefault();
+
+                post.IsEditable = editButton != null;
+            }
 
             return post;
         }

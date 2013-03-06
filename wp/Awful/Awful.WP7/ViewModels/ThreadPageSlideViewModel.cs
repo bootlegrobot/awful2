@@ -318,10 +318,14 @@ namespace Awful.ViewModels
 
         public void RefreshCurrentPage()
         {
-            LoadPageCommandArgs args = new LoadPageCommandArgs();
-            args.LoadPage = RefreshCurrentPageDelegate;
-            args.State = CurrentThreadPage.Data;
-            Execute(args);
+            try
+            {
+                LoadPageCommandArgs args = new LoadPageCommandArgs();
+                args.LoadPage = RefreshCurrentPageDelegate;
+                args.State = CurrentThreadPage.Data;
+                Execute(args);
+            }
+            catch (Exception) { }
         }
 
         public void LoadPageNumber(ThreadMetadata thread, int pageNumber)
@@ -525,10 +529,15 @@ namespace Awful.ViewModels
 
         protected override void OnError(Exception ex)
         {
-            string message = "Could not load the requested page.";
-            Notification.ShowError(NotificationMethod.MessageBox, message, "View Page");
-            this.CurrentState = ViewStates.Ready;
-            this.Status = string.Empty;
+            try
+            {
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex);
+                string message = "Could not load the requested page.";
+                Notification.ShowError(NotificationMethod.MessageBox, message, "View Page");
+                this.CurrentState = ViewStates.Ready;
+                this.Status = string.Empty;
+            }
+            catch (Exception eex) { AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, eex); }
         }
 
         protected override void OnCancel()

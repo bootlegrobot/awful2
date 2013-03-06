@@ -62,6 +62,11 @@ namespace Awful
 
             else
                 this.ApplicationBar = null;
+
+            if (MainPivot.SelectedItem.Equals(SettingsPivot))
+            {
+                SettingsDataSource.Refresh();
+            }
         }
 
         private void LogFilePicker_SelectionChanged(object sender, SelectionChangedEventArgs e)

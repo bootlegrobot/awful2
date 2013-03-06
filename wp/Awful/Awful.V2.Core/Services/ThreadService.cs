@@ -45,8 +45,8 @@ namespace Awful
         public static bool AddBookmark(ThreadMetadata data){ return ThreadBookmarkTask.Bookmark(data, BookmarkAction.Add); }
         public static bool RemoveBookmark(ThreadMetadata data) { return ThreadBookmarkTask.Bookmark(data, BookmarkAction.Remove); }
         public static string FetchEditText(ThreadPostMetadata post) { return ThreadReplyTask.FetchEditText(post); }
-        public static bool Edit(ThreadPostMetadata post, string text) { return ThreadReplyTask.Edit(post, text); }
-        public static bool Reply(ThreadMetadata data, string message) { return ThreadReplyTask.Reply(data, message); }
+        public static Uri Edit(ThreadPostMetadata post, string text) { return ThreadReplyTask.Edit(post, text); }
+        public static Uri Reply(ThreadMetadata data, string message) { return ThreadReplyTask.Reply(data, message); }
         public static string Quote(ThreadPostMetadata post) { return ThreadReplyTask.Quote(post); }
 
         public static bool Rate(ThreadMetadata data, int rating)

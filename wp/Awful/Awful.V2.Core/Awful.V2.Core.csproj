@@ -68,6 +68,7 @@
     <Compile Include="Common\ContentStrategy\Scraping\PrivateMessageScrapeStrategy.cs" />
     <Compile Include="Common\ContentStrategy\SmileyRequestStrategy.cs" />
     <Compile Include="Common\ContentStrategy\ThreadRequestStrategy.cs" />
+    <Compile Include="Common\QueryString.cs" />
     <Compile Include="Helpers\AwfulDebugger.cs" />
     <Compile Include="Helpers\AwfulLoginRequest.cs" />
     <Compile Include="Helpers\AwfulWebClient.cs" />

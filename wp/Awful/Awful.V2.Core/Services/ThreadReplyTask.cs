@@ -24,6 +24,7 @@ namespace Awful
         private const string REPLY_ACTION_REQUEST = "postreply";
         private const string SUBMIT_REQUEST = "Submit Reply";
         private const string PARSEURL_REQUEST = "yes";
+        private const string MAX_FILE_SIZE_REQUEST = "2097152";
 
         private const string EDIT_ACTION_REQUEST = "updatepost";
         private const string BOOKMARK_REQUEST = "yes";
@@ -56,14 +57,14 @@ namespace Awful
             public string POSTID;
             public string TEXT;
         }
-        
+  
         public static string Quote(ThreadPostMetadata post) { return instance.QuotePost(post); }
 
-        public static bool Reply(ThreadMetadata thread, string text) { return instance.ReplyToThread(thread, text); }
+        public static Uri Reply(ThreadMetadata thread, string text) { return instance.ReplyToThread(thread, text); }
 
         public static string FetchEditText(ThreadPostMetadata post) { return instance.GetEdit(post); }
 
-        public static bool Edit(ThreadPostMetadata post, string text) { return instance.SendEdit(post, text); }
+        public static Uri Edit(ThreadPostMetadata post, string text) { return instance.SendEdit(post, text); }
         
         private string QuotePost(ThreadPostMetadata post)
         {
@@ -71,7 +72,7 @@ namespace Awful
             return BeginGetTextFromWebForm(url);
         }
 
-        private bool ReplyToThread(ThreadMetadata thread, string text)
+        private Uri ReplyToThread(ThreadMetadata thread, string text)
         {
             var threadID = thread.ThreadID;
             ThreadReplyData? data = GetReplyData(threadID, text);
@@ -91,7 +92,7 @@ namespace Awful
             else
             {
                 //Logger.AddEntry("ThreadReplyService - ReplyAsync failed on null ThreadReplyData.");
-                return false;
+                return null;
             }
         }
 
@@ -101,7 +102,7 @@ namespace Awful
             return BeginGetTextFromWebForm(url);
         }
 
-        private bool SendEdit(ThreadPostMetadata post, string text)
+        private Uri SendEdit(ThreadPostMetadata post, string text)
         {
             PostEditData data = new PostEditData() { POSTID = post.PostID, TEXT = text };
             return InitiateEditRequest(data);
@@ -123,7 +124,7 @@ namespace Awful
             return reply;
         }
 
-        private bool InitiateReply(ThreadReplyData data, int timeout = DEFAULT_TIMEOUT)
+        private Uri InitiateReply(ThreadReplyData data, int timeout = DEFAULT_TIMEOUT)
         {
             // create request
             string url = "http://forums.somethingawful.com/newreply.php";
@@ -139,6 +140,7 @@ namespace Awful
             signal.WaitOne();
 
             // process request
+
             FormDataDelegate replyFormData = () => { return GetReplyMultipartFormData(data); };
             var success = ProcessReplyRequest(result, replyFormData);
 
@@ -151,8 +153,8 @@ namespace Awful
                 throw new TimeoutException();
 
             // process response and return status value
-            success = HandleGetResponse(result);
-            return success;
+            Uri redirect = HandleGetResponse(result);
+            return redirect;
         }
 
         private bool ProcessReplyRequest(IAsyncResult asyncResult, FormDataDelegate data)
@@ -221,7 +223,7 @@ namespace Awful
 
         #region Post Editing Methods
 
-        private bool InitiateEditRequest(PostEditData data, int timeout = CoreConstants.DEFAULT_TIMEOUT_IN_MILLISECONDS)
+        private Uri InitiateEditRequest(PostEditData data, int timeout = CoreConstants.DEFAULT_TIMEOUT_IN_MILLISECONDS)
         {
             // Logger.AddEntry("ThreadReplyService - EditRequest initiated.");
 
@@ -250,8 +252,8 @@ namespace Awful
                 throw new TimeoutException();
 
             // process response and return status value
-            success = HandleGetResponse(result);
-            return success;
+            Uri redirect = HandleGetResponse(result);
+            return redirect;
         }
 
         #region DON'T TOUCH THIS! 
@@ -318,20 +320,50 @@ namespace Awful
             return true;
         }
 
-        private bool HandleGetResponse(IAsyncResult result)
+        private Uri HandleGetResponse(IAsyncResult result)
         {
             //Logger.AddEntry("ThreadReplyService - GetResponse initiated.");
             HttpWebRequest webRequest = result.AsyncState as HttpWebRequest;
             HttpWebResponse response = webRequest.EndGetResponse(result) as HttpWebResponse;
+            string html = string.Empty;
+
             using (StreamReader reader = new StreamReader(response.GetResponseStream()))
             {
-                string html = String.Empty;
-                html = reader.ReadToEnd();
+                string text = reader.ReadToEnd();
+                html = text;
+                
+#if DEBUG
+                Debug.WriteLine("Reply Text Response: " + text);
+#endif
             }
 
-            //Logger.AddEntry("ThreadReplyService - GetResponse successful.");
+            // Check if response was successful - Look for redirect data.
+            HtmlDocument responseHtml = new HtmlDocument();
+            responseHtml.LoadHtml(html);
 
-            return true;
+            HtmlNode responseRedirectMeta = responseHtml.DocumentNode.Descendants("meta")
+                .Where(meta => meta.GetAttributeValue("http-equiv", "").Equals("Refresh"))
+                .SingleOrDefault();
+
+            // try to parse redirect url
+            Uri redirect = null;
+
+            try
+            {
+                string delim = "URL=";
+                string contentValue = responseRedirectMeta.GetAttributeValue("content", "");
+                var tokens = contentValue.Split(new string[] { delim }, StringSplitOptions.RemoveEmptyEntries);
+                string redirectValue = tokens[1];
+                redirectValue = HttpUtility.HtmlDecode(redirectValue);
+                redirect = new Uri(string.Format("{0}/{1}", CoreConstants.BASE_URL, redirectValue));
+            }
+
+            catch (Exception ex)
+            {
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex);
+            }
+
+            return redirect;
         }
 
         private void AddFormDataString(StringBuilder sb, string name, string data, string header)

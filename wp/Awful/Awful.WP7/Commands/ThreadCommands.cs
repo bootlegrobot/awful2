@@ -202,8 +202,13 @@ namespace Awful.Commands
         public override bool CanExecute(object parameter)
         {
             bool valid = base.CanExecute(parameter);
-            string username = Data.MainDataSource.Instance.CurrentUser.Metadata.Username;
-            valid = valid && username.Equals((parameter as Data.ThreadPostSource).Data.Author);
+            if (valid)
+            {
+                //string username = Data.MainDataSource.Instance.CurrentUser.Metadata.Username;
+                //valid = valid && username.Equals((parameter as Data.ThreadPostSource).Data.Author);
+
+                valid = valid && (parameter as Data.ThreadPostSource).Data.IsEditable;
+            }
             return valid;
         }
 
@@ -249,18 +254,30 @@ namespace Awful.Commands
     
         protected override object DoWork(IThreadPostRequest parameter)
         {
-            bool success = parameter.Send();
-            if (!success)
-                throw new Exception("Post failed to send.");
+            Uri redirect = null;
 
-            return parameter;
+            if (parameter != null)
+            {
+                UpdateStatus("Sending post...");
+                redirect = parameter.Send();
+                if (redirect == null)
+                    throw new Exception("Post failed to send.");
+            }
+
+            return redirect;
         }
 
         protected override void OnError(Exception ex)
         {
             string message = "Request failed.";
             Notification.ShowError(message, "Post failed.");
+            UpdateStatus(string.Empty);
             FireEvent(this, Failure);
+        }
+
+        private void RedirectToUri(Uri uri)
+        {
+            Common.RedirectionListener.Notify(uri);
         }
 
         protected override void OnCancel()
@@ -270,13 +287,16 @@ namespace Awful.Commands
 
         protected override void OnSuccess(object arg)
         {
-            var request = arg as IThreadPostRequest;
-            string message = string.Format("You made a successful {0}! Great job!",
-                request.RequestType == PostRequestType.Edit
-                ? "edit"
-                : "post");
+            UpdateStatus(string.Empty);
+            var request = arg as Uri;
+            string message = "Tap here to view.";
 
-            Notification.Show(message, "Success!");
+            Notification.Show(
+                Awful.WP7.App.Model.DefaultNotification,
+                message, 
+                "Post was successful!",
+                () => { RedirectToUri(request); });
+
             FireEvent(this, Success);
         }
 

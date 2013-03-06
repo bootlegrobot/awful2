@@ -25,14 +25,13 @@ namespace Awful.ViewModels
         public string Content { get; set; }
     }
 
-    public class ReplyViewModel : Common.BindableBase
+    public class ReplyViewModel : Commands.SendThreadResponseCommand
     {
-        public ReplyViewModel()
+        public ReplyViewModel() : base()
         {
-            Commands.SendThreadResponseCommand command = new Commands.SendThreadResponseCommand();
-            command.Success += OnRequestSuccess;
-            command.Failure += OnRequestFailure;
-            this._sendRequestCommand = command;
+            this.Success += OnRequestSuccess;
+            this.Failure += OnRequestFailure;
+			this.StateChanged += new System.EventHandler(ReplyViewModel_StateChanged);
             this.LoadFromState();
         }
 
@@ -66,7 +65,7 @@ namespace Awful.ViewModels
 
         public bool IsEnabled
         {
-            get { return Request != null; }
+            get { return Request != null && !this.IsRunning; }
         }
 
         public int Count { get { return _text.Length; } }
@@ -82,20 +81,23 @@ namespace Awful.ViewModels
                     this._request = value;
                     Text = value == null ? string.Empty : value.Content;
                     RequestType = value == null ? string.Empty : value.RequestType.ToString();
+                    OnPropertyChanged("IsEnabled");
                 }
             }
         }
 
-        private readonly System.Windows.Input.ICommand _sendRequestCommand;
         public System.Windows.Input.ICommand SendRequestCommand
         {
-            get { return _sendRequestCommand; }
+            get { return this; }
         }
 
         public void SendThreadRequestAsync()
         {
-            Request.Content = Text;
-            SendRequestCommand.Execute(Request);
+            if (Request != null)
+            {
+                Request.Content = Text;
+                SendRequestCommand.Execute(Request);
+            }
         }
 
         /// <summary>
@@ -103,11 +105,11 @@ namespace Awful.ViewModels
         /// </summary>
         /// <param name="request"></param>
         /// <param name="notify"></param>
-        public static void SendRequestAsync(IThreadPostRequest request, Action<bool> notify)
+        public static void SendRequestAsync(IThreadPostRequest request, Action<Uri> notify)
         {
             ThreadPool.QueueUserWorkItem(state =>
             {
-                bool success = request.Send();
+                Uri success = request.Send();
                 Deployment.Current.Dispatcher.BeginInvoke(() => notify(success));
             }, null);
         }
@@ -155,6 +157,12 @@ namespace Awful.ViewModels
         public void DeleteDraft()
         {
             CoreExtensions.DeleteFileFromStorage("reply.xml");
+        }
+
+        private void ReplyViewModel_StateChanged(object sender, System.EventArgs e)
+        {
+        	// TODO: Add event handler implementation here.
+			OnPropertyChanged("IsEnabled");
         }
     }
 }

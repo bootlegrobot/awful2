@@ -290,10 +290,13 @@ namespace Awful.ViewModels
     {
         private Data.MainDataSource _source;
         private const string EMPTY_STATUS = "Tap here to refresh your bookmarks.";
+        private readonly IComparer<Data.ThreadDataSource> _sorter;
 
         public BookmarkSectionViewModel(Data.MainDataSource source) : base(source.Bookmarks.Items) 
         { 
             _source = source;
+            _sorter = new Data.SortThreadsByScore();
+
             UpdateStatus(EMPTY_STATUS);
             UpdateLastUpdated(source.Bookmarks.LastUpdated);
         }
@@ -303,6 +306,7 @@ namespace Awful.ViewModels
             IEnumerable<Data.ThreadDataSource> threads = null;
             var user = _source.CurrentUser.Metadata;
             threads = Refresh(user);
+            threads = threads.OrderBy(thread => thread, this._sorter);
             return threads;
         }
 

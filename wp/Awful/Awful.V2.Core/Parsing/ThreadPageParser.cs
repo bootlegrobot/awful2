@@ -59,8 +59,24 @@ namespace Awful
             ThreadPageMetadata page = new ThreadPageMetadata()
                 .ProcessParent(top)
                 .ParsePageNumberAndMaxPages(top)
-                .ParsePostTable(top);
+                .ParsePostTable(top)
+                .ParseTargetPostIndex();
          
+            return page;
+        }
+
+        private static ThreadPageMetadata ParseTargetPostIndex(this ThreadPageMetadata page)
+        {
+            // the following is horribly inefficient, but easy to code and adds
+            // a negligible cost penalty.
+
+            var targetPost = page.Posts
+                .Where(post => post.IsNew)
+                .FirstOrDefault();
+
+            if (targetPost != null)
+                page.TargetPostIndex = page.Posts.IndexOf(targetPost);
+
             return page;
         }
 

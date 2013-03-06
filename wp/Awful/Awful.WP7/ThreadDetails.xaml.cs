@@ -74,11 +74,21 @@ namespace Awful
         {
             InitializeComponent();
 
+            Common.RedirectionListener.Redirect += OnRedirectRequest;
             Loaded += OnPageLoaded;
             OrientationChanged += OnOrientationChanged;
             ThreadPageManager.Instance.ReadyForContent += OnViewReadyForContent;
             Commands.EditPostCommand.EditRequested += OnPostEditRequested;
             this.threadReplyView.Loaded += OnThreadReplyViewLoaded;
+        }
+
+        private void OnRedirectRequest(object sender, Uri redirect)
+        {
+            if (redirect != null)
+            {
+                IsReplyViewActive = false;
+                threadSlideView.ControlViewModel.LoadPageFromUri(redirect);
+            }
         }
 
         private void OnPageLoaded(object sender, RoutedEventArgs e)

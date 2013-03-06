@@ -127,6 +127,8 @@ namespace Awful
         public string RawHtml { get; set; }
         public string StyledHtml { get; set; }
         public IList<ThreadPostMetadata> Posts { get; set; }
+
+        public int TargetPostIndex { get; set; }
     }
 
     [DataContract]
@@ -163,6 +165,9 @@ namespace Awful
             Administrator,
             Moderator
         }
+
+        [DataMember]
+        public bool IsEditable { get; set; }
     }
 
     [DataContract]
