@@ -7,7 +7,7 @@
     
     The primary goals of this format is to allow a simple XML format 
     that is mostly human readable. The generation and parsing of the 
-    various data types are done through the Type="er classes 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
     
     Example:
@@ -167,6 +167,14 @@
   <data name="THREAD_DEFAULT_ITEM_OPACITY" xml:space="preserve">
     <value>1.0</value>
     <comment>The default opacity for thread list items on screen.</comment>
+  </data>
+  <data name="THREAD_TAG_LIST_URL" xml:space="preserve">
+    <value>https://raw.github.com/AwfulDevs/Awful/master/tags.txt</value>
+    <comment>The Url for thread tag icons.</comment>
+  </data>
+  <data name="THREAD_TAG_REMOTE_SOURCE" xml:space="preserve">
+    <value>https://raw.github.com/AwfulDevs/Awful/master/Resources/Thread%20Tags</value>
+    <comment>The remote location for Awful's thread tags. Use this resource if the tag is not cached.</comment>
   </data>
   <data name="THREAD_VIEWED_ITEM_OPACITY" xml:space="preserve">
     <value>0.2</value>

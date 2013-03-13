@@ -8,6 +8,10 @@
              xmlns:common="clr-namespace:Awful.Common"
              xmlns:telerikCore="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Core"
              xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
+			 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+			 xmlns:el="clr-namespace:Microsoft.Expression.Interactivity.Layout;assembly=Microsoft.Expression.Interactions"
+			 xmlns:eim="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
+			 xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
              xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
              mc:Ignorable="d"
              FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -31,6 +35,19 @@
                   Opacity="{Binding ItemOpacity}"
                   VerticalAlignment="Top"
                   MinHeight="100">
+				
+				<Grid.Resources>
+					<Storyboard x:Key="ShowThreadTagAnimation">
+						<DoubleAnimation Storyboard.TargetName="ThreadTagImage"
+							Storyboard.TargetProperty="Opacity"
+							To="1"
+							Duration="0:0:0.5">
+							<DoubleAnimation.EasingFunction>
+								<CircleEase EasingMode="EaseIn"/>
+							</DoubleAnimation.EasingFunction>
+						</DoubleAnimation>
+					</Storyboard>
+				</Grid.Resources>
 
                 <telerikPrimitives:RadContextMenu.ContextMenu>
                     <local:ThreadContextMenu JumpToPageRequest="ThreadContextMenu_JumpToPageRequest"/>
@@ -44,6 +61,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid Margin="0,5,0,0"
+					  x:Name="ThreadIconGrid"
                       Visibility="{Binding IconView, Source={StaticResource IconViewer}}">
                     <Border x:Name="ThreadIconBorder"
                   Width="100"
@@ -51,6 +69,17 @@
                   BorderBrush="{StaticResource PhoneBorderBrush}"
                   Height="100"
                   VerticalAlignment="Top">
+						
+						<i:Interaction.Triggers>
+							<ec:DataTrigger Binding="{Binding ShowImage}"
+                                            Comparison="Equal"
+											Value="True">
+								<eim:ControlStoryboardAction 
+									Storyboard="{StaticResource ShowThreadTagAnimation}"
+									ControlStoryboardOption="Play"/>
+							</ec:DataTrigger>
+						</i:Interaction.Triggers>
+
                         <Grid>
                             <TextBlock Text="{Binding Tag}"
                          HorizontalAlignment="Center"
@@ -61,16 +90,17 @@
                          Style="{StaticResource PhoneTextAccentStyle}" />
 
 
-                            <Image Source="/Assets/ThreadIcons/default.png"
-                     Canvas.ZIndex="9"
-                     Stretch="UniformToFill"
-                     AutomationProperties.Name="{Binding Tag}" />
+                            <Image Source="/Assets/default_thread_tag.png"
+							Canvas.ZIndex="9"
+							Stretch="UniformToFill"
+							AutomationProperties.Name="{Binding Tag}" />
 
-
-                            <Image Source="{Binding Image}"
-                     Canvas.ZIndex="10"
-                     Stretch="UniformToFill"
-                     AutomationProperties.Name="{Binding Tag}" />
+                            <Image x:Name="ThreadTagImage" 
+								Opacity="0"
+								Source="{Binding Image}"
+								Canvas.ZIndex="10"
+								Stretch="UniformToFill"
+								AutomationProperties.Name="{Binding Tag}" />
                         </Grid>
 
                     </Border>
@@ -137,8 +167,9 @@
   </UserControl.Resources>
 
   <Grid x:Name="LayoutRoot">
-        <toolkit:PerformanceProgressBar x:Name="BusyIndicator"
-                                        IsIndeterminate="{Binding IsRunning}"
+        <telerikPrimitives:RadBusyIndicator x:Name="BusyIndicator"
+                                        IsRunning="{Binding IsRunning}"
+										AnimationStyle="AnimationStyle9"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Top" />
 

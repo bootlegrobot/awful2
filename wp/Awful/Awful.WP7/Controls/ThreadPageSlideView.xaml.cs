@@ -15,6 +15,8 @@ using System.Windows.Media;
 
 namespace Awful.Controls
 {
+    public delegate void ToggleAppBarDelegate(bool isVisible);
+
     public partial class ThreadPageSlideView : UserControl
     {
         private RadAnimation FadeInAnimation { get { return this.Resources["fadeInAnimation"] as RadAnimation; } }
@@ -34,6 +36,13 @@ namespace Awful.Controls
             }
         }
 
+        private ToggleAppBarDelegate _toggleAppBar;
+        public ToggleAppBarDelegate ToggleAppBar
+        {
+            get { return _toggleAppBar; }
+            set { _toggleAppBar = value; }
+        }
+
         public ThreadPageManager PageManager { get { return ThreadPageManager.Instance; } }
         private bool _measurePinch;
         private readonly DispatcherTimer _hideTitleTimer;
@@ -42,6 +51,7 @@ namespace Awful.Controls
         {
             InitializeComponent();
 
+            this._toggleAppBar = ToggleAppBarDummy;
             this._hideTitleTimer = new DispatcherTimer();
             this._hideTitleTimer.Interval = TimeSpan.FromSeconds(2);
             this._hideTitleTimer.Tick += (o, te) =>
@@ -223,6 +233,8 @@ namespace Awful.Controls
 
         #region UI Events
 
+        private void ToggleAppBarDummy(bool isVisible) { }
+
         private void HightlightSwipeGlyph(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
         {
             var element = sender as FrameworkElement;
@@ -274,21 +286,24 @@ namespace Awful.Controls
 
         private void ScrollToPost(object sender, Telerik.Windows.Controls.ListBoxItemTapEventArgs e)
         {
-        	// TODO: Add event handler implementation here.
-            VisualStateManager.GoToState(this, "ShowPage", true);
             this.PageManager.ScrollToPost(e.Item.AssociatedDataItem.Value as Data.ThreadPostSource);
+            this.IsPostJumpListVisible = false;
         }
 
         private void HidePostJumpList(object sender, System.Windows.RoutedEventArgs e)
         {
-        	// TODO: Add event handler implementation here.
+            ToggleAppBar(true);
             VisualStateManager.GoToState(this, "ShowPage", true);
+            if (SystemTray.IsVisible)
+                SystemTray.BackgroundColor = (WP7.App.Current.Resources["PhoneBackgroundBrush"] as SolidColorBrush).Color;
         }
 
         private void ShowPostJumpList(object sender, System.Windows.RoutedEventArgs e)
         {
-        	// TODO: Add event handler implementation here.
+            ToggleAppBar(false);
             VisualStateManager.GoToState(this, "ShowJumpList", true);
+            if (SystemTray.IsVisible)
+                SystemTray.BackgroundColor = (WP7.App.Current.Resources["PhoneChromeBrush"] as SolidColorBrush).Color; 
         }
 
         private void ShowThreadTitle(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
@@ -314,13 +329,13 @@ namespace Awful.Controls
         private void ScrollToTop(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ThreadPageManager.Instance.ScrollToPost(ControlViewModel.CurrentThreadPage.Posts.First());
-            HidePostJumpList(sender, null);
+            this.IsPostJumpListVisible = false;
         }
 
         private void ScrollToBottom(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ThreadPageManager.Instance.ScrollToPost(ControlViewModel.CurrentThreadPage.Posts.Last());
-            HidePostJumpList(sender, null);
+            this.IsPostJumpListVisible = false;
         }
     }
 }

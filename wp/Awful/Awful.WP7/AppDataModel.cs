@@ -9,6 +9,10 @@ using Awful.Data;
 using System.Text;
 using Awful.Helpers;
 using System.Windows;
+using System.Net;
+using System.IO;
+using System.Windows.Media.Imaging;
+using System.Threading;
 
 namespace Awful
 {
@@ -20,11 +24,90 @@ namespace Awful
 #if DEBUG
             AwfulDebugger.DebugLevel = AwfulDebugger.Level.Debug;
             AwfulWebClient.SimulateTimeout = true;
-            AwfulWebClient.SimulateTimeoutChance = 1;  // chance to timeout on requests
+            AwfulWebClient.SimulateTimeoutChance = 25;  // chance to timeout on requests
 #endif
+
+            InitializeDirectories();
             LoadResourceFilesIntoIsoStore();
             LoadStateFromIsoStorage();
         }
+
+        private void InitializeDirectories()
+        {
+            var storage = IsolatedStorageFile.GetUserStoreForApplication();
+            storage.SafelyCreateDirectory("ThreadTags");
+        }
+
+        #region Thread Tag Handling
+
+        private void InitThreadTagCacheAsync()
+        {
+            var currentTicks = DateTime.Now.Ticks;
+            if (this.ThreadTagNextUpdate <= currentTicks)
+                ThreadPool.QueueUserWorkItem(InitThreadTagCache, Constants.THREAD_TAG_LIST_URL);
+        }
+
+        private void InitThreadTagCache(object state)
+        {
+            string tagListUrl = state as string;
+
+            // download the tag list
+            HttpWebRequest request = HttpWebRequest.CreateHttp(tagListUrl);
+            try { request.BeginGetResponse(InitThreadTagCacheResponse, request); }
+            catch (Exception ex)
+            {
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex);
+                ThreadTagNextUpdate = 0;
+            }
+        }
+
+        private void InitThreadTagCacheResponse(IAsyncResult result)
+        {
+            var storage = IsolatedStorageFile.GetUserStoreForApplication();
+
+            if (!storage.DirectoryExists("ThreadTags"))
+                storage.CreateDirectory("ThreadTags");
+
+            var response = (result.AsyncState as WebRequest).EndGetResponse(result);
+            string text = string.Empty;
+            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+            {
+                while ((text = reader.ReadLine()) != null)
+                {
+                    FetchTagFromWeb(text, storage);
+                }
+            }
+
+            // next tag update will be 30 days from now
+            ThreadTagNextUpdate = DateTime.Now.Ticks + TimeSpan.FromDays(30).Ticks;
+        }
+
+        private void FetchTagFromWeb(string text, IsolatedStorageFile storage)
+        {
+            // only process png images
+            if (text.ToLower().Contains(".png"))
+            {
+                // download image
+                Uri imageUri = new Uri(string.Format("{0}/{1}", Constants.THREAD_TAG_REMOTE_SOURCE, text));
+                BitmapImage bitmap = new BitmapImage(imageUri);
+
+                // save image to isolated storage if missing
+                string filePath = "/ThreadTags/" + text;
+                if (storage.FileExists(filePath))
+                    return;
+                
+                HttpWebRequest request = HttpWebRequest.CreateHttp(imageUri.AbsoluteUri);
+            }
+        }
+
+        private void SaveTagToIsoStorage(IAsyncResult result, string filePath)
+        {
+            WebResponse response = (result.AsyncState as WebRequest).EndGetResponse(result);
+        }
+
+
+
+        #endregion
 
         public void LoadStateFromIsoStorage()
         {
@@ -106,6 +189,18 @@ namespace Awful
             ContentFilter.IsContentFilterEnabled = this.IsContentFilterEnabled;
             ThemeManager.Instance.SetCurrentTheme(this.CurrentTheme);
             MainDataSource.Instance.AutoRefreshBookmarks = this.AutoRefreshBookmarks;
+        }
+
+        private const long THREAD_TAG_NEXT_UPDATE_DEFAULT = 0;
+        public const string THREAD_TAG_LAST_UPDATE_KEY = "ThreadTagNextUpdate";
+        private long ThreadTagNextUpdate
+        {
+            get { return GetValueOrDefault<long>(THREAD_TAG_LAST_UPDATE_KEY, THREAD_TAG_NEXT_UPDATE_DEFAULT); }
+            set 
+            { 
+                AddOrUpdateValue(THREAD_TAG_LAST_UPDATE_KEY, value);
+                OnPropertyChanged("ThreadTagNextUpdate");
+            }
         }
 
         private const int NOTIFICATION_DEFAULT = 0;

@@ -33,7 +33,7 @@ namespace Awful.ViewModels
             if (System.ComponentModel.DesignerProperties.IsInDesignTool)
                 return list;
 
-            // load smilies from the web
+            // load smilies from the web, or from cache
             else if (this._smilies.Count == 0)
             {
                 IEnumerable<TagMetadata> cache = CoreExtensions.LoadFromFile<List<TagMetadata>>("smilies.xml");

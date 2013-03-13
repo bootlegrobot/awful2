@@ -20,3 +20,7 @@ lib/private/
 [Tt]humbs.db
 # backup folder
 backup/
+# screenshots folder
+screenshots/
+# ThreadIcons folder
+Assets/ThreadIcons/

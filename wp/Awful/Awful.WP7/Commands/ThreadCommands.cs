@@ -70,6 +70,26 @@ namespace Awful.Commands
 
     public class QuotePostToClipboardCommand : BackgroundWorkerCommand<Data.ThreadPostSource>
     {
+        public static event EventHandler ShowQuote;
+        public string CurrentQuote { get; private set; }
+
+        private static void OnShowQuote(QuotePostToClipboardCommand command)
+        {
+            if (ShowQuote != null)
+                ShowQuote(command, EventArgs.Empty);
+        }
+
+        private void OnShowQuote()
+        {
+            QuotePostToClipboardCommand.OnShowQuote(this);
+        }
+
+        public QuotePostToClipboardCommand()
+            : base()
+        {
+            CurrentQuote = string.Empty;
+        }
+
         protected override object DoWork(Data.ThreadPostSource parameter)
         {
             string quote = parameter.Data.Quote();
@@ -78,7 +98,8 @@ namespace Awful.Commands
 
         protected override void OnError(Exception ex)
         {
-            Notification.ShowError("quote request failed.", "Quote");
+            CurrentQuote = string.Empty;
+            Notification.ShowError("Quote request failed.", "Quote");
         }
 
         protected override void OnCancel() { }
@@ -87,7 +108,11 @@ namespace Awful.Commands
         {
             string quote = arg as string;
             Clipboard.SetText(quote);
-            Notification.Show("quote added to clipboard.", "Quote");
+            CurrentQuote = quote;
+            Notification.Show(WP7.App.Model.DefaultNotification,
+                "Quote added to clipboard. Tap to view.", 
+                "Quote",
+                OnShowQuote);
         }
 
         protected override bool PreCondition(Data.ThreadPostSource item)
@@ -220,6 +245,7 @@ namespace Awful.Commands
 
         protected override void OnError(Exception ex)
         {
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex);
             Notification.ShowError("The edit request failed.", "Edit Post");
         }
 
@@ -230,14 +256,22 @@ namespace Awful.Commands
 
         protected override void OnSuccess(object arg)
         {
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Edit Request was successful!");
+
             IThreadPostRequest request = arg as IThreadPostRequest;
             OnEditRequested(this, request);
         }
 
         protected override bool PreCondition(Data.ThreadPostSource item)
         {
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Edit Request Made, Confirming...");
+
             var response = MessageBox.Show("Are you sure you wish to edit this post? Any current text in the reply window will be erased.", ":o", MessageBoxButton.OKCancel);
-            return response == MessageBoxResult.OK;
+            bool proceed = response == MessageBoxResult.OK;
+
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, string.Format("Edit Request {0}.", proceed ? "Confirmed" : "Cancelled"));
+
+            return proceed;
         }
     }
 

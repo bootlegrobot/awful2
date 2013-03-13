@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using Awful.Helpers;
 using Awful.WP7;
+using System.Windows.Media;
 
 namespace Awful.Data
 {
@@ -244,7 +245,7 @@ namespace Awful.Data
             }
         }
 
-        [DataMember(IsRequired = true, EmitDefaultValue = false)]
+        [DataMember(IsRequired = true)]
         public DateTime _lastUpdated;
 
         [IgnoreDataMember]
@@ -289,6 +290,47 @@ namespace Awful.Data
                 return _layout; 
             }
             set { SetProperty(ref _layout, value, "Layout"); }
+        }
+
+        private string _nickname;
+        public string Nickname
+        {
+            get 
+            {
+                if (_nickname == null && Layout != null)
+                {
+                    SetLayoutProperties();
+                }
+                return _nickname; 
+            }
+            set { SetProperty(ref _nickname, value, "Nickname"); }
+        }
+
+     
+        private Brush _primary;
+        public Brush PrimaryColor
+        {
+            get 
+            {
+                if (_primary == null && Layout != null)
+                    SetLayoutProperties();
+
+                return _primary; 
+            }
+            set { SetProperty(ref _primary, value, "PrimaryColor"); }
+        }
+
+        private ImageSource _image;
+        public ImageSource Image
+        {
+            get 
+            {
+                if (_image == null && Layout != null)
+                    SetLayoutProperties();
+
+                return _image; 
+            }
+            set { SetProperty(ref _image, value, "Image"); }
         }
 
         private bool _isPinned;
@@ -381,6 +423,14 @@ namespace Awful.Data
             this.Subtitle = data.ForumName;
             this.OnPropertyChanged("Data");
         }
+
+        private void SetLayoutProperties()
+        {
+            this._nickname = Layout.Nickname;
+            this._primary = Layout.PrimaryColor;
+            this._image = Layout.Image;
+        }
+
 
         public event EventHandler CanExecuteChanged;
         protected void OnExecuteChanged()

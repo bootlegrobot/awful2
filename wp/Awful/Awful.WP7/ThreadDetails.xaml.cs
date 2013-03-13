@@ -79,7 +79,30 @@ namespace Awful
             OrientationChanged += OnOrientationChanged;
             ThreadPageManager.Instance.ReadyForContent += OnViewReadyForContent;
             Commands.EditPostCommand.EditRequested += OnPostEditRequested;
+            Commands.QuotePostToClipboardCommand.ShowQuote += OnShowQuote;
+            this.threadSlideView.Loaded += OnThreadSlideViewLoaded;
             this.threadReplyView.Loaded += OnThreadReplyViewLoaded;
+        }
+
+        private void OnShowQuote(object sender, EventArgs e)
+        {
+            // show the reply screen
+            ShowReplyView(null, null);
+
+            // quote should be on the clipboard
+            string quote = (sender as Commands.QuotePostToClipboardCommand).CurrentQuote;
+            this.threadReplyView.ReplyViewModel.Text += quote;
+        }
+
+        private void OnThreadSlideViewLoaded(object sender, RoutedEventArgs e)
+        {
+            this.threadSlideView.ToggleAppBar = ToggleAppBar;  
+        }
+
+        private void ToggleAppBar(bool isVisible)
+        {
+            if (ApplicationBar != null)
+                ApplicationBar.IsVisible = isVisible;
         }
 
         private void OnRedirectRequest(object sender, Uri redirect)
@@ -217,7 +240,14 @@ namespace Awful
 
         private void RefreshThread(object sender, System.EventArgs e)
         {
-            this.threadSlideView.ControlViewModel.RefreshCurrentPage();
+            // refresh if there is a page to refresh
+            if (this.threadSlideView.ControlViewModel.CurrentThreadPage != null)
+                this.threadSlideView.ControlViewModel.RefreshCurrentPage();
+
+            // otherwise, the initial page load failed, so resubmit query
+            else
+                LoadFromQuery();
+            
         }
 
         private void ShowPostJumpList(object sender, System.EventArgs e)

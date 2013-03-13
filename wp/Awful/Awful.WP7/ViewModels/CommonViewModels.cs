@@ -268,6 +268,7 @@ namespace Awful.ViewModels
     }
 
     public abstract class PagedListViewModel<T> : ListViewModel<T>
+        where T : Common.IUpdateable<T>
     {
         private int _currentIndex;
         public int CurrentIndex
@@ -320,18 +321,30 @@ namespace Awful.ViewModels
             {
                 foreach (var item in items)
                 {
-                    int index = Items.IndexOf(item);
-                    if (index != -1)
-                    {
-                        Items.RemoveAt(index);
-                        Items.Insert(index, item);
-                    }
-                    else
-                        Items.Add(item);
+                    AddOrUpdateItem(item);
                 }
             }
 
             this.IsRunning = false;
+        }
+
+        private void AddOrUpdateItem(T item)
+        {
+            try
+            {
+                int index = Items.IndexOf(item);
+                if (index != -1)
+                {
+                    Items[index].Update(item);
+                }
+                else
+                    Items.Add(item);
+            }
+
+            catch (Exception ex)
+            {
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex);
+            }
         }
     }
 }

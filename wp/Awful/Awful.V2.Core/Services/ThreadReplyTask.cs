@@ -79,19 +79,23 @@ namespace Awful
 
             if (data.HasValue)
             {
-                /*
-                Logger.AddEntry(string.Format("ThreadReplyService - Reply data: {0}|{1}|{2}{3}",
-                    data.Value.THREADID,
-                    data.Value.TEXT,
-                    data.Value.FORMKEY,
-                    data.Value.FORMCOOKIE));
-                */
+                
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug,"ThreadReplyService");
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Begin Reply data...");
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "ThreadID: " + data.Value.THREADID);
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Begin Text...");
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, data.Value.TEXT);
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "...End Text.");
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Form key: " + data.Value.FORMKEY);
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Form cookie: " + data.Value.FORMCOOKIE);
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "...End reply data.");
+           
                 return InitiateReply(data.Value);
             }
 
             else
             {
-                //Logger.AddEntry("ThreadReplyService - ReplyAsync failed on null ThreadReplyData.");
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, "ThreadReplyService - ReplyAsync failed on null ThreadReplyData.");
                 return null;
             }
         }
@@ -105,6 +109,7 @@ namespace Awful
         private Uri SendEdit(ThreadPostMetadata post, string text)
         {
             PostEditData data = new PostEditData() { POSTID = post.PostID, TEXT = text };
+
             return InitiateEditRequest(data);
         }
 
@@ -127,6 +132,8 @@ namespace Awful
         private Uri InitiateReply(ThreadReplyData data, int timeout = DEFAULT_TIMEOUT)
         {
             // create request
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Creating Reply Request...");
+
             string url = "http://forums.somethingawful.com/newreply.php";
             var request = AwfulWebRequest.CreateFormDataPostRequest(url, REPLY_CONTENT_TYPE);
             if (request == null)
@@ -135,16 +142,21 @@ namespace Awful
             request.AllowAutoRedirect = true;
 
             // begin request stream
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Beginning Request Stream...");
+
             var signal = new AutoResetEvent(false);
             var result = request.BeginGetRequestStream(callback => { signal.Set(); }, request);
             signal.WaitOne();
 
             // process request
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Creating Form Data...");
 
             FormDataDelegate replyFormData = () => { return GetReplyMultipartFormData(data); };
             var success = ProcessReplyRequest(result, replyFormData);
 
             // begin response
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Waiting for response...");
+
             request = result.AsyncState as HttpWebRequest;
             result = request.BeginGetResponse(callback => { signal.Set(); }, request);
             signal.WaitOne(timeout);
@@ -153,6 +165,8 @@ namespace Awful
                 throw new TimeoutException();
 
             // process response and return status value
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Processing response...");
+
             Uri redirect = HandleGetResponse(result);
             return redirect;
         }
@@ -179,6 +193,10 @@ namespace Awful
             sb.AppendLine(REPLY_FOOTER);
 
             string content = sb.ToString();
+
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Begin form data...");
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, content);
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "..End form data.");
 
             dataStream.Write(encoding.GetBytes(content), 0, content.Length);
 
@@ -225,7 +243,7 @@ namespace Awful
 
         private Uri InitiateEditRequest(PostEditData data, int timeout = CoreConstants.DEFAULT_TIMEOUT_IN_MILLISECONDS)
         {
-            // Logger.AddEntry("ThreadReplyService - EditRequest initiated.");
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Begin Edit Request...");
 
             string url = "http://forums.somethingawful.com/editpost.php";
             var request = AwfulWebRequest.CreateFormDataPostRequest(url, EDIT_CONTENT_TYPE);
@@ -235,23 +253,31 @@ namespace Awful
             request.AllowAutoRedirect = true;
 
             // begin request stream
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Processing request stream...");
+
             var signal = new AutoResetEvent(false);
             var result = request.BeginGetRequestStream(callback => { signal.Set(); }, request);
             signal.WaitOne();
 
             // process request
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Creating form data...");
+
             FormDataDelegate editFormData = () => { return GetEditMultipartFormData(data); };
             var success = ProcessReplyRequest(result, editFormData);
 
             // begin response
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Waiting for server response...");
+
             request = result.AsyncState as HttpWebRequest;
             result = request.BeginGetResponse(callback => { signal.Set(); }, request);
             signal.WaitOne(timeout);
 
             if (!result.IsCompleted)
-                throw new TimeoutException();
+                throw new TimeoutException("The timeout was reached while trying to send an edit request.");
 
             // process response and return status value
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Processing server response...");
+
             Uri redirect = HandleGetResponse(result);
             return redirect;
         }
@@ -272,6 +298,10 @@ namespace Awful
 
             string content = sb.ToString();
 
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Begin form data...");
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, content);
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "...End form data.");
+
             dataStream.Write(encoding.GetBytes(content), 0, content.Length);
 
             dataStream.Position = 0;
@@ -291,7 +321,7 @@ namespace Awful
             var url = webUrl;
             var doc = web.FetchHtml(url).ToHtmlDocument();
 
-            //Logger.AddEntry(string.Format("ThreadReplyServer - Retrieving text from '{0}'.", url));
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, string.Format("ThreadReplyServer - Retrieving text from '{0}'.", url));
 
             string bodyText = GetFormText(doc.DocumentNode);
             return HttpUtility.HtmlDecode(bodyText);
@@ -308,14 +338,11 @@ namespace Awful
 
         private bool HandleGetRequest(IAsyncResult result, byte[] formData)
         {
-            // Logger.AddEntry("ThreadReplyService - GetRequest initiated.");
             HttpWebRequest webRequest = result.AsyncState as HttpWebRequest;
             using (Stream writer = webRequest.EndGetRequestStream(result))
             {
                 writer.Write(formData, 0, formData.Length);
             }
-
-            // Logger.AddEntry("ThreadReplyService - GetRequest successful.");
 
             return true;
         }
@@ -331,13 +358,14 @@ namespace Awful
             {
                 string text = reader.ReadToEnd();
                 html = text;
-                
-#if DEBUG
-                Debug.WriteLine("Reply Text Response: " + text);
-#endif
             }
 
             // Check if response was successful - Look for redirect data.
+
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Verbose, "Begin server response...");
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Verbose, html);
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Verbose, "...End server response.");
+
             HtmlDocument responseHtml = new HtmlDocument();
             responseHtml.LoadHtml(html);
 
@@ -346,6 +374,8 @@ namespace Awful
                 .SingleOrDefault();
 
             // try to parse redirect url
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Attempting to parse redirect url...");
+
             Uri redirect = null;
 
             try
@@ -356,10 +386,13 @@ namespace Awful
                 string redirectValue = tokens[1];
                 redirectValue = HttpUtility.HtmlDecode(redirectValue);
                 redirect = new Uri(string.Format("{0}/{1}", CoreConstants.BASE_URL, redirectValue));
+
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, string.Format("Url: '{0}'", redirect.AbsoluteUri));
             }
 
             catch (Exception ex)
             {
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, "Redirect parsing failed.");
                 AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex);
             }
 

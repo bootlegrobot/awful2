@@ -16,7 +16,8 @@ namespace Awful
         {
             Critical = -1,
             Info,
-            Debug
+            Debug,
+            Verbose
         };
 
         public static Level DebugLevel { get; set; }

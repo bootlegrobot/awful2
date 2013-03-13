@@ -164,7 +164,7 @@
                                 Nickname="ADTRW"
                                 ForumId="27"
                                 ImageUri="/Assets/ForumIcons/27.png"
-                                PrimaryColor="#ff78a0ab" />
+                                PrimaryColor="#ff8D53C0" />
 
             <common:ForumLayout x:Name="phiz"
                                 Nickname="PHIZ"

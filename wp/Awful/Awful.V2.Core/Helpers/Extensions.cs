@@ -48,6 +48,12 @@ namespace Awful
             return deleted;
         }
 
+        public static void SafelyCreateDirectory(this IsolatedStorageFile storage, string dir)
+        {
+            if (!storage.DirectoryExists(dir))
+                storage.CreateDirectory(dir);
+        }
+
         private static bool BuildPath(this IsolatedStorageFile storage, string path)
         {
             bool success = false;

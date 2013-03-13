@@ -12,12 +12,16 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using Awful.Helpers;
 using Awful.WP7;
+using System.IO.IsolatedStorage;
+using System.Windows.Media.Imaging;
+using ImageTools;
+using System.IO;
 
 namespace Awful.Data
 {
     [DataContract]
     public class ThreadDataSource : CommonDataObject,
-        IEquatable<ThreadDataSource>
+        IEquatable<ThreadDataSource>, IUpdateable<ThreadDataSource>
     {
         public ThreadDataSource(ThreadMetadata data)
             : base()
@@ -138,6 +142,14 @@ namespace Awful.Data
             }
         }
 
+        private bool _showImage;
+        [IgnoreDataMember]
+        public bool ShowImage
+        {
+            get { return _showImage; }
+            private set { SetProperty(ref _showImage, value, "ShowImage"); }
+        }
+
         #endregion
 
         public void SetMetadata(ThreadMetadata data)
@@ -247,18 +259,67 @@ namespace Awful.Data
             return string.Format("by {0}", metadata.Author);
         }
 
+        private string GetThreadTagFilename(string iconUri)
+        {
+            // strip the '/'
+            var tokens = iconUri.Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            string filename = tokens[tokens.Length - 1];
+            tokens = filename.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            filename = tokens[0];
+            return filename;
+        }
+
         private void FormatImage(string iconUri)
         {
             if (iconUri != null)
             {
-                // strip the '/'
-                var tokens = iconUri.Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                string filename = tokens[tokens.Length - 1];
-                tokens = filename.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                filename = tokens[0];
+                string filename = GetThreadTagFilename(iconUri);
                 this.Tag = filename;
-                this.SetImage("/Assets/ThreadIcons/" + filename + ".png");
+                this.CheckCacheForImage(filename);
             }
+        }
+
+        private void CheckCacheForImage(string filename)
+        {
+            var localFilePath = string.Format("/ThreadTags/{0}.jpg", filename);
+            var remoteFilePath = string.Format("{0}/{1}.png", Constants.THREAD_TAG_REMOTE_SOURCE, filename);
+            var storage = IsolatedStorageFile.GetUserStoreForApplication();
+
+            if (!storage.FileExists(localFilePath))
+                SetImage(remoteFilePath);
+            else
+                SetImage(localFilePath);
+        }
+
+        protected override void OnImageOpened(BitmapImage bitmap)
+        {
+            WriteableBitmap wb = new WriteableBitmap(bitmap);
+            var path = string.Format("/ThreadTags/{0}.jpg", this.Tag);
+            using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
+            using (var file = storage.CreateFile(path))
+                wb.SaveJpeg(file, wb.PixelWidth, wb.PixelHeight, 0, 85);
+
+            this.ShowImage = true;
+        }
+
+        protected override void OnImageFailed(BitmapImage image)
+        {
+            var path = string.Format("/ThreadTags/{0}.jpg", this.Tag);
+            image = new BitmapImage();
+
+            using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                try
+                {
+                    using (var file = storage.OpenFile(path, FileMode.Open))
+                        image.SetSource(file);
+
+                    this.Image = image;
+                    this.ShowImage = true;
+                }
+                catch (Exception) { storage.DeleteFile(path); }
+            }
+
         }
 
         public bool Equals(ThreadDataSource other)
@@ -283,6 +344,11 @@ namespace Awful.Data
                 hash = ThreadID.GetHashCode();
 
             return hash;
+        }
+
+        public void Update(ThreadDataSource updated)
+        {
+            this.SetMetadata(updated.Data);
         }
     }
 

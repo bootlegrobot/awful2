@@ -145,9 +145,9 @@ namespace Awful
             
             string html = this.ProcessResponse(request.EndGetResponse(result));
 
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Html result:");
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, html);
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "End Html.");
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Verbose, "Html result:");
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Verbose, html);
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Verbose, "End Html.");
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info,  "Request complete.");
 
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, string.Format("END FetchHtml({0}, {1})", url, timeout));

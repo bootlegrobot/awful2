@@ -95,6 +95,13 @@ namespace Awful.ViewModels
         {
             if (Request != null)
             {
+                
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Sending thread request.");
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "RequestType: " + RequestType);
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "----------------------BeginMessage--------------------");
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, Text);
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "-----------------------EndMessage---------------------");
+
                 Request.Content = Text;
                 SendRequestCommand.Execute(Request);
             }

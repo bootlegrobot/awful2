@@ -142,7 +142,7 @@ namespace Awful.ViewModels
             }
             
             this._firstPageCommand = new Common.ActionCommand(LoadFirstPageAction);
-            this._lastPageCommand = new Common.ActionCommand(LoadLasPageAction);
+            this._lastPageCommand = new Common.ActionCommand(LoadLastPageAction);
             this._customPageCommand = new Common.ActionCommand(LoadPageNumberAction);
             Commands.ViewSAThreadCommand.ViewThread += OnPageFromLinkAvailable;
         }
@@ -161,6 +161,8 @@ namespace Awful.ViewModels
         private readonly ThreadPageStack _pageStack = new ThreadPageStack();
 
         #region Properties
+
+        private bool SynchronizeSlideView { get; set; }
 
         private int _rating = 0;
         public int Rating
@@ -325,7 +327,7 @@ namespace Awful.ViewModels
                 args.State = CurrentThreadPage.Data;
                 Execute(args);
             }
-            catch (Exception) { }
+            catch (Exception ex) { AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex); }
         }
 
         public void LoadPageNumber(ThreadMetadata thread, int pageNumber)
@@ -366,11 +368,15 @@ namespace Awful.ViewModels
         private void LoadPageNumberAction(object state) 
         {
             int page = -1;
-            if (int.TryParse(state as string, out page))
-                LoadPageNumber(CurrentThread, page); 
+            if (int.TryParse(state as string, out page) && 
+                page <= TotalPages &&
+                page > 0)
+            {
+                this.SelectedItem = this.Items[page - 1];
+            }
         }
         private void LoadFirstPageAction(object state) { LoadPageNumber(CurrentThread, 1); }
-        private void LoadLasPageAction(object state) { LoadLastPost(CurrentThread); }
+        private void LoadLastPageAction(object state) { LoadLastPost(CurrentThread); }
 
         #endregion
 
@@ -522,7 +528,10 @@ namespace Awful.ViewModels
             this._currentThreadPage = dataObject;
 
             if (TotalPages != page.LastPage)
-                _items = new ThreadPageSlideViewList(page.LastPage);
+            {
+                this._items = new ThreadPageSlideViewList(page.LastPage);
+                SynchronizeSlideView = true;
+            }
 
             return dataObject;
         }
@@ -558,13 +567,14 @@ namespace Awful.ViewModels
             // empty loading text
             Status = string.Empty;
 
-            if (TotalPages != page.Data.LastPage)
+            if (SynchronizeSlideView)
             {
                 // ignore the selected item change when we bind new items to view
                 TotalPages = page.Data.LastPage;
                 CurrentState = ViewStates.New;
                 OnPropertyChanged("Items");
                 SelectedItem = Items[CurrentPage - 1];
+                SynchronizeSlideView = false;
             }
 
             // we are ready to show the view

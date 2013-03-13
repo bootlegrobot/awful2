@@ -14,6 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Collections.Specialized;
 using System.Runtime.Serialization;
+using ImageTools;
+using System.IO;
 
 // The data model defined by this file serves as a representative example of a strongly-typed
 // model that supports notification when members are added, removed, or modified.  The property
@@ -100,9 +102,12 @@ namespace Awful.Data
         {
             get
             {
-                if (this._image == null && this._imagePath != null)
+                if (this._image == null && _imagePath != null)
                 {
-                    this._image = new BitmapImage(new Uri(this._imagePath, UriKind.RelativeOrAbsolute));
+                    BitmapImage image = new BitmapImage(new Uri(this._imagePath, UriKind.RelativeOrAbsolute));
+                    image.ImageOpened += OnImageOpened;
+                    image.ImageFailed += OnImageFailed;
+                    this._image = image;
                 }
                 return this._image;
             }
@@ -113,6 +118,26 @@ namespace Awful.Data
                 this.SetProperty(ref this._image, value, "Image");
             }
         }
+
+        private void OnImageFailed(object sender, RoutedEventArgs e)
+        {
+            BitmapImage image = sender as BitmapImage;
+            image.ImageFailed -= OnImageFailed;
+            this._image = null;
+            this._imagePath = null;
+
+            OnImageFailed(image);
+        }
+
+        private void OnImageOpened(object sender, RoutedEventArgs e)
+        {
+            BitmapImage image = sender as BitmapImage;
+            image.ImageOpened -= OnImageOpened;
+            OnImageOpened(image);
+        }
+
+        protected virtual void OnImageOpened(BitmapImage image) { }
+        protected virtual void OnImageFailed(BitmapImage image) { }
 
         [DataMember]
         public string ImagePath
@@ -127,6 +152,11 @@ namespace Awful.Data
             this._imagePath = path;
             this.OnPropertyChanged("Image");
             this.OnPropertyChanged("ImagePath");
+        }
+
+        public void SetImage(Stream stream)
+        {
+
         }
 
         public override string ToString()

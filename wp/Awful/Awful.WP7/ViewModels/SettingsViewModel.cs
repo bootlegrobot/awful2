@@ -61,7 +61,8 @@ namespace Awful.ViewModels
                     _levels = new List<AwfulDebugger.Level>()
                     {
                         AwfulDebugger.Level.Info,
-                        AwfulDebugger.Level.Debug
+                        AwfulDebugger.Level.Debug,
+                        AwfulDebugger.Level.Verbose
                     };
                 }
 
