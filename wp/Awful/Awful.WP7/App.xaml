@@ -32,7 +32,7 @@
 
             <!-- App Info -->
             <sys:String x:Key="ApplicationName">Awful!</sys:String>
-            <sys:String x:Key="ApplicationVersion">2.0 beta 13</sys:String>
+            <sys:String x:Key="ApplicationVersion">version 2.0</sys:String>
 
             <!-- Animations -->
             <telerikCore:RadPlaneProjectionAnimation x:Key="rotateRightAnimation"
