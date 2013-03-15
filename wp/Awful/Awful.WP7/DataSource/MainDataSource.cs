@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using Awful.Helpers;
 using Awful.WP7;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace Awful.Data
 {
@@ -270,6 +271,12 @@ namespace Awful.Data
     [DataContract]
     public class ForumDataSource : CommonDataObject, ICommand, IPinnable
     {
+        public void UpdateLayout()
+        {
+            this.OnPropertyChanged("Nickname");
+            this.OnPropertyChanged("PrimaryColor");
+        }
+
         public ForumDataSource() : base() { }
         public ForumDataSource(ForumMetadata data)
             : base()
@@ -285,7 +292,9 @@ namespace Awful.Data
             get 
             {
                 if (_layout == null)
+                {
                     _layout = ThemeManager.Instance.GetForumLayoutById(ForumID);
+                }
 
                 return _layout; 
             }
@@ -306,7 +315,7 @@ namespace Awful.Data
             set { SetProperty(ref _nickname, value, "Nickname"); }
         }
 
-     
+
         private Brush _primary;
         public Brush PrimaryColor
         {

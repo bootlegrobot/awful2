@@ -123,7 +123,7 @@ namespace Awful.ViewModels
         private Data.MainDataSource _source;
         private IEnumerable<Data.ForumDataSource> _forums;
         private const string EMPTY_STATUS = "Tap here to refresh the forums list.";
-
+       
         private IEnumerable<Group<Data.ForumDataSource>> _groups;
         public IEnumerable<Group<Data.ForumDataSource>> Groups
         {

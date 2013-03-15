@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:helpers="clr-namespace:Awful.Helpers"
              xmlns:controls="clr-namespace:Awful.Controls"
+             xmlns:common="clr-namespace:Awful.Common;assembly=Awful.WP7"
              xmlns:telerikCore="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Core"
              xmlns:telerikData="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Data"
              xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
@@ -175,46 +176,45 @@
     <Grid x:Name="ContentPanel"
           Grid.Row="1"
           Margin="0">
-      <toolkit:PerformanceProgressBar IsIndeterminate="{Binding IsRunning}"
-                                      HorizontalAlignment="Stretch"
-                                      VerticalAlignment="Top" />
+            <telerikPrimitives:RadBusyIndicator IsRunning="{Binding IsRunning}"
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Top" />
 
 
-      <telerikData:RadJumpList x:Name="ForumItemSelector"
-                               Visibility="Visible"
-                               IsStickyHeaderEnabled="True"
-                               ItemsSource="{Binding Items}"
-                               IsPullToRefreshEnabled="True"
-                               RefreshRequested="OnRefreshRequested"
-                               StickyHeaderTemplate="{StaticResource ForumStickyHeader}"
-                               EmptyContent="{Binding Status}"
-							   EmptyContentTemplate="{StaticResource EmptyListContentTemplate}"
-							   EmptyContentDisplayMode="Always"
-                               GroupHeaderTemplate="{StaticResource ForumGroupHeader}"
-                               HorizontalContentAlignment="Stretch">
-        <telerikData:RadJumpList.VirtualizationStrategyDefinition>
-          <telerikPrimitives:StackVirtualizationStrategyDefinition Orientation="Vertical" />
-        </telerikData:RadJumpList.VirtualizationStrategyDefinition>
-        <telerikData:RadJumpList.ItemTemplate>
-          <DataTemplate>
-            <telerikPrimitives:RadExpanderControl Content="{Binding}"
-                                                  ExpandedStateContent="{Binding}"
-                                                  ExpandedStateContentTemplate="{StaticResource MainForumItemTemplate}"
-                                                  ContentTemplate="{StaticResource MainForumItemTemplate}"
-                                                  ExpandableContent="{Binding}"
-                                                  ExpandableContentTemplate="{StaticResource MainForumExpandedListTemplate}">
+            <common:SmarterRadJumpList x:Name="ForumItemSelector"
+                                               Visibility="Visible"
+                                               IsStickyHeaderEnabled="True"
+                                               ItemsSource="{Binding Items}"
+                                               IsPullToRefreshEnabled="True"
+                                               DataVirtualizationMode="None"
+                                               RefreshRequested="OnRefreshRequested"
+                                               StickyHeaderTemplate="{StaticResource ForumStickyHeader}"
+                                               EmptyContent="{Binding Status}"
+                                               EmptyContentTemplate="{StaticResource EmptyListContentTemplate}"
+                                               EmptyContentDisplayMode="Always"
+                                               GroupHeaderTemplate="{StaticResource ForumGroupHeader}"
+                                               HorizontalContentAlignment="Stretch">
 
-              <telerikPrimitives:RadExpanderControl.AnimatedIndicatorContentTemplate>
-                <DataTemplate>
-                  <Grid />
-                </DataTemplate>
-              </telerikPrimitives:RadExpanderControl.AnimatedIndicatorContentTemplate>
-            </telerikPrimitives:RadExpanderControl>
-          </DataTemplate>
-        </telerikData:RadJumpList.ItemTemplate>
-      </telerikData:RadJumpList>
+                <common:SmarterRadJumpList.ItemTemplate>
+                    <DataTemplate>
+                        <telerikPrimitives:RadExpanderControl Content="{Binding}"
+                                                              ContentTemplate="{StaticResource MainForumItemTemplate}"
+                                                              ExpandableContent="{Binding}"
+                                                              ExpandableContentTemplate="{StaticResource MainForumExpandedListTemplate}"
+                                                              ExpandedStateContent="{Binding}"
+                                                              ExpandedStateContentTemplate="{StaticResource MainForumItemTemplate}">
 
-      <telerikPrimitives:RadDataBoundListBox x:Name="UngroupedForumItemSelector"
+                            <telerikPrimitives:RadExpanderControl.AnimatedIndicatorContentTemplate>
+                                <DataTemplate>
+                                    <Grid />
+                                </DataTemplate>
+                            </telerikPrimitives:RadExpanderControl.AnimatedIndicatorContentTemplate>
+                        </telerikPrimitives:RadExpanderControl>
+                    </DataTemplate>
+                </common:SmarterRadJumpList.ItemTemplate>
+            </common:SmarterRadJumpList>
+
+            <telerikPrimitives:RadDataBoundListBox x:Name="UngroupedForumItemSelector"
                                              Visibility="Collapsed"
                                              ItemsSource="{Binding Items}"
                                              EmptyContent="{Binding Status}"

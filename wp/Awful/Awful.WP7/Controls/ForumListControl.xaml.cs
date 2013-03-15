@@ -41,8 +41,14 @@ namespace Awful.Controls
             InitializeComponent();
             PrepareAnimations();
             InitializeJumpList();
+            ForumItemSelector.ItemStateChanged += ForumItemSelector_ItemStateChanged;
             InteractionEffectManager.AllowedTypes.Add(typeof(RadDataBoundListBoxItem));
 			this.IsUngrouped = false;
+        }
+
+        void ForumItemSelector_ItemStateChanged(object sender, ItemStateChangedEventArgs e)
+        {
+         
         }
 
         private void PrepareAnimations()
@@ -160,6 +166,16 @@ namespace Awful.Controls
 				control.IsHitTestVisible = false;
 				Refresh(viewmodel);
 			}
+        }
+
+        private void RadExpanderControl_Loaded_1(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void RadExpanderControl_Unloaded_1(object sender, RoutedEventArgs e)
+        {
+           
         }
     }
 }

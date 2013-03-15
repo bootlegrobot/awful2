@@ -169,6 +169,7 @@
     <Compile Include="Common\Group.cs" />
     <Compile Include="Common\ILastUpdated.cs" />
     <Compile Include="Common\IUpdateable.cs" />
+    <Compile Include="Common\SmarterRadJumpList.cs" />
     <Compile Include="Common\NotificationMethod.cs" />
     <Compile Include="Common\ObservableSet.cs" />
     <Compile Include="Common\QueryString.cs" />
