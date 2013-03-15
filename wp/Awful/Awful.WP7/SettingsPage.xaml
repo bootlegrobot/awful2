@@ -62,6 +62,7 @@
                                       AppVersion="{StaticResource ApplicationVersion}"
                                       AppEmail="kollasoftware@gmail.com"
                                       AppDescription="SomethingAwful in your pocket."
+                                      Quote="&quot;To W.B. My Star, My Perfect Silence.&quot;"
                                       MiscText1="author: bootleg robot"
                                       MiscText2="icons provided by the Awful iOS team" />
         </Grid.Resources>
@@ -180,6 +181,12 @@
                                    FontSize="{StaticResource PhoneFontSizeNormal}" />
                         <TextBlock Text="{Binding MiscText2}"
                                    FontSize="{StaticResource PhoneFontSizeNormal}" />
+                        <TextBlock Text="{Binding Quote}"
+                                   Margin="{StaticResource PhoneVerticalMargin}"
+                                   Foreground="{StaticResource PhoneAccentBrush}"
+                                   TextAlignment="Center"
+                                   FontSize="{StaticResource PhoneFontSizeNormal}"
+                                   FontStyle="Italic" />
                     </StackPanel>
                 </Grid>
             </controls:PivotItem>

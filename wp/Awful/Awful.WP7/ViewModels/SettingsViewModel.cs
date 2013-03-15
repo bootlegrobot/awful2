@@ -25,6 +25,13 @@ namespace Awful.ViewModels
             get { return _logout; }
         }
 
+        private string _quote;
+        public string Quote
+        {
+            get { return _quote; }
+            set { SetProperty(ref _quote, value, "Quote"); }
+        }
+
         public List<AppDataModel.HomePageSection> HomePages
         {
             get

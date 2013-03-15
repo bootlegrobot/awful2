@@ -317,6 +317,8 @@ namespace Awful.ViewModels
 
         protected virtual void AppendItems(IEnumerable<T> items)
         {
+            int count = Items.Count;
+
             if (items != null)
             {
                 foreach (var item in items)
@@ -324,6 +326,11 @@ namespace Awful.ViewModels
                     AddOrUpdateItem(item);
                 }
             }
+
+            // if we didn't update the number of items
+            // refresh the ui
+            if (count == Items.Count)
+                OnPropertyChanged("Items");
 
             this.IsRunning = false;
         }

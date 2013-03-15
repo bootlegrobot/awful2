@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
+using System.ComponentModel;
 
 namespace Awful.Commands
 {
@@ -11,6 +12,9 @@ namespace Awful.Commands
        
         public bool CanExecute(object parameter)
         {
+            if (DesignerProperties.IsInDesignTool)
+                return true;
+
             var storage = System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForApplication();
             bool exists = storage.FileExists("user.xml");
             return exists;

@@ -13,6 +13,12 @@ namespace Awful.ViewModels
 {
     public class AboutViewModel
     {
+        public string Quote
+        {
+            get;
+            set;
+        }
+
         public ICommand RateThisAppCommand
         {
             get;

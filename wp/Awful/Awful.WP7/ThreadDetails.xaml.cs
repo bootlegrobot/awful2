@@ -195,7 +195,21 @@ namespace Awful
         {
             var query = NavigationContext.QueryString;
 
-            if (query.ContainsKey("id") && query.ContainsKey("nav"))
+            if (query.ContainsKey("link"))
+            {
+                string value = query["link"];
+                try
+                {
+                    this.threadSlideView.ControlViewModel.LoadPageFromUri(new Uri(value));
+                }
+                catch (Exception ex)
+                {
+                    AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex);
+                    NavigationService.GoBack();
+                }
+            }
+
+            else if (query.ContainsKey("id") && query.ContainsKey("nav"))
             {
                 string ThreadID = query["id"];
                 ThreadMetadata thread = new ThreadMetadata() { ThreadID = ThreadID };
