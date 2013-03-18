@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2009/deployment" AppPlatformVersion="7.1">
-  <App xmlns="" ProductID="{13f62146-607f-4f0d-b2f0-328b9383fbcd}" Title="Awful!! Beta" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Awful.WP7.App author" Description="Sample description" Publisher="Awful.WP7.App">
-    <IconPath IsRelative="true" IsResource="false">ApplicationIcon.png</IconPath>
+  <App xmlns="" ProductID="{13f62146-607f-4f0d-b2f0-328b9383fbcd}" Title="Awful!!" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Awful.WP7.App author" Description="Something Awful in your pocket." Publisher="Awful.WP7.App">
+    <IconPath IsRelative="true" IsResource="false">SubmissionInfo\ApplicationIcon_300.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_IDENTITY_DEVICE" />
       <Capability Name="ID_CAP_IDENTITY_USER" />
@@ -17,9 +17,10 @@
     <Tokens>
       <PrimaryToken TokenID="Awful.WP7.AppToken" TaskName="_default">
         <TemplateType5>
-          <BackgroundImageURI IsRelative="true" IsResource="false">ApplicationIcon.173.png</BackgroundImageURI>
+          <BackgroundImageURI IsRelative="true" IsResource="false">SubmissionInfo\ApplicationIcon_300.png</BackgroundImageURI>
           <Count>0</Count>
-          <Title>Beta</Title>
+          <Title>
+          </Title>
         </TemplateType5>
       </PrimaryToken>
     </Tokens>

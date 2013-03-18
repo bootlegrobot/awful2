@@ -375,8 +375,16 @@ namespace Awful.ViewModels
                 this.SelectedItem = this.Items[page - 1];
             }
         }
-        private void LoadFirstPageAction(object state) { LoadPageNumber(CurrentThread, 1); }
-        private void LoadLastPageAction(object state) { LoadLastPost(CurrentThread); }
+
+        private void LoadFirstPageAction(object state) 
+        {
+            this.SelectedItem = this.Items[0];
+        }
+
+        private void LoadLastPageAction(object state) 
+        {
+            this.SelectedItem = this.Items[this.Items.Count - 1];
+        }
 
         #endregion
 
