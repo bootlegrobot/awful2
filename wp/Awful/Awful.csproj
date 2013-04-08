@@ -79,40 +79,32 @@
     <Reference Include="System.Xml.XPath">
       <HintPath>C:\Program Files (x86)\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\System.Xml.XPath.dll</HintPath>
     </Reference>
-    <Reference Include="Telerik.Windows.BackgroundAgentTools, Version=2012.3.1016.2040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\private\Telerik.Windows.BackgroundAgentTools.dll</HintPath>
+    <Reference Include="Telerik.Windows.BackgroundAgentTools">
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q1 2013\Binaries\WindowsPhone\Telerik.Windows.BackgroundAgentTools.dll</HintPath>
     </Reference>
-    <Reference Include="Telerik.Windows.Behaviors, Version=2012.3.1016.2040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\private\Telerik.Windows.Behaviors.dll</HintPath>
+    <Reference Include="Telerik.Windows.Behaviors">
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q1 2013\Binaries\WindowsPhone\Telerik.Windows.Behaviors.dll</HintPath>
     </Reference>
-    <Reference Include="Telerik.Windows.Controls.Chart, Version=2012.3.1016.2040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\private\Telerik.Windows.Controls.Chart.dll</HintPath>
+    <Reference Include="Telerik.Windows.Controls.Chart">
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q1 2013\Binaries\WindowsPhone\Telerik.Windows.Controls.Chart.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.Windows.Controls.Data">
-      <HintPath>..\..\lib\private\Telerik.Windows.Controls.Data.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q1 2013\Binaries\WindowsPhone\Telerik.Windows.Controls.Data.dll</HintPath>
     </Reference>
-    <Reference Include="Telerik.Windows.Controls.DataVisualization, Version=2012.3.1016.2040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\private\Telerik.Windows.Controls.DataVisualization.dll</HintPath>
+    <Reference Include="Telerik.Windows.Controls.DataVisualization">
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q1 2013\Binaries\WindowsPhone\Telerik.Windows.Controls.DataVisualization.dll</HintPath>
     </Reference>
-    <Reference Include="Telerik.Windows.Controls.Input, Version=2012.3.1016.2040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\private\Telerik.Windows.Controls.Input.dll</HintPath>
+    <Reference Include="Telerik.Windows.Controls.Input">
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q1 2013\Binaries\WindowsPhone\Telerik.Windows.Controls.Input.dll</HintPath>
     </Reference>
-    <Reference Include="Telerik.Windows.Controls.Primitives, Version=2012.3.1016.2040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\private\Telerik.Windows.Controls.Primitives.dll</HintPath>
+    <Reference Include="Telerik.Windows.Controls.Primitives">
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q1 2013\Binaries\WindowsPhone\Telerik.Windows.Controls.Primitives.dll</HintPath>
     </Reference>
-    <Reference Include="Telerik.Windows.Core, Version=2012.3.1016.2040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\private\Telerik.Windows.Core.dll</HintPath>
+    <Reference Include="Telerik.Windows.Core">
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q1 2013\Binaries\WindowsPhone\Telerik.Windows.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Telerik.Windows.Data, Version=2012.3.1016.2040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\private\Telerik.Windows.Data.dll</HintPath>
+    <Reference Include="Telerik.Windows.Data">
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 7 Q1 2013\Binaries\WindowsPhone\Telerik.Windows.Data.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
