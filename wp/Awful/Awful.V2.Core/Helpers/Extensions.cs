@@ -535,6 +535,11 @@ namespace Awful
     
         public static IEnumerable<ForumMetadata> LoadForums(this UserMetadata user)
         {
+            if (user.Username.Equals(AwfulLoginClient.TEST_USER))
+                ForumParser.UseWhitelist = true;
+            else
+                ForumParser.UseWhitelist = false;
+
             var forums = ForumTasks.FetchAllForums();
             return forums;
         }

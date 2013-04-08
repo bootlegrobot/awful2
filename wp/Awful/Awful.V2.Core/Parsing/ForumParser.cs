@@ -10,6 +10,8 @@ namespace Awful
     {
         #region Forum Parsing
 
+        public static bool UseWhitelist { get; set; }
+
         private static readonly List<string> ForumBlacklist = new List<string>()
         {
             "Main",
@@ -19,6 +21,11 @@ namespace Awful
             "Archives",
             "The Crackhead Clubhouse",
             "Retarded Forum for Assholes",
+        };
+
+        private static readonly List<string> ForumWhitelist = new List<string>()
+        {
+            "Pet Island"
         };
 
         public static IEnumerable<ForumMetadata> ParseForumList(HtmlDocument doc)
@@ -89,7 +96,10 @@ namespace Awful
                     data.ForumName = name;
                 }
 
-                if (ForumBlacklist.Contains(name))
+                if (UseWhitelist && !ForumWhitelist.Contains(name))
+                    data = null;
+
+                else if (ForumBlacklist.Contains(name))
                     data = null;
             }
 

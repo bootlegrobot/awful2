@@ -13,6 +13,8 @@ namespace Awful
         private const string COOKIE_DOMAIN_URL = "http://fake.forums.somethingawful.com";
         private const string LOGIN_URL = "http://forums.somethingawful.com/account.php?";
 
+        public const string TEST_USER = "Awful!.dll";
+
         private string _status;
         public string Status
         {
