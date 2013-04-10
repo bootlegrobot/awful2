@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Awful.V2.Core", "Awful.V2.Core\Awful.V2.Core.csproj", "{CE3F4D7C-B819-4590-9816-C311B8CF8734}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Awful.WP8", "Awful.WP\Awful.WP8.csproj", "{13F62146-607F-4F0D-B2F0-328B9383FBCD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Awful.WP8", "Awful.WP8\Awful.WP8.csproj", "{13F62146-607F-4F0D-B2F0-328B9383FBCD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
