@@ -259,6 +259,9 @@
     <Compile Include="..\Awful.WP8\Helpers\ForumItemTemplateSelector.cs">
       <Link>Helpers\ForumItemTemplateSelector.cs</Link>
     </Compile>
+    <Compile Include="..\Awful.WP8\Helpers\LoginPageBackgroundPicker.cs">
+      <Link>Helpers\LoginPageBackgroundPicker.cs</Link>
+    </Compile>
     <Compile Include="..\Awful.WP8\Helpers\OddEvenTemplateSelector.cs">
       <Link>Helpers\OddEvenTemplateSelector.cs</Link>
     </Compile>
@@ -605,9 +608,6 @@
     </Content>
     <Content Include="..\Awful.WP8\SplashScreenImage.jpg">
       <Link>SplashScreenImage.jpg</Link>
-    </Content>
-    <Content Include="..\Awful.WP8\SplashScreenImage_720.jpg">
-      <Link>SplashScreenImage_720.jpg</Link>
     </Content>
     <Resource Include="..\Awful.WP8\www\awful.js">
       <Link>www\awful.js</Link>

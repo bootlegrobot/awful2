@@ -214,6 +214,7 @@
       <DependentUpon>ForumViewPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ForumItemTemplateSelector.cs" />
+    <Compile Include="Helpers\LoginPageBackgroundPicker.cs" />
     <Compile Include="Helpers\OddEvenTemplateSelector.cs" />
     <Compile Include="Helpers\PinnedItemsManager.cs" />
     <Compile Include="Helpers\ThreadIconViewer.cs" />
@@ -434,8 +435,9 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SplashScreenImage.jpg" />
-    <Content Include="SplashScreenImage_720.jpg" />
+    <Content Include="SplashScreenImage.screen-720p.jpg" />
+    <Content Include="SplashScreenImage.screen-WVGA.jpg" />
+    <Content Include="SplashScreenImage.screen-WXGA.jpg" />
     <Content Include="SubmissionInfo\AppIcon_173.png" />
     <Content Include="SubmissionInfo\AppIcon_300.png" />
     <Content Include="SubmissionInfo\ApplicationIcon_300.png" />

@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:telerikData="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Data"
     xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
+    xmlns:local="clr-namespace:Awful"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -18,8 +19,12 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot">
+        <Grid.Resources>
+            <local:LoginPageBackgroundPicker x:Key="loginBackground" />
+        </Grid.Resources>
+        
     	<Grid.Background>
-    		<ImageBrush Stretch="Fill" ImageSource="/SplashScreenImage.jpg"/>
+    		<ImageBrush Stretch="Fill" ImageSource="{Binding Source, Source={StaticResource loginBackground}}"/>
     	</Grid.Background>
      
         <!--ContentPanel - place additional content here-->
