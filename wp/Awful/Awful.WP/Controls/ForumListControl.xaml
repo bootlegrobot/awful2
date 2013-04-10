@@ -175,12 +175,23 @@
     <Grid x:Name="ContentPanel"
           Grid.Row="1"
           Margin="0">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+        
             <telerikPrimitives:RadBusyIndicator IsRunning="{Binding IsRunning}"
+                                                Background="Transparent"
+                                                Grid.Row="1"
+                                                AnimationStyle="AnimationStyle9"
                                                 HorizontalAlignment="Stretch"
+                                                Content=""
                                                 VerticalAlignment="Top" />
 
 
             <common:SmarterRadJumpList x:Name="ForumItemSelector"
+                                                Grid.Row="1"
                                                Visibility="Visible"
                                                IsStickyHeaderEnabled="True"
                                                ItemsSource="{Binding Items}"
@@ -214,6 +225,7 @@
             </common:SmarterRadJumpList>
 
             <telerikPrimitives:RadDataBoundListBox x:Name="UngroupedForumItemSelector"
+                                                   Grid.Row="1"
                                              Visibility="Collapsed"
                                              ItemsSource="{Binding Items}"
                                              EmptyContent="{Binding Status}"

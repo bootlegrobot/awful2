@@ -8,10 +8,10 @@
              xmlns:common="clr-namespace:Awful.Common"
              xmlns:telerikCore="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Core"
              xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
-			 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-			 xmlns:el="clr-namespace:Microsoft.Expression.Interactivity.Layout;assembly=Microsoft.Expression.Interactions"
-			 xmlns:eim="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
-			 xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:el="clr-namespace:Microsoft.Expression.Interactivity.Layout;assembly=Microsoft.Expression.Interactions"
+             xmlns:eim="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
+             xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
              xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
              mc:Ignorable="d"
              FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -20,135 +20,134 @@
              d:DesignHeight="480"
              d:DesignWidth="480">
 
-  <UserControl.Resources>
+    <UserControl.Resources>
         <common:ThreadInfoColorConverter x:Key="threadInfoColor"
                                          Default="{StaticResource PhoneForegroundBrush}"
                                          Accent="{StaticResource PhoneAccentBrush}" />
 
-        
+
         <common:BookmarkColorConverter x:Key="bookmarkColorConverter"
-                                       ThemeManager="{StaticResource AwfulThemeManager}"/>
-        
+                                       ThemeManager="{StaticResource AwfulThemeManager}" />
+
 
         <DataTemplate x:Key="ThreadListItemWithIconTemplate">
             <Grid Margin="{StaticResource PhoneTouchTargetOverhang}"
                   Opacity="{Binding ItemOpacity}"
                   VerticalAlignment="Top"
                   MinHeight="100">
-				
-				<Grid.Resources>
-					<Storyboard x:Key="ShowThreadTagAnimation">
-						<DoubleAnimation Storyboard.TargetName="ThreadTagImage"
-							Storyboard.TargetProperty="Opacity"
-							To="1"
-							Duration="0:0:0.5">
-							<DoubleAnimation.EasingFunction>
-								<CircleEase EasingMode="EaseIn"/>
-							</DoubleAnimation.EasingFunction>
-						</DoubleAnimation>
-					</Storyboard>
-				</Grid.Resources>
+
+                <Grid.Resources>
+                    <Storyboard x:Key="ShowThreadTagAnimation">
+                        <DoubleAnimation Storyboard.TargetName="ThreadTagImage"
+                                         Storyboard.TargetProperty="Opacity"
+                                         To="1"
+                                         Duration="0:0:0.5">
+                            <DoubleAnimation.EasingFunction>
+                                <CircleEase EasingMode="EaseIn" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </Grid.Resources>
 
                 <telerikPrimitives:RadContextMenu.ContextMenu>
-                    <local:ThreadContextMenu JumpToPageRequest="ThreadContextMenu_JumpToPageRequest"/>
+                    <local:ThreadContextMenu JumpToPageRequest="ThreadContextMenu_JumpToPageRequest" />
                 </telerikPrimitives:RadContextMenu.ContextMenu>
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
-                    
+
                 </Grid.ColumnDefinitions>
 
                 <Grid Margin="0,5,0,0"
-					  x:Name="ThreadIconGrid"
+                      x:Name="ThreadIconGrid"
                       Visibility="{Binding IconView, Source={StaticResource IconViewer}}">
                     <Border x:Name="ThreadIconBorder"
-                  Width="100"
-                  BorderThickness="2"
-                  BorderBrush="{StaticResource PhoneBorderBrush}"
-                  Height="100"
-                  VerticalAlignment="Top">
-						
-						<i:Interaction.Triggers>
-							<ec:DataTrigger Binding="{Binding ShowImage}"
+                            Width="100"
+                            BorderThickness="2"
+                            BorderBrush="{StaticResource PhoneBorderBrush}"
+                            Height="100"
+                            VerticalAlignment="Top">
+
+                        <i:Interaction.Triggers>
+                            <ec:DataTrigger Binding="{Binding ShowImage}"
                                             Comparison="Equal"
-											Value="True">
-								<eim:ControlStoryboardAction 
-									Storyboard="{StaticResource ShowThreadTagAnimation}"
-									ControlStoryboardOption="Play"/>
-							</ec:DataTrigger>
-						</i:Interaction.Triggers>
+                                            Value="True">
+                                <eim:ControlStoryboardAction Storyboard="{StaticResource ShowThreadTagAnimation}"
+                                                             ControlStoryboardOption="Play" />
+                            </ec:DataTrigger>
+                        </i:Interaction.Triggers>
 
                         <Grid>
                             <TextBlock Text="{Binding Tag}"
-                         HorizontalAlignment="Center"
-                         VerticalAlignment="Center"
-                         TextAlignment="Center"
-                         TextWrapping="Wrap"
-                         FontSize="10"
-                         Style="{StaticResource PhoneTextAccentStyle}" />
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       TextAlignment="Center"
+                                       TextWrapping="Wrap"
+                                       FontSize="10"
+                                       Style="{StaticResource PhoneTextAccentStyle}" />
 
 
                             <Image Source="/Assets/default_thread_tag.png"
-							Canvas.ZIndex="9"
-							Stretch="UniformToFill"
-							AutomationProperties.Name="{Binding Tag}" />
+                                   Canvas.ZIndex="9"
+                                   Stretch="UniformToFill"
+                                   AutomationProperties.Name="{Binding Tag}" />
 
-                            <Image x:Name="ThreadTagImage" 
-								Opacity="0"
-								Source="{Binding Image}"
-								Canvas.ZIndex="10"
-								Stretch="UniformToFill"
-								AutomationProperties.Name="{Binding Tag}" />
+                            <Image x:Name="ThreadTagImage"
+                                   Opacity="0"
+                                   Source="{Binding Image}"
+                                   Canvas.ZIndex="10"
+                                   Stretch="UniformToFill"
+                                   AutomationProperties.Name="{Binding Tag}" />
                         </Grid>
 
                     </Border>
 
                     <Grid x:Name="ThreadRatingPanel"
-			Visibility="{Binding ShowRating, Converter={StaticResource collapseOnFalseConverter}}"
-			HorizontalAlignment="Left" 
-			VerticalAlignment="Top" 
-			Margin="-13,10,0,0">
+                          Visibility="{Binding ShowRating, Converter={StaticResource collapseOnFalseConverter}}"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top"
+                          Margin="-13,10,0,0">
 
                         <local:RatingIcon x:Name="RatingIconItem"
-				Width="50"
-				Height="50"
-                Content="{Binding Rating}"
-				Background="{Binding RatingColor, Converter={StaticResource assetRetriever}}"
-                Foreground="{Binding Background, ElementName=RatingIconItem, Converter={StaticResource shadowColorConverter}, ConverterParameter=0.5}"/>
+                                          Width="50"
+                                          Height="50"
+                                          Content="{Binding Rating}"
+                                          Background="{Binding RatingColor, Converter={StaticResource assetRetriever}}"
+                                          Foreground="{Binding Background, ElementName=RatingIconItem, Converter={StaticResource shadowColorConverter}, ConverterParameter=0.5}" />
                     </Grid>
 
                 </Grid>
 
                 <StackPanel Grid.Column="2"
-                    VerticalAlignment="Top"
-                    Margin="0">
+                            VerticalAlignment="Top"
+                            Margin="0">
                     <TextBlock x:Name="TitleText"
-                     Text="{Binding Title, Converter={StaticResource contentFilter}}"
-                     TextWrapping="Wrap"
-                     Style="{StaticResource PhoneTextTitle3Style}"
-                     FontFamily="Segoe WP Semibold"
-                     TextTrimming="WordEllipsis"
-                     MaxHeight="95" />
+                               Text="{Binding Title, Converter={StaticResource contentFilter}}"
+                               TextWrapping="Wrap"
+                               Style="{StaticResource PhoneTextTitle3Style}"
+                               FontFamily="Segoe WP Semibold"
+                               TextTrimming="WordEllipsis"
+                               MaxHeight="95" />
                     <TextBlock x:Name="SubtitleText"
-                     Text="{Binding Subtitle, Converter={StaticResource contentFilter}}"
-                     Style="{StaticResource PhoneTextSubtleStyle}" />
+                               Text="{Binding Subtitle, Converter={StaticResource contentFilter}}"
+                               Style="{StaticResource PhoneTextSubtleStyle}" />
                     <TextBlock x:Name="DescriptionText"
-                     Text="{Binding Description, Converter={StaticResource contentFilter}}"
-                     Visibility="{Binding ShowPostCount, Converter={StaticResource collapseOnFalseConverter}}"
-                     MaxHeight="60"
-                     Padding="0"
-                     Style="{StaticResource PhoneTextAccentStyle}"
-                     Foreground="{Binding Converter={StaticResource threadInfoColor}}"/>
+                               Text="{Binding Description, Converter={StaticResource contentFilter}}"
+                               Visibility="{Binding ShowPostCount, Converter={StaticResource collapseOnFalseConverter}}"
+                               MaxHeight="60"
+                               Padding="0"
+                               Style="{StaticResource PhoneTextAccentStyle}"
+                               Foreground="{Binding Converter={StaticResource threadInfoColor}}" />
                     <TextBlock x:Name="StickyText"
-                     TextWrapping="Wrap"
-                     Text="[Stickied]"
-                     Visibility="{Binding IsSticky, Converter={StaticResource collapseOnFalseConverter}}"
-                     Style="{StaticResource PhoneTextSubtleStyle}"
-                     Foreground="{Binding CurrentTheme.AccentBrush, Source={StaticResource AwfulThemeManager}}" />
+                               TextWrapping="Wrap"
+                               Text="[Stickied]"
+                               Visibility="{Binding IsSticky, Converter={StaticResource collapseOnFalseConverter}}"
+                               Style="{StaticResource PhoneTextSubtleStyle}"
+                               Foreground="{Binding CurrentTheme.AccentBrush, Source={StaticResource AwfulThemeManager}}" />
                 </StackPanel>
-                
+
                 <Rectangle Grid.Column="1"
                            Margin="6,5,0,0"
                            Height="50"
@@ -156,22 +155,22 @@
                            VerticalAlignment="Top"
                            HorizontalAlignment="Stretch"
                            Visibility="{Binding HasCategory, Converter={StaticResource collapseOnFalseConverter}}"
-                           Fill="{Binding Data, Converter={StaticResource bookmarkColorConverter}}"/>
+                           Fill="{Binding Data, Converter={StaticResource bookmarkColorConverter}}" />
             </Grid>
         </DataTemplate>
-    <DataTemplate x:Key="EmptyListContentTemplate">
-    	<TextBlock Style="{StaticResource EmptyListContentStyle}"
-    		Text="{Binding}"
-    		Tap="RefreshEmptyList"/>
-    </DataTemplate>
-  </UserControl.Resources>
+        <DataTemplate x:Key="EmptyListContentTemplate">
+            <TextBlock Style="{StaticResource EmptyListContentStyle}"
+                       Text="{Binding}"
+                       Tap="RefreshEmptyList" />
+        </DataTemplate>
+    </UserControl.Resources>
 
-  <Grid x:Name="LayoutRoot">
+    <Grid x:Name="LayoutRoot">
         <telerikPrimitives:RadBusyIndicator x:Name="BusyIndicator"
-                                        IsRunning="{Binding IsRunning}"
-										AnimationStyle="AnimationStyle9"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Top" />
+                                            IsRunning="{Binding IsRunning}"
+                                            AnimationStyle="AnimationStyle9"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Top" />
 
         <telerikPrimitives:RadDataBoundListBox x:Name="ThreadListBox"
                                                telerikCore:InteractionEffectManager.IsInteractionEnabled="true"
@@ -191,7 +190,8 @@
                     <Border Background="{StaticResource PhoneAccentBrush}"
                             HorizontalAlignment="Stretch"
                             Margin="0,0,0,12"
-                            IsHitTestVisible="False">
+                            IsHitTestVisible="False"
+                            Tap="RefreshEmptyList">
                         <TextBlock Text="{Binding}"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Bottom"
@@ -202,14 +202,14 @@
             </telerikPrimitives:RadDataBoundListBox.ListHeaderTemplate>
         </telerikPrimitives:RadDataBoundListBox>
 
-            <telerikPrimitives:RadModalWindow x:Name="ModalWindow"
-                                      PlacementTarget="{Binding ElementName=LayoutRoot}"
-                                      Placement="CenterCenter">
-      <local:ThreadNavControl x:Name="ThreadNav"
-                              FirstPageCommand="{Binding FirstPageCommand}"
-                              LastPageCommand="{Binding LastPageCommand}"
-                              CustomPageCommand="{Binding CustomPageCommand}" />
-    </telerikPrimitives:RadModalWindow>
+        <telerikPrimitives:RadModalWindow x:Name="ModalWindow"
+                                          PlacementTarget="{Binding ElementName=LayoutRoot}"
+                                          Placement="CenterCenter">
+            <local:ThreadNavControl x:Name="ThreadNav"
+                                    FirstPageCommand="{Binding FirstPageCommand}"
+                                    LastPageCommand="{Binding LastPageCommand}"
+                                    CustomPageCommand="{Binding CustomPageCommand}" />
+        </telerikPrimitives:RadModalWindow>
 
-  </Grid>
+    </Grid>
 </UserControl>

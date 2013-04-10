@@ -36,6 +36,16 @@ namespace Awful.Controls
             }
         }
 
+        public bool IsTitleOverlayVisible
+        {
+            get { return this.pageSlideView.IsOverlayContentDisplayed; }
+            set
+            {
+                if (!value) { HideTitleOverlay(); }
+                else { ShowTitleOverlay(); }
+            }
+        }
+
         private ToggleAppBarDelegate _toggleAppBar;
         public ToggleAppBarDelegate ToggleAppBar
         {
@@ -188,6 +198,7 @@ namespace Awful.Controls
 
                 case ThreadPageSlideViewModel.ViewStates.Loading:
                     VisualStateManager.GoToState(this, "Loading", true);
+                    HideTitleOverlay();
                     break;
 
                 case ThreadPageSlideViewModel.ViewStates.Ready:
@@ -339,6 +350,11 @@ namespace Awful.Controls
         {
             ThreadPageManager.Instance.ScrollToPost(ControlViewModel.CurrentThreadPage.Posts.Last());
             this.IsPostJumpListVisible = false;
+        }
+
+        private void titleGrid_Tap_1(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            //HideTitleOverlay();
         }
     }
 }

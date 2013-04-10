@@ -169,6 +169,12 @@ namespace Awful
                 threadSlideView.IsPostJumpListVisible = false;
             }
 
+            else if (threadSlideView.IsTitleOverlayVisible)
+            {
+                e.Cancel = true;
+                threadSlideView.IsTitleOverlayVisible = false;
+            }
+
             else if (threadSlideView.ControlViewModel.MoveToPreviousHistory())
                 e.Cancel = true;
 

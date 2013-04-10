@@ -361,6 +361,7 @@
     <Content Include="Assets\AppBar\appbar.transport.rew.rest.png" />
     <Content Include="Assets\AppBar\appbar.upload.rest.png" />
     <Content Include="Assets\AppBar\BookmarkIcon.png" />
+    <Content Include="Assets\AppBar\check.png" />
     <Content Include="Assets\default_thread_tag.png" />
     <Content Include="Assets\ForumIcons\1.png" />
     <Content Include="Assets\ForumIcons\122.png" />

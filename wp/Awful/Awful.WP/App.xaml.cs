@@ -12,6 +12,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using Telerik.Windows.Controls;
 
 namespace Awful
 {
@@ -159,9 +160,14 @@ namespace Awful
             if (phoneApplicationInitialized)
                 return;
 
+            RadTransition transition = new RadFadeTransition();
+
             // Create the frame but don't set it as RootVisual yet; this allows the splash
             // screen to remain active until the application is ready to render.
-            RootFrame = new PhoneApplicationFrame();
+            RadPhoneApplicationFrame frame = new RadPhoneApplicationFrame();
+            frame.Transition = transition;
+
+            RootFrame = frame;
             RootFrame.Navigated += CompleteInitializePhoneApplication;
 
             // Handle navigation failures

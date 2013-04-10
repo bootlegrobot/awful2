@@ -40,8 +40,8 @@
     			Text="save"
     			Click="SaveReplyDraft" />
        
-    		<shell:ApplicationBarIconButton  IconUri="/Toolkit.Content/ApplicationBar.Check.png"
-    			Text="send"
+    		<shell:ApplicationBarIconButton  IconUri="/Assets/AppBar/check.png"
+                                             Text="send"
     			Click="SendReply" />
     	</shell:ApplicationBar>
 
@@ -265,7 +265,7 @@
                                                  FilterDelay="0:0:0.5"
                                                  SuggestionsSource="{Binding Suggestions}"
                                                  AutoCompletePopupDisplayMode="None"
-                                                 EmptyFilterBehavior="ShowAll"/>
+                                                 EmptyFilterBehavior="ShowAll" Margin="6,0,12,0" Padding="2"/>
 
                 <telerikPrimitives:RadDataBoundListBox x:Name="SmiliesListBox"
                                                        DataContext="{StaticResource smileyViewModel}"
@@ -287,18 +287,25 @@
 										<RowDefinition Height="Auto"/>
 									</Grid.RowDefinitions>
 									<Border 
-                                        Background="{StaticResource PhoneChromeBrush}" BorderThickness="1" BorderBrush="{StaticResource PhoneSubtleBrush}" Grid.RowSpan="2" >
+                                        Background="lightgray" BorderThickness="1" BorderBrush="{StaticResource PhoneBorderBrush}" Grid.RowSpan="2" >
                                         
-										<imagetools:AnimatedImage Height="45"
-                                                                  Width="45"
-                                                                  AnimationMode="None"
+										<imagetools:AnimatedImage Height="60"
+                                                                  Width="60"
                                                                   Source="{Binding ImageUri, Converter={StaticResource gifConverter}}"
                                                                   HorizontalAlignment="Center"
                                                                   VerticalAlignment="Center"
-                                                                  Margin="0" />
+                                                                  Margin="0" AutoSize="True" />
 										
                                     </Border>
-									<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" Text="{Binding Title}" VerticalAlignment="Top" Grid.Row="1" Style="{StaticResource PhoneTextSmallStyle}" Margin="0,0,6,3" TextAlignment="Right"/>
+									<TextBlock HorizontalAlignment="Right" 
+										TextWrapping="Wrap" 
+										Text="{Binding Title}" 
+										VerticalAlignment="Top" 
+										Grid.Row="1" 
+										Foreground="Black"
+										Style="{StaticResource PhoneTextSmallStyle}" 
+										Margin="0,0,6,3" 
+										TextAlignment="Right"/>
 								</Grid>
 							</Border>	
 						</DataTemplate>

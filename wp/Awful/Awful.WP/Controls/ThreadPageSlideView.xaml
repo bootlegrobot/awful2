@@ -278,6 +278,9 @@
                     
                     <DataTemplate x:Key="slideViewOverlayTemplate">
                         <Grid x:Name="titleGrid"
+								d:DesignWidth="480"
+								d:DesignHeight="800"
+                              DoubleTap="titleGrid_Tap_1"
                               DataContext="{Binding Source={StaticResource PageDataSource}}">
 
                             <Grid x:Name="overlayBackground"
@@ -295,7 +298,7 @@
                                 </Grid.RowDefinitions>
                                 <StackPanel Margin="0,0,64,0">
                                     <TextBlock x:Name="threadTitle"
-                                               Text="{Binding CurrentThread.Title}"
+                                               Text="{Binding CurrentThread.Title, Converter={StaticResource contentFilter}}"
                                                Style="{StaticResource PhoneTextLargeStyle}"
                                                Margin="6,0,0,0"
                                                TextTrimming="WordEllipsis"
@@ -344,7 +347,7 @@
                             </Grid>
 
                             <TextBlock x:Name="HideOverlayText"
-                                       Text="tap to hide"
+                                       Text="tap back to hide"
                                        VerticalAlignment="Bottom"
                                        Foreground="{StaticResource PhoneSubtleBrush}"
                                        Style="{StaticResource PhoneTextTitle3Style}"
@@ -365,7 +368,7 @@
                 <telerikPrimitives:RadSlideView x:Name="pageSlideView"
                                                 ItemsSource="{Binding Items}"
                                                 IsLoopingEnabled="False"
-                                                IsShowOverlayContentOnTapEnabled="True"
+                                                IsShowOverlayContentOnTapEnabled="False"
                                                 OverlayContentTemplate="{StaticResource slideViewOverlayTemplate}"
                                                 SlideAnimationStarted="SlideAnimationStarted"
                                                 SlideAnimationCompleted="SlideAnimationCompleted"

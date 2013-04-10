@@ -24,7 +24,7 @@ namespace Awful
 #if DEBUG
             AwfulDebugger.DebugLevel = AwfulDebugger.Level.Debug;
             AwfulWebClient.SimulateTimeout = true;
-            AwfulWebClient.SimulateTimeoutChance = 25;  // chance to timeout on requests
+            AwfulWebClient.SimulateTimeoutChance = 5;  // chance to timeout on requests
 #endif
 
             InitializeDirectories();

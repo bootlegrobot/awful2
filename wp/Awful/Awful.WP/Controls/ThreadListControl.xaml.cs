@@ -174,7 +174,7 @@ namespace Awful.Controls
         	// TODO: Add event handler implementation here.
 			object context = this.DataContext;
             var listmodel = context as ViewModels.ListViewModel<ThreadDataSource>;
-            if (listmodel != null)
+            if (listmodel != null && !listmodel.IsRunning)
             {
                 refreshRequested = true;
                 this.BusyIndicator.Visibility = System.Windows.Visibility.Collapsed;
