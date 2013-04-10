@@ -1,0 +1,113 @@
+﻿<phone:PhoneApplicationPage
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
+    xmlns:Controls="clr-namespace:Awful.Controls" 
+	xmlns:ViewModels="clr-namespace:Awful.ViewModels" 
+	x:Name="threadDetailsView"
+    x:Class="Awful.ThreadDetails"
+    SupportedOrientations="Portrait" 
+	Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="True">
+    
+    <phone:PhoneApplicationPage.Resources>
+    	
+		<ViewModels:ThreadDetailsViewModel x:Key="ThreadDetailsDataSource" d:IsDataSource="True">
+    		<ViewModels:ThreadDetailsViewModel.ThreadViewBar>
+    			<shell:ApplicationBar>
+					<shell:ApplicationBarIconButton x:Name="bookmarkButton" IconUri="/Assets/AppBar/appbar.favs.rest.png" Text="bookmark" Click="ToggleBookmarks"/>
+					<shell:ApplicationBarIconButton x:Name="replyButton" IconUri="/Assets/AppBar/appbar.add.rest.png" Text="reply" Click="ShowReplyView"/>
+					<shell:ApplicationBarIconButton x:Name="refreshButton" IconUri="/Assets/AppBar/appbar.refresh.rest.png" Text="refresh" Click="RefreshThread"/>
+					<shell:ApplicationBarIconButton IconUri="/Assets/AppBar/appbar.feature.search.rest.png" Text="post jump" Click="ShowPostJumpList"/>
+                    <shell:ApplicationBar.MenuItems>
+                        <shell:ApplicationBarMenuItem x:Name="toggleOrientation"
+                                                      Text="unlock orientation"
+                                                      Click="ToggleViewOrientation" />
+
+                        <shell:ApplicationBarMenuItem x:Name="increaseFont"
+                                                      Text="increase font"
+                                                      Click="IncreaseFontSize" />
+                        
+                        <shell:ApplicationBarMenuItem x:Name="decreaseFont"
+                                                      Text="decrease font"
+                                                      Click="DecreaseFontSize" />
+                    </shell:ApplicationBar.MenuItems>
+                </shell:ApplicationBar>
+			</ViewModels:ThreadDetailsViewModel.ThreadViewBar>
+		</ViewModels:ThreadDetailsViewModel>
+		
+    </phone:PhoneApplicationPage.Resources>
+	
+	<phone:PhoneApplicationPage.DataContext>
+		<Binding Source="{StaticResource ThreadDetailsDataSource}"/>
+	</phone:PhoneApplicationPage.DataContext>
+	
+	<phone:PhoneApplicationPage.FontFamily>
+		<StaticResource ResourceKey="PhoneFontFamilyNormal"/>
+	</phone:PhoneApplicationPage.FontFamily>
+	
+	<phone:PhoneApplicationPage.FontSize>
+		<StaticResource ResourceKey="PhoneFontSizeNormal"/>
+	</phone:PhoneApplicationPage.FontSize>
+	
+	<phone:PhoneApplicationPage.Foreground>
+		<StaticResource ResourceKey="PhoneForegroundBrush"/>
+	</phone:PhoneApplicationPage.Foreground>
+	
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot"
+          Background="Transparent">
+    	<VisualStateManager.VisualStateGroups>
+    		<VisualStateGroup x:Name="ViewStates">
+    			<VisualState x:Name="ThreadView">
+    				<Storyboard>
+    					<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="SlideViewPanel">
+    						<DiscreteObjectKeyFrame KeyTime="0">
+    							<DiscreteObjectKeyFrame.Value>
+    								<Visibility>Visible</Visibility>
+    							</DiscreteObjectKeyFrame.Value>
+    						</DiscreteObjectKeyFrame>
+    					</ObjectAnimationUsingKeyFrames>
+    					<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="ReplyViewPanel">
+    						<DiscreteObjectKeyFrame KeyTime="0">
+    							<DiscreteObjectKeyFrame.Value>
+    								<Visibility>Collapsed</Visibility>
+    							</DiscreteObjectKeyFrame.Value>
+    						</DiscreteObjectKeyFrame>
+    					</ObjectAnimationUsingKeyFrames>
+    				</Storyboard>
+    			</VisualState>
+    			<VisualState x:Name="ReplyView">
+    				<Storyboard>
+    					<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="ReplyViewPanel">
+    						<DiscreteObjectKeyFrame KeyTime="0">
+    							<DiscreteObjectKeyFrame.Value>
+    								<Visibility>Visible</Visibility>
+    							</DiscreteObjectKeyFrame.Value>
+    						</DiscreteObjectKeyFrame>
+    					</ObjectAnimationUsingKeyFrames>
+    					<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="SlideViewPanel">
+    						<DiscreteObjectKeyFrame KeyTime="0">
+    							<DiscreteObjectKeyFrame.Value>
+    								<Visibility>Collapsed</Visibility>
+    							</DiscreteObjectKeyFrame.Value>
+    						</DiscreteObjectKeyFrame>
+    					</ObjectAnimationUsingKeyFrames>
+    				</Storyboard>
+    			</VisualState>
+    		</VisualStateGroup>
+    	</VisualStateManager.VisualStateGroups>
+        <Grid x:Name="SlideViewPanel">
+            <Controls:ThreadPageSlideView x:Name="threadSlideView" />
+        </Grid>
+        <Grid x:Name="ReplyViewPanel" Visibility="Collapsed">
+            <Controls:ThreadReplyControl x:Name="threadReplyView" />
+        </Grid>
+    </Grid>
+
+</phone:PhoneApplicationPage>
