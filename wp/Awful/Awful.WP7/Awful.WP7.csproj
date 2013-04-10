@@ -127,218 +127,218 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Awful.WP\App.xaml.cs">
+    <Compile Include="..\Awful.WP8\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <Link>App.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\AppDataModel.cs">
+    <Compile Include="..\Awful.WP8\AppDataModel.cs">
       <Link>AppDataModel.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Commands\BackgroundWorkerCommand.cs">
+    <Compile Include="..\Awful.WP8\Commands\BackgroundWorkerCommand.cs">
       <Link>Commands\BackgroundWorkerCommand.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Commands\LinkCommands.cs">
+    <Compile Include="..\Awful.WP8\Commands\LinkCommands.cs">
       <Link>Commands\LinkCommands.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Commands\LogoutCommand.cs">
+    <Compile Include="..\Awful.WP8\Commands\LogoutCommand.cs">
       <Link>Commands\LogoutCommand.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Commands\RateThisAppCommand.cs">
+    <Compile Include="..\Awful.WP8\Commands\RateThisAppCommand.cs">
       <Link>Commands\RateThisAppCommand.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Commands\SendAnEmailCommand.cs">
+    <Compile Include="..\Awful.WP8\Commands\SendAnEmailCommand.cs">
       <Link>Commands\SendAnEmailCommand.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Commands\ThreadCommands.cs">
+    <Compile Include="..\Awful.WP8\Commands\ThreadCommands.cs">
       <Link>Commands\ThreadCommands.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Common\ActionCommand.cs">
+    <Compile Include="..\Awful.WP8\Common\ActionCommand.cs">
       <Link>Common\ActionCommand.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Common\Constants1.Designer.cs">
+    <Compile Include="..\Awful.WP8\Common\Constants1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Constants.resx</DependentUpon>
       <Link>Common\Constants1.Designer.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Common\Converters.cs">
+    <Compile Include="..\Awful.WP8\Common\Converters.cs">
       <Link>Common\Converters.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Common\EventArgs.cs">
+    <Compile Include="..\Awful.WP8\Common\EventArgs.cs">
       <Link>Common\EventArgs.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Common\Group.cs">
+    <Compile Include="..\Awful.WP8\Common\Group.cs">
       <Link>Common\Group.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Common\ILastUpdated.cs">
+    <Compile Include="..\Awful.WP8\Common\ILastUpdated.cs">
       <Link>Common\ILastUpdated.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Common\IUpdateable.cs">
+    <Compile Include="..\Awful.WP8\Common\IUpdateable.cs">
       <Link>Common\IUpdateable.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Common\NotificationMethod.cs">
+    <Compile Include="..\Awful.WP8\Common\NotificationMethod.cs">
       <Link>Common\NotificationMethod.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Common\ObservableSet.cs">
+    <Compile Include="..\Awful.WP8\Common\ObservableSet.cs">
       <Link>Common\ObservableSet.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Common\QueryString.cs">
+    <Compile Include="..\Awful.WP8\Common\QueryString.cs">
       <Link>Common\QueryString.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Common\RadContextMenuProvider.cs">
+    <Compile Include="..\Awful.WP8\Common\RadContextMenuProvider.cs">
       <Link>Common\RadContextMenuProvider.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Common\RedirectionListener.cs">
+    <Compile Include="..\Awful.WP8\Common\RedirectionListener.cs">
       <Link>Common\RedirectionListener.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Common\SettingsBase.cs">
+    <Compile Include="..\Awful.WP8\Common\SettingsBase.cs">
       <Link>Common\SettingsBase.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Common\SmarterRadJumpList.cs">
+    <Compile Include="..\Awful.WP8\Common\SmarterRadJumpList.cs">
       <Link>Common\SmarterRadJumpList.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Common\ThemeManager.cs">
+    <Compile Include="..\Awful.WP8\Common\ThemeManager.cs">
       <Link>Common\ThemeManager.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Controls\ContextMenus.cs">
+    <Compile Include="..\Awful.WP8\Controls\ContextMenus.cs">
       <Link>Controls\ContextMenus.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Controls\ForumListControl.xaml.cs">
+    <Compile Include="..\Awful.WP8\Controls\ForumListControl.xaml.cs">
       <DependentUpon>ForumListControl.xaml</DependentUpon>
       <Link>Controls\ForumListControl.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Controls\LoadMoreControl.cs">
+    <Compile Include="..\Awful.WP8\Controls\LoadMoreControl.cs">
       <Link>Controls\LoadMoreControl.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Controls\RatingIcon.cs">
+    <Compile Include="..\Awful.WP8\Controls\RatingIcon.cs">
       <Link>Controls\RatingIcon.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Controls\ThreadListControl.xaml.cs">
+    <Compile Include="..\Awful.WP8\Controls\ThreadListControl.xaml.cs">
       <DependentUpon>ThreadListControl.xaml</DependentUpon>
       <Link>Controls\ThreadListControl.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Controls\ThreadNavControl.xaml.cs">
+    <Compile Include="..\Awful.WP8\Controls\ThreadNavControl.xaml.cs">
       <DependentUpon>ThreadNavControl.xaml</DependentUpon>
       <Link>Controls\ThreadNavControl.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Controls\ThreadPagePresenter.xaml.cs">
+    <Compile Include="..\Awful.WP8\Controls\ThreadPagePresenter.xaml.cs">
       <DependentUpon>ThreadPagePresenter.xaml</DependentUpon>
       <Link>Controls\ThreadPagePresenter.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Controls\ThreadPageSlideView.xaml.cs">
+    <Compile Include="..\Awful.WP8\Controls\ThreadPageSlideView.xaml.cs">
       <DependentUpon>ThreadPageSlideView.xaml</DependentUpon>
       <Link>Controls\ThreadPageSlideView.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Controls\ThreadRatingControl.xaml.cs">
+    <Compile Include="..\Awful.WP8\Controls\ThreadRatingControl.xaml.cs">
       <DependentUpon>ThreadRatingControl.xaml</DependentUpon>
       <Link>Controls\ThreadRatingControl.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Controls\ThreadReplyControl.xaml.cs">
+    <Compile Include="..\Awful.WP8\Controls\ThreadReplyControl.xaml.cs">
       <DependentUpon>ThreadReplyControl.xaml</DependentUpon>
       <Link>Controls\ThreadReplyControl.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Controls\VariableTemplateControl.cs">
+    <Compile Include="..\Awful.WP8\Controls\VariableTemplateControl.cs">
       <Link>Controls\VariableTemplateControl.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\DataSource\CodeTagDataModel.cs">
+    <Compile Include="..\Awful.WP8\DataSource\CodeTagDataModel.cs">
       <Link>DataSource\CodeTagDataModel.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\DataSource\MainDataSource.cs">
+    <Compile Include="..\Awful.WP8\DataSource\MainDataSource.cs">
       <Link>DataSource\MainDataSource.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\DataSource\SampleDataSource.cs">
+    <Compile Include="..\Awful.WP8\DataSource\SampleDataSource.cs">
       <Link>DataSource\SampleDataSource.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\DataSource\ThreadDataSource.cs">
+    <Compile Include="..\Awful.WP8\DataSource\ThreadDataSource.cs">
       <Link>DataSource\ThreadDataSource.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ForumViewPage.xaml.cs">
+    <Compile Include="..\Awful.WP8\ForumViewPage.xaml.cs">
       <DependentUpon>ForumViewPage.xaml</DependentUpon>
       <Link>ForumViewPage.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Helpers\ForumItemTemplateSelector.cs">
+    <Compile Include="..\Awful.WP8\Helpers\ForumItemTemplateSelector.cs">
       <Link>Helpers\ForumItemTemplateSelector.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Helpers\OddEvenTemplateSelector.cs">
+    <Compile Include="..\Awful.WP8\Helpers\OddEvenTemplateSelector.cs">
       <Link>Helpers\OddEvenTemplateSelector.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Helpers\PinnedItemsManager.cs">
+    <Compile Include="..\Awful.WP8\Helpers\PinnedItemsManager.cs">
       <Link>Helpers\PinnedItemsManager.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Helpers\ThreadIconViewer.cs">
+    <Compile Include="..\Awful.WP8\Helpers\ThreadIconViewer.cs">
       <Link>Helpers\ThreadIconViewer.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\Helpers\ThreadPageManager.cs">
+    <Compile Include="..\Awful.WP8\Helpers\ThreadPageManager.cs">
       <Link>Helpers\ThreadPageManager.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\HomePage.xaml.cs">
+    <Compile Include="..\Awful.WP8\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
       <Link>HomePage.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\LoginPage.xaml.cs">
+    <Compile Include="..\Awful.WP8\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
       <Link>LoginPage.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\MainPage.xaml.cs">
+    <Compile Include="..\Awful.WP8\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
       <Link>MainPage.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\PrivateMessageViewPage.xaml.cs">
+    <Compile Include="..\Awful.WP8\PrivateMessageViewPage.xaml.cs">
       <DependentUpon>PrivateMessageViewPage.xaml</DependentUpon>
       <Link>PrivateMessageViewPage.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\SettingsPage.xaml.cs">
+    <Compile Include="..\Awful.WP8\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
       <Link>SettingsPage.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ThreadDetails.xaml.cs">
+    <Compile Include="..\Awful.WP8\ThreadDetails.xaml.cs">
       <DependentUpon>ThreadDetails.xaml</DependentUpon>
       <Link>ThreadDetails.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ThreadViewPage.xaml.cs">
+    <Compile Include="..\Awful.WP8\ThreadViewPage.xaml.cs">
       <DependentUpon>ThreadViewPage.xaml</DependentUpon>
       <Link>ThreadViewPage.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ViewModels\AboutViewModel.cs">
+    <Compile Include="..\Awful.WP8\ViewModels\AboutViewModel.cs">
       <Link>ViewModels\AboutViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ViewModels\CommonViewModels.cs">
+    <Compile Include="..\Awful.WP8\ViewModels\CommonViewModels.cs">
       <Link>ViewModels\CommonViewModels.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ViewModels\ForumPageViewModel.cs">
+    <Compile Include="..\Awful.WP8\ViewModels\ForumPageViewModel.cs">
       <Link>ViewModels\ForumPageViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ViewModels\HomePageViewModel.cs">
+    <Compile Include="..\Awful.WP8\ViewModels\HomePageViewModel.cs">
       <Link>ViewModels\HomePageViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ViewModels\LoggingViewModel.cs">
+    <Compile Include="..\Awful.WP8\ViewModels\LoggingViewModel.cs">
       <Link>ViewModels\LoggingViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ViewModels\LoginPageViewModel.cs">
+    <Compile Include="..\Awful.WP8\ViewModels\LoginPageViewModel.cs">
       <Link>ViewModels\LoginPageViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ViewModels\MainPageViewModel.cs">
+    <Compile Include="..\Awful.WP8\ViewModels\MainPageViewModel.cs">
       <Link>ViewModels\MainPageViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ViewModels\RatingViewModel.cs">
+    <Compile Include="..\Awful.WP8\ViewModels\RatingViewModel.cs">
       <Link>ViewModels\RatingViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ViewModels\ReplyViewModel.cs">
+    <Compile Include="..\Awful.WP8\ViewModels\ReplyViewModel.cs">
       <Link>ViewModels\ReplyViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ViewModels\SettingsViewModel.cs">
+    <Compile Include="..\Awful.WP8\ViewModels\SettingsViewModel.cs">
       <Link>ViewModels\SettingsViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ViewModels\SmileyListViewModel.cs">
+    <Compile Include="..\Awful.WP8\ViewModels\SmileyListViewModel.cs">
       <Link>ViewModels\SmileyListViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ViewModels\ThreadDetailsViewModel.cs">
+    <Compile Include="..\Awful.WP8\ViewModels\ThreadDetailsViewModel.cs">
       <Link>ViewModels\ThreadDetailsViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ViewModels\ThreadPageSlideViewModel.cs">
+    <Compile Include="..\Awful.WP8\ViewModels\ThreadPageSlideViewModel.cs">
       <Link>ViewModels\ThreadPageSlideViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP\ViewModels\ThreadViewModel.cs">
+    <Compile Include="..\Awful.WP8\ViewModels\ThreadViewModel.cs">
       <Link>ViewModels\ThreadViewModel.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -351,283 +351,281 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\Awful.WP\Assets\AppBar\appbar.add.rest.png">
+    <Content Include="..\Awful.WP8\Assets\AppBar\appbar.add.rest.png">
       <Link>Assets\AppBar\appbar.add.rest.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\AppBar\appbar.back.rest.png">
+    <Content Include="..\Awful.WP8\Assets\AppBar\appbar.back.rest.png">
       <Link>Assets\AppBar\appbar.back.rest.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\AppBar\appbar.delete.rest.png">
+    <Content Include="..\Awful.WP8\Assets\AppBar\appbar.delete.rest.png">
       <Link>Assets\AppBar\appbar.delete.rest.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\AppBar\appbar.download.rest.png">
+    <Content Include="..\Awful.WP8\Assets\AppBar\appbar.download.rest.png">
       <Link>Assets\AppBar\appbar.download.rest.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\AppBar\appbar.favs.rest.png">
+    <Content Include="..\Awful.WP8\Assets\AppBar\appbar.favs.rest.png">
       <Link>Assets\AppBar\appbar.favs.rest.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\AppBar\appbar.feature.search.rest.png">
+    <Content Include="..\Awful.WP8\Assets\AppBar\appbar.feature.search.rest.png">
       <Link>Assets\AppBar\appbar.feature.search.rest.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\AppBar\appbar.goto.rest.png">
+    <Content Include="..\Awful.WP8\Assets\AppBar\appbar.goto.rest.png">
       <Link>Assets\AppBar\appbar.goto.rest.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\AppBar\appbar.minus.rest.png">
+    <Content Include="..\Awful.WP8\Assets\AppBar\appbar.minus.rest.png">
       <Link>Assets\AppBar\appbar.minus.rest.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\AppBar\appbar.next.rest.png">
+    <Content Include="..\Awful.WP8\Assets\AppBar\appbar.next.rest.png">
       <Link>Assets\AppBar\appbar.next.rest.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\AppBar\appbar.refresh.rest.png">
+    <Content Include="..\Awful.WP8\Assets\AppBar\appbar.refresh.rest.png">
       <Link>Assets\AppBar\appbar.refresh.rest.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\AppBar\appbar.save.rest.png">
+    <Content Include="..\Awful.WP8\Assets\AppBar\appbar.save.rest.png">
       <Link>Assets\AppBar\appbar.save.rest.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\AppBar\appbar.transport.ff.rest.png">
+    <Content Include="..\Awful.WP8\Assets\AppBar\appbar.transport.ff.rest.png">
       <Link>Assets\AppBar\appbar.transport.ff.rest.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\AppBar\appbar.transport.rew.rest.png">
+    <Content Include="..\Awful.WP8\Assets\AppBar\appbar.transport.rew.rest.png">
       <Link>Assets\AppBar\appbar.transport.rew.rest.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\AppBar\appbar.upload.rest.png">
+    <Content Include="..\Awful.WP8\Assets\AppBar\appbar.upload.rest.png">
       <Link>Assets\AppBar\appbar.upload.rest.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\AppBar\BookmarkIcon.png">
+    <Content Include="..\Awful.WP8\Assets\AppBar\BookmarkIcon.png">
       <Link>Assets\AppBar\BookmarkIcon.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\AppBar\check.png">
+    <Content Include="..\Awful.WP8\Assets\AppBar\check.png">
       <Link>Assets\AppBar\check.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\Awful.png">
+    <Content Include="..\Awful.WP8\Assets\Awful.png">
       <Link>Assets\Awful.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\default_thread_tag.png">
+    <Content Include="..\Awful.WP8\Assets\default_thread_tag.png">
       <Link>Assets\default_thread_tag.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\1.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\1.png">
       <Link>Assets\ForumIcons\1.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\122.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\122.png">
       <Link>Assets\ForumIcons\122.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\124.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\124.png">
       <Link>Assets\ForumIcons\124.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\130.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\130.png">
       <Link>Assets\ForumIcons\130.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\132.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\132.png">
       <Link>Assets\ForumIcons\132.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\144.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\144.png">
       <Link>Assets\ForumIcons\144.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\150.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\150.png">
       <Link>Assets\ForumIcons\150.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\151.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\151.png">
       <Link>Assets\ForumIcons\151.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\158.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\158.png">
       <Link>Assets\ForumIcons\158.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\161.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\161.png">
       <Link>Assets\ForumIcons\161.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\167.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\167.png">
       <Link>Assets\ForumIcons\167.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\179.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\179.png">
       <Link>Assets\ForumIcons\179.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\182.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\182.png">
       <Link>Assets\ForumIcons\182.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\188.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\188.png">
       <Link>Assets\ForumIcons\188.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\192.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\192.png">
       <Link>Assets\ForumIcons\192.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\204.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\204.png">
       <Link>Assets\ForumIcons\204.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\21.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\21.png">
       <Link>Assets\ForumIcons\21.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\215.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\215.png">
       <Link>Assets\ForumIcons\215.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\218.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\218.png">
       <Link>Assets\ForumIcons\218.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\22.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\22.png">
       <Link>Assets\ForumIcons\22.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\241.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\241.png">
       <Link>Assets\ForumIcons\241.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\25.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\25.png">
       <Link>Assets\ForumIcons\25.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\255.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\255.png">
       <Link>Assets\ForumIcons\255.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\26.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\26.png">
       <Link>Assets\ForumIcons\26.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\27.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\27.png">
       <Link>Assets\ForumIcons\27.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\31.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\31.png">
       <Link>Assets\ForumIcons\31.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\43.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\43.png">
       <Link>Assets\ForumIcons\43.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\44.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\44.png">
       <Link>Assets\ForumIcons\44.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\46.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\46.png">
       <Link>Assets\ForumIcons\46.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\61.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\61.png">
       <Link>Assets\ForumIcons\61.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\90.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\90.png">
       <Link>Assets\ForumIcons\90.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\91.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\91.png">
       <Link>Assets\ForumIcons\91.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_1.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_1.png">
       <Link>Assets\ForumIcons\banner_1.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_122.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_122.png">
       <Link>Assets\ForumIcons\banner_122.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_124.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_124.png">
       <Link>Assets\ForumIcons\banner_124.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_130.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_130.png">
       <Link>Assets\ForumIcons\banner_130.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_132.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_132.png">
       <Link>Assets\ForumIcons\banner_132.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_144.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_144.png">
       <Link>Assets\ForumIcons\banner_144.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_150.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_150.png">
       <Link>Assets\ForumIcons\banner_150.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_151.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_151.png">
       <Link>Assets\ForumIcons\banner_151.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_158.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_158.png">
       <Link>Assets\ForumIcons\banner_158.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_161.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_161.png">
       <Link>Assets\ForumIcons\banner_161.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_167.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_167.png">
       <Link>Assets\ForumIcons\banner_167.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_179.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_179.png">
       <Link>Assets\ForumIcons\banner_179.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_182.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_182.png">
       <Link>Assets\ForumIcons\banner_182.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_188.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_188.png">
       <Link>Assets\ForumIcons\banner_188.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_192.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_192.png">
       <Link>Assets\ForumIcons\banner_192.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_204.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_204.png">
       <Link>Assets\ForumIcons\banner_204.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_21.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_21.png">
       <Link>Assets\ForumIcons\banner_21.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_215.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_215.png">
       <Link>Assets\ForumIcons\banner_215.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_218.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_218.png">
       <Link>Assets\ForumIcons\banner_218.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_22.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_22.png">
       <Link>Assets\ForumIcons\banner_22.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_241.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_241.png">
       <Link>Assets\ForumIcons\banner_241.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_25.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_25.png">
       <Link>Assets\ForumIcons\banner_25.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_255.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_255.png">
       <Link>Assets\ForumIcons\banner_255.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_26.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_26.png">
       <Link>Assets\ForumIcons\banner_26.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_27.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_27.png">
       <Link>Assets\ForumIcons\banner_27.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_31.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_31.png">
       <Link>Assets\ForumIcons\banner_31.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_43.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_43.png">
       <Link>Assets\ForumIcons\banner_43.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_44.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_44.png">
       <Link>Assets\ForumIcons\banner_44.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_46.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_46.png">
       <Link>Assets\ForumIcons\banner_46.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_61.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_61.png">
       <Link>Assets\ForumIcons\banner_61.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_90.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_90.png">
       <Link>Assets\ForumIcons\banner_90.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\ForumIcons\banner_91.png">
+    <Content Include="..\Awful.WP8\Assets\ForumIcons\banner_91.png">
       <Link>Assets\ForumIcons\banner_91.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Assets\LoadMore.png">
+    <Content Include="..\Awful.WP8\Assets\LoadMore.png">
       <Link>Assets\LoadMore.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\Background.png">
+    <Content Include="..\Awful.WP8\Background.png">
       <Link>Background.png</Link>
     </Content>
-    <Content Include="..\Awful.WP\SplashScreenImage.jpg">
+    <Content Include="..\Awful.WP8\SplashScreenImage.jpg">
       <Link>SplashScreenImage.jpg</Link>
     </Content>
-    <Content Include="..\Awful.WP\SplashScreenImage_720.jpg">
+    <Content Include="..\Awful.WP8\SplashScreenImage_720.jpg">
       <Link>SplashScreenImage_720.jpg</Link>
     </Content>
-    <Resource Include="..\Awful.WP\www\awful.js">
+    <Resource Include="..\Awful.WP8\www\awful.js">
       <Link>www\awful.js</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="..\Awful.WP\www\jquery.min.js">
+    <Resource Include="..\Awful.WP8\www\jquery.min.js">
       <Link>www\jquery.min.js</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="..\Awful.WP\www\main.css">
+    <Resource Include="..\Awful.WP8\www\main.css">
       <Link>www\main.css</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="..\Awful.WP\www\view.html">
+    <Resource Include="..\Awful.WP8\www\view.html">
       <Link>www\view.html</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Content Include="ApplicationIcon_300.png" />
-    <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
-    <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Awful.V2.Core\Awful.V2.Core.csproj">
@@ -636,104 +634,104 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="..\Awful.WP\App.xaml">
+    <Page Include="..\Awful.WP8\App.xaml">
       <Link>App.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\Common\CommonStyles.xaml">
+    <Page Include="..\Awful.WP8\Common\CommonStyles.xaml">
       <Link>Common\CommonStyles.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\Controls\ForumListControl.xaml">
+    <Page Include="..\Awful.WP8\Controls\ForumListControl.xaml">
       <Link>Controls\ForumListControl.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\Controls\ThreadListControl.xaml">
+    <Page Include="..\Awful.WP8\Controls\ThreadListControl.xaml">
       <Link>Controls\ThreadListControl.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\Controls\ThreadNavControl.xaml">
+    <Page Include="..\Awful.WP8\Controls\ThreadNavControl.xaml">
       <Link>Controls\ThreadNavControl.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\Controls\ThreadPagePresenter.xaml">
+    <Page Include="..\Awful.WP8\Controls\ThreadPagePresenter.xaml">
       <Link>Controls\ThreadPagePresenter.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\Controls\ThreadPageSlideView.xaml">
+    <Page Include="..\Awful.WP8\Controls\ThreadPageSlideView.xaml">
       <Link>Controls\ThreadPageSlideView.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\Controls\ThreadRatingControl.xaml">
+    <Page Include="..\Awful.WP8\Controls\ThreadRatingControl.xaml">
       <Link>Controls\ThreadRatingControl.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\Controls\ThreadReplyControl.xaml">
+    <Page Include="..\Awful.WP8\Controls\ThreadReplyControl.xaml">
       <Link>Controls\ThreadReplyControl.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\ForumViewPage.xaml">
+    <Page Include="..\Awful.WP8\ForumViewPage.xaml">
       <Link>ForumViewPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\HomePage.xaml">
+    <Page Include="..\Awful.WP8\HomePage.xaml">
       <Link>HomePage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\LoginPage.xaml">
+    <Page Include="..\Awful.WP8\LoginPage.xaml">
       <Link>LoginPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\MainPage.xaml">
+    <Page Include="..\Awful.WP8\MainPage.xaml">
       <Link>MainPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\PrivateMessageViewPage.xaml">
+    <Page Include="..\Awful.WP8\PrivateMessageViewPage.xaml">
       <Link>PrivateMessageViewPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\SettingsPage.xaml">
+    <Page Include="..\Awful.WP8\SettingsPage.xaml">
       <Link>SettingsPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\Themes\generic.xaml">
+    <Page Include="..\Awful.WP8\Themes\generic.xaml">
       <Link>Themes\generic.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\Themes\layout.xaml">
+    <Page Include="..\Awful.WP8\Themes\layout.xaml">
       <Link>Themes\layout.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\ThreadDetails.xaml">
+    <Page Include="..\Awful.WP8\ThreadDetails.xaml">
       <Link>ThreadDetails.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP\ThreadViewPage.xaml">
+    <Page Include="..\Awful.WP8\ThreadViewPage.xaml">
       <Link>ThreadViewPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\Awful.WP\Common\Constants.resx">
+    <EmbeddedResource Include="..\Awful.WP8\Common\Constants.resx">
       <Link>Common\Constants.resx</Link>
     </EmbeddedResource>
   </ItemGroup>
