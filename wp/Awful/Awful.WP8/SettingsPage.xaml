@@ -88,6 +88,7 @@
 
 
                         <telerikInput:RadListPicker x:Name="DefaultThreadViewPicker"
+                                                    Visibility="Collapsed"
                                                     Header="What is the default view for threads?"
                                                     ItemsSource="{Binding ViewModes}"
                                                     ItemTemplate="{StaticResource SettingsListPickerItemTemplate}"
