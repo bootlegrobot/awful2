@@ -1,0 +1,482 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{13F62146-607F-4F0D-B2F0-328B9383FBCD}</ProjectGuid>
+    <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Awful</RootNamespace>
+    <AssemblyName>Awful.WP</AssemblyName>
+    <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
+    <SilverlightVersion>
+    </SilverlightVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <TargetFrameworkIdentifier>WindowsPhone</TargetFrameworkIdentifier>
+    <SilverlightApplication>true</SilverlightApplication>
+    <SupportedCultures>
+    </SupportedCultures>
+    <XapOutputs>true</XapOutputs>
+    <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
+    <XapFilename>Awful.WP8.xap</XapFilename>
+    <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
+    <SilverlightAppEntry>Awful.App</SilverlightAppEntry>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <ExpressionBlendVersion>5.0.31017.0</ExpressionBlendVersion>
+    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;WINDOWS_PHONE;WP8</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE;WP8</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>Bin\x86\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <DebugType>full</DebugType>
+    <PlatformTarget>
+    </PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>Bin\x86\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoStdLib>true</NoStdLib>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>
+    </PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>Bin\ARM\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <DebugType>full</DebugType>
+    <PlatformTarget>
+    </PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <OutputPath>Bin\ARM\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoStdLib>true</NoStdLib>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>
+    </PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Coding4Fun.Toolkit.Controls">
+      <HintPath>..\packages\Coding4Fun.Toolkit.Controls.2.0.5\lib\windowsphone8\Coding4Fun.Toolkit.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZLib.Phone">
+      <HintPath>..\packages\ImageTools.0.3.1\lib\sl3-wp\ICSharpCode.SharpZLib.Phone.dll</HintPath>
+    </Reference>
+    <Reference Include="ImageTools">
+      <HintPath>..\packages\ImageTools.0.3.1\lib\sl3-wp\ImageTools.dll</HintPath>
+    </Reference>
+    <Reference Include="ImageTools.Controls">
+      <HintPath>..\packages\ImageTools.0.3.1\lib\sl3-wp\ImageTools.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="ImageTools.Filtering">
+      <HintPath>..\packages\ImageTools.0.3.1\lib\sl3-wp\ImageTools.Filtering.dll</HintPath>
+    </Reference>
+    <Reference Include="ImageTools.IO.Bmp">
+      <HintPath>..\packages\ImageTools.0.3.1\lib\sl3-wp\ImageTools.IO.Bmp.dll</HintPath>
+    </Reference>
+    <Reference Include="ImageTools.IO.Gif">
+      <HintPath>..\packages\ImageTools.0.3.1\lib\sl3-wp\ImageTools.IO.Gif.dll</HintPath>
+    </Reference>
+    <Reference Include="ImageTools.IO.Png">
+      <HintPath>..\packages\ImageTools.0.3.1\lib\sl3-wp\ImageTools.IO.Png.dll</HintPath>
+    </Reference>
+    <Reference Include="ImageTools.Utils">
+      <HintPath>..\packages\ImageTools.0.3.1\lib\sl3-wp\ImageTools.Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="KollaSoft.WP7">
+      <HintPath>..\..\..\lib\KollaSoft.WP7.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Interactions" />
+    <Reference Include="Microsoft.Phone.Controls, Version=8.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Phone.Controls.Toolkit">
+      <HintPath>..\packages\WPtoolkit.4.2012.10.30\lib\wp8\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="PhoneCodeContractsAssemblies">
+      <HintPath>..\packages\ImageTools.0.3.1\lib\sl3-wp\PhoneCodeContractsAssemblies.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Interactivity" />
+    <Reference Include="Telerik.Windows.BackgroundAgentTools, Version=2013.1.219.3040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
+    <Reference Include="Telerik.Windows.Behaviors, Version=2013.1.219.3040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
+    <Reference Include="Telerik.Windows.Controls.Chart, Version=2013.1.219.3040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
+    <Reference Include="Telerik.Windows.Controls.Data, Version=2013.1.219.3040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
+    <Reference Include="Telerik.Windows.Controls.DataVisualization, Version=2013.1.219.3040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
+    <Reference Include="Telerik.Windows.Controls.Input, Version=2013.1.219.3040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
+    <Reference Include="Telerik.Windows.Controls.Primitives, Version=2013.1.219.3040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
+    <Reference Include="Telerik.Windows.Core, Version=2013.1.219.3040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
+    <Reference Include="Telerik.Windows.Data, Version=2013.1.219.3040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AppDataModel.cs" />
+    <Compile Include="Commands\BackgroundWorkerCommand.cs" />
+    <Compile Include="Commands\LinkCommands.cs" />
+    <Compile Include="Commands\LogoutCommand.cs" />
+    <Compile Include="Commands\RateThisAppCommand.cs" />
+    <Compile Include="Commands\SendAnEmailCommand.cs" />
+    <Compile Include="Commands\ThreadCommands.cs" />
+    <Compile Include="Common\ActionCommand.cs" />
+    <Compile Include="Common\Constants1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Constants.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Common\Converters.cs" />
+    <Compile Include="Common\EventArgs.cs" />
+    <Compile Include="Common\Group.cs" />
+    <Compile Include="Common\ILastUpdated.cs" />
+    <Compile Include="Common\IUpdateable.cs" />
+    <Compile Include="Common\SmarterRadJumpList.cs" />
+    <Compile Include="Common\NotificationMethod.cs" />
+    <Compile Include="Common\ObservableSet.cs" />
+    <Compile Include="Common\QueryString.cs" />
+    <Compile Include="Common\RadContextMenuProvider.cs" />
+    <Compile Include="Common\RedirectionListener.cs" />
+    <Compile Include="Common\SettingsBase.cs" />
+    <Compile Include="Common\ThemeManager.cs" />
+    <Compile Include="Controls\ContextMenus.cs" />
+    <Compile Include="Controls\ForumListControl.xaml.cs">
+      <DependentUpon>ForumListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LoadMoreControl.cs" />
+    <Compile Include="Controls\RatingIcon.cs" />
+    <Compile Include="Controls\ThreadListControl.xaml.cs">
+      <DependentUpon>ThreadListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ThreadNavControl.xaml.cs">
+      <DependentUpon>ThreadNavControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ThreadPagePresenter.xaml.cs">
+      <DependentUpon>ThreadPagePresenter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ThreadPageSlideView.xaml.cs">
+      <DependentUpon>ThreadPageSlideView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ThreadRatingControl.xaml.cs">
+      <DependentUpon>ThreadRatingControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ThreadReplyControl.xaml.cs">
+      <DependentUpon>ThreadReplyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VariableTemplateControl.cs" />
+    <Compile Include="DataSource\CodeTagDataModel.cs" />
+    <Compile Include="DataSource\MainDataSource.cs" />
+    <Compile Include="DataSource\SampleDataSource.cs" />
+    <Compile Include="DataSource\ThreadDataSource.cs" />
+    <Compile Include="ForumViewPage.xaml.cs">
+      <DependentUpon>ForumViewPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\ForumItemTemplateSelector.cs" />
+    <Compile Include="Helpers\OddEvenTemplateSelector.cs" />
+    <Compile Include="Helpers\PinnedItemsManager.cs" />
+    <Compile Include="Helpers\ThreadIconViewer.cs" />
+    <Compile Include="Helpers\ThreadPageManager.cs" />
+    <Compile Include="HomePage.xaml.cs">
+      <DependentUpon>HomePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LoginPage.xaml.cs">
+      <DependentUpon>LoginPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PrivateMessageViewPage.xaml.cs">
+      <DependentUpon>PrivateMessageViewPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ThreadDetails.xaml.cs">
+      <DependentUpon>ThreadDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ThreadViewPage.xaml.cs">
+      <DependentUpon>ThreadViewPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\AboutViewModel.cs" />
+    <Compile Include="ViewModels\CommonViewModels.cs" />
+    <Compile Include="ViewModels\ForumPageViewModel.cs" />
+    <Compile Include="ViewModels\HomePageViewModel.cs" />
+    <Compile Include="ViewModels\LoggingViewModel.cs" />
+    <Compile Include="ViewModels\LoginPageViewModel.cs" />
+    <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <Compile Include="ViewModels\RatingViewModel.cs" />
+    <Compile Include="ViewModels\ReplyViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\SmileyListViewModel.cs" />
+    <Compile Include="ViewModels\ThreadDetailsViewModel.cs" />
+    <Compile Include="ViewModels\ThreadPageSlideViewModel.cs" />
+    <Compile Include="ViewModels\ThreadViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+    <Page Include="Common\CommonStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ForumListControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ThreadListControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ThreadNavControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ThreadPagePresenter.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ThreadPageSlideView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ThreadRatingControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ThreadReplyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ForumViewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="HomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="LoginPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PrivateMessageViewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\layout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ThreadDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ThreadViewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\AppManifest.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\WMAppManifest.xml">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\AppBar\appbar.add.rest.png" />
+    <Content Include="Assets\AppBar\appbar.back.rest.png" />
+    <Content Include="Assets\AppBar\appbar.delete.rest.png" />
+    <Content Include="Assets\AppBar\appbar.download.rest.png" />
+    <Content Include="Assets\AppBar\appbar.favs.rest.png" />
+    <Content Include="Assets\AppBar\appbar.feature.search.rest.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\AppBar\appbar.goto.rest.png" />
+    <Content Include="Assets\AppBar\appbar.minus.rest.png" />
+    <Content Include="Assets\AppBar\appbar.next.rest.png" />
+    <Content Include="Assets\AppBar\appbar.refresh.rest.png" />
+    <Content Include="Assets\AppBar\appbar.save.rest.png" />
+    <Content Include="Assets\AppBar\appbar.transport.ff.rest.png" />
+    <Content Include="Assets\AppBar\appbar.transport.rew.rest.png" />
+    <Content Include="Assets\AppBar\appbar.upload.rest.png" />
+    <Content Include="Assets\AppBar\BookmarkIcon.png" />
+    <Content Include="Assets\AppBar\check.png" />
+    <Content Include="Assets\default_thread_tag.png" />
+    <Content Include="Assets\ForumIcons\1.png" />
+    <Content Include="Assets\ForumIcons\122.png" />
+    <Content Include="Assets\ForumIcons\124.png" />
+    <Content Include="Assets\ForumIcons\130.png" />
+    <Content Include="Assets\ForumIcons\132.png" />
+    <Content Include="Assets\ForumIcons\144.png" />
+    <Content Include="Assets\ForumIcons\150.png" />
+    <Content Include="Assets\ForumIcons\151.png" />
+    <Content Include="Assets\ForumIcons\158.png" />
+    <Content Include="Assets\ForumIcons\161.png" />
+    <Content Include="Assets\ForumIcons\167.png" />
+    <Content Include="Assets\ForumIcons\179.png" />
+    <Content Include="Assets\ForumIcons\182.png" />
+    <Content Include="Assets\ForumIcons\188.png" />
+    <Content Include="Assets\ForumIcons\192.png" />
+    <Content Include="Assets\ForumIcons\204.png" />
+    <Content Include="Assets\ForumIcons\21.png" />
+    <Content Include="Assets\ForumIcons\215.png" />
+    <Content Include="Assets\ForumIcons\218.png" />
+    <Content Include="Assets\ForumIcons\22.png" />
+    <Content Include="Assets\ForumIcons\241.png" />
+    <Content Include="Assets\ForumIcons\25.png" />
+    <Content Include="Assets\ForumIcons\255.png" />
+    <Content Include="Assets\ForumIcons\26.png" />
+    <Content Include="Assets\ForumIcons\27.png" />
+    <Content Include="Assets\ForumIcons\31.png" />
+    <Content Include="Assets\ForumIcons\43.png" />
+    <Content Include="Assets\ForumIcons\44.png" />
+    <Content Include="Assets\ForumIcons\46.png" />
+    <Content Include="Assets\ForumIcons\61.png" />
+    <Content Include="Assets\ForumIcons\90.png" />
+    <Content Include="Assets\ForumIcons\91.png" />
+    <Content Include="Assets\ForumIcons\banner_1.png" />
+    <Content Include="Assets\ForumIcons\banner_122.png" />
+    <Content Include="Assets\ForumIcons\banner_124.png" />
+    <Content Include="Assets\ForumIcons\banner_130.png" />
+    <Content Include="Assets\ForumIcons\banner_132.png" />
+    <Content Include="Assets\ForumIcons\banner_144.png" />
+    <Content Include="Assets\ForumIcons\banner_150.png" />
+    <Content Include="Assets\ForumIcons\banner_151.png" />
+    <Content Include="Assets\ForumIcons\banner_158.png" />
+    <Content Include="Assets\ForumIcons\banner_161.png" />
+    <Content Include="Assets\ForumIcons\banner_167.png" />
+    <Content Include="Assets\ForumIcons\banner_179.png" />
+    <Content Include="Assets\ForumIcons\banner_182.png" />
+    <Content Include="Assets\ForumIcons\banner_188.png" />
+    <Content Include="Assets\ForumIcons\banner_192.png" />
+    <Content Include="Assets\ForumIcons\banner_204.png" />
+    <Content Include="Assets\ForumIcons\banner_21.png" />
+    <Content Include="Assets\ForumIcons\banner_215.png" />
+    <Content Include="Assets\ForumIcons\banner_218.png" />
+    <Content Include="Assets\ForumIcons\banner_22.png" />
+    <Content Include="Assets\ForumIcons\banner_241.png" />
+    <Content Include="Assets\ForumIcons\banner_25.png" />
+    <Content Include="Assets\ForumIcons\banner_255.png" />
+    <Content Include="Assets\ForumIcons\banner_26.png" />
+    <Content Include="Assets\ForumIcons\banner_27.png" />
+    <Content Include="Assets\ForumIcons\banner_31.png" />
+    <Content Include="Assets\ForumIcons\banner_43.png" />
+    <Content Include="Assets\ForumIcons\banner_44.png" />
+    <Content Include="Assets\ForumIcons\banner_46.png" />
+    <Content Include="Assets\ForumIcons\banner_61.png" />
+    <Content Include="Assets\ForumIcons\banner_90.png" />
+    <Content Include="Assets\ForumIcons\banner_91.png" />
+    <Content Include="Assets\LoadMore.png" />
+    <Content Include="Assets\Awful.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Background.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SplashScreenImage.jpg" />
+    <Content Include="SplashScreenImage_720.jpg" />
+    <Content Include="SubmissionInfo\AppIcon_173.png" />
+    <Content Include="SubmissionInfo\AppIcon_300.png" />
+    <Content Include="SubmissionInfo\ApplicationIcon_300.png" />
+    <Resource Include="www\awful.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="www\jquery.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="www\main.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="www\view.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Common\Constants.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>Constants1.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Awful.V2.Core\Awful.V2.Core.csproj">
+      <Project>{CE3F4D7C-B819-4590-9816-C311B8CF8734}</Project>
+      <Name>Awful.V2.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Glyph\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+</Project>
