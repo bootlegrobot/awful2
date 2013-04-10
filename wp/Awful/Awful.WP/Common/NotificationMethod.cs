@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Coding4Fun.Toolkit.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,20 +26,20 @@ namespace System.Windows
         public static void Show(NotificationMethod method, string message, string caption,
             Action notificationTapped)
         {
-            Awful.AppDataModel model = Awful.WP7.App.Model;
+            Awful.AppDataModel model = Awful.App.Model;
             Instance.ShowMessage(method, message, caption, notificationTapped);
 
         }
 
         public static void Show(string message, string caption)
         {
-            Awful.AppDataModel model = Awful.WP7.App.Model;
+            Awful.AppDataModel model = Awful.App.Model;
             Instance.ShowMessage(model.DefaultNotification, message, caption);
         }
 
         public static void ShowError(string message, string caption)
         {
-            Awful.AppDataModel model = Awful.WP7.App.Model;
+            Awful.AppDataModel model = Awful.App.Model;
             Instance.ShowMessage(model.DefaultNotification, message, caption);
         }
 
@@ -119,9 +120,9 @@ namespace System.Windows
             ShowMessageBox(message, caption, onTap); 
         }
 
-        private Coding4Fun.Phone.Controls.ToastPrompt CreateToast(string message, string caption)
+        private ToastPrompt CreateToast(string message, string caption)
         {
-            Coding4Fun.Phone.Controls.ToastPrompt toast = new Coding4Fun.Phone.Controls.ToastPrompt();
+            ToastPrompt toast = new ToastPrompt();
             toast.Title = caption;
             toast.TextWrapping = TextWrapping.Wrap;
             toast.Message = message;

@@ -37,9 +37,6 @@
           
         </controls:ThreadPageContextMenuProvider>
 
-		<!-- The thread page nav height -->
-		<System:Double x:Key="threadNavHeight">-342</System:Double>
-        
     </UserControl.Resources>
 
     <UserControl.FontFamily>
@@ -56,77 +53,7 @@
           DataContext="{Binding Source={StaticResource PageDataSource}}">
         
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="TitleViewStates">
-                <VisualStateGroup.Transitions>
-                    <VisualTransition GeneratedDuration="0:0:0.3"
-                                      To="ShowTitle">
-                        <VisualTransition.GeneratedEasingFunction>
-                            <CircleEase EasingMode="EaseOut" />
-                        </VisualTransition.GeneratedEasingFunction>
-                    </VisualTransition>
-                    <VisualTransition GeneratedDuration="0:0:0.3"
-                                      To="HideTitle">
-                        <VisualTransition.GeneratedEasingFunction>
-                            <CircleEase EasingMode="EaseIn" />
-                        </VisualTransition.GeneratedEasingFunction>
-                    </VisualTransition>
-                    <VisualTransition From="ShowTitle"
-                                      GeneratedDuration="0:0:0.3"
-                                      To="HideTitle">
-                        <VisualTransition.GeneratedEasingFunction>
-                            <CircleEase EasingMode="EaseIn" />
-                        </VisualTransition.GeneratedEasingFunction>
-                    </VisualTransition>
-                    <VisualTransition From="HideTitle"
-                                      GeneratedDuration="0:0:0.3"
-                                      To="ShowTitle">
-                        <VisualTransition.GeneratedEasingFunction>
-                            <CircleEase EasingMode="EaseOut" />
-                        </VisualTransition.GeneratedEasingFunction>
-                    	<Storyboard>
-                    		<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="titleGrid">
-                    			<DiscreteObjectKeyFrame KeyTime="0">
-                    				<DiscreteObjectKeyFrame.Value>
-                    					<Visibility>Visible</Visibility>
-                    				</DiscreteObjectKeyFrame.Value>
-                    			</DiscreteObjectKeyFrame>
-                    		</ObjectAnimationUsingKeyFrames>
-                    	</Storyboard>
-                    </VisualTransition>
-                </VisualStateGroup.Transitions>
-                <VisualState x:Name="ShowTitle">
-                    <Storyboard>
-                        <DoubleAnimation Duration="0"
-                                         To="0"
-                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
-                                         Storyboard.TargetName="titleGrid"
-                                         d:IsOptimized="True" />
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="titleGrid">
-                        	<DiscreteObjectKeyFrame KeyTime="0">
-                        		<DiscreteObjectKeyFrame.Value>
-                        			<Visibility>Visible</Visibility>
-                        		</DiscreteObjectKeyFrame.Value>
-                        	</DiscreteObjectKeyFrame>
-                        </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="HideTitle">
-                    <Storyboard>
-                        <DoubleAnimation Duration="0"
-                                         To="-342"
-                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
-                                         Storyboard.TargetName="titleGrid"
-                                         d:IsOptimized="True" />
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="titleGrid">
-                        	<DiscreteObjectKeyFrame KeyTime="0">
-                        		<DiscreteObjectKeyFrame.Value>
-                        			<Visibility>Collapsed</Visibility>
-                        		</DiscreteObjectKeyFrame.Value>
-                        	</DiscreteObjectKeyFrame>
-                        </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
-                </VisualState>
-            </VisualStateGroup>
+            <VisualStateGroup x:Name="TitleViewStates"/>
             <VisualStateGroup x:Name="PageViewStates">
                 <VisualStateGroup.Transitions>
                     <VisualTransition GeneratedDuration="0"
@@ -283,7 +210,6 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
        
-        
         <Grid x:Name="ContentPanel">
 
             <Grid x:Name="PageViewPanel"
@@ -350,6 +276,84 @@
                         </Grid>
                     </DataTemplate>
                     
+                    <DataTemplate x:Key="slideViewOverlayTemplate">
+                        <Grid x:Name="titleGrid"
+                              DataContext="{Binding Source={StaticResource PageDataSource}}">
+
+                            <Grid x:Name="overlayBackground"
+                                  Background="{StaticResource PhoneBackgroundBrush}"
+                                  Canvas.ZIndex="-20"
+                                  Opacity="0.75" />
+
+                            <Grid x:Name="titleContent"
+                                  VerticalAlignment="Top">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <StackPanel Margin="0,0,64,0">
+                                    <TextBlock x:Name="threadTitle"
+                                               Text="{Binding CurrentThread.Title}"
+                                               Style="{StaticResource PhoneTextLargeStyle}"
+                                               Margin="6,0,0,0"
+                                               TextTrimming="WordEllipsis"
+                                               TextWrapping="Wrap"
+                                               MaxHeight="128"
+                                               VerticalAlignment="Top" />
+                                    <telerikInput:RadRating x:Name="threadRatingControl"
+                                                            HorizontalAlignment="Left"
+                                                            VerticalAlignment="Top"
+                                                            Margin="0,12"
+                                                            Value="{Binding Rating, Mode=TwoWay}" />
+                                </StackPanel>
+                                <TextBlock x:Name="threadInfo"
+                                           HorizontalAlignment="Left"
+                                           TextWrapping="Wrap"
+                                           Text="{Binding Info, Mode=OneWay}"
+                                           VerticalAlignment="Top"
+                                           Grid.Row="1"
+                                           Style="{StaticResource PhoneTextTitle3Style}"
+                                           FontFamily="Segoe WP Semibold"
+                                           Margin="12,0,12,6"
+                                           Foreground="{StaticResource PhoneSubtleBrush}" />
+                                <telerikPrimitives:RadUniformGrid x:Name="threadNavigationGrid"
+                                                                  Grid.Row="2"
+                                                                  NumberOfColumns="4">
+                                    <Button x:Name="FirstPageButton"
+                                            Content="&lt;&lt;"
+                                            Command="{Binding FirstPageCommand, Mode=OneWay}" />
+                                    <TextBox x:Name="CustomPageText"
+                                             TextWrapping="Wrap"
+                                             Text="{Binding CurrentPage, Mode=OneWay}"
+                                             InputScope="Number"
+                                             TextAlignment="Center"
+                                             LostFocus="OnCustomPageNavTextLostFocus"
+                                             GotFocus="OnCustomPageNavTextGotFocus" />
+                                    <Button x:Name="CustomPageButton"
+                                            Content="&gt;"
+                                            CommandParameter="{Binding Text, ElementName=CustomPageText}"
+                                            Command="{Binding CustomPageCommand, Mode=OneWay}" />
+                                    <Button x:Name="LastPageText"
+                                            Content="&gt;&gt;"
+                                            Command="{Binding LastPageCommand, Mode=OneWay}" />
+                                </telerikPrimitives:RadUniformGrid>
+
+                               
+                            </Grid>
+
+                            <TextBlock x:Name="HideOverlayText"
+                                       Text="tap to hide"
+                                       VerticalAlignment="Bottom"
+                                       Foreground="{StaticResource PhoneSubtleBrush}"
+                                       Style="{StaticResource PhoneTextTitle3Style}"
+                                       Margin="{StaticResource PhoneTouchTargetOverhang}"
+                                       TextAlignment="Center" />
+
+                        </Grid>
+                    </DataTemplate>
+                    
                 </Grid.Resources>
                
                 <Grid.RenderTransform>
@@ -361,6 +365,8 @@
                 <telerikPrimitives:RadSlideView x:Name="pageSlideView"
                                                 ItemsSource="{Binding Items}"
                                                 IsLoopingEnabled="False"
+                                                IsShowOverlayContentOnTapEnabled="True"
+                                                OverlayContentTemplate="{StaticResource slideViewOverlayTemplate}"
                                                 SlideAnimationStarted="SlideAnimationStarted"
                                                 SlideAnimationCompleted="SlideAnimationCompleted"
                                                 SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
@@ -373,82 +379,7 @@
                 <telerikPrimitives:RadPaginationControl x:Name="pageSlideControl"
                                                         PageProvider="{Binding ElementName=pageSlideView}"
                                                         Visibility="Collapsed" />
-                <Grid x:Name="titleGrid" 
-					Margin="0" 
-					VerticalAlignment="Top"
-					Canvas.ZIndex="-20"
-					Opacity="0.95"
-					RenderTransformOrigin="0.5,0.5" Height="342">
-					
-                	<Grid.RowDefinitions>
-                		<RowDefinition/>
-                		<RowDefinition Height="4"/>
-                	</Grid.RowDefinitions>
-
-					<Grid.RenderTransform>
-                			<CompositeTransform />
-                		</Grid.RenderTransform>
-
-                	<Grid x:Name="titleContent">
-                		<Grid.Background>
-                			<SolidColorBrush Color="{StaticResource PhoneBackgroundColor}" />
-                		</Grid.Background>
-                		
-                		<Grid.RowDefinitions>
-                			<RowDefinition />
-                			<RowDefinition Height="Auto"/>
-                			<RowDefinition Height="Auto"/>
-                			<RowDefinition Height="Auto"/>
-                		</Grid.RowDefinitions>
-                		<StackPanel Margin="0,0,64,0">
-                			<TextBlock x:Name="threadTitle"
-                				Text="{Binding CurrentThread.Title}"
-                				Style="{StaticResource PhoneTextLargeStyle}"
-                				Margin="6,0,0,0"
-                				TextTrimming="WordEllipsis"
-                				TextWrapping="Wrap" MaxHeight="128" VerticalAlignment="Top" />
-                            <telerikInput:RadRating x:Name="threadRatingControl"
-                                                    HorizontalAlignment="Left"
-                                                    VerticalAlignment="Top"
-                                                    Margin="0,12,0,0"
-                                                    Value="{Binding Rating, Mode=TwoWay}"/>
-                        </StackPanel>
-                		<TextBlock x:Name="threadInfo"
-                			HorizontalAlignment="Left"
-                			TextWrapping="Wrap"
-                			Text="{Binding Info, Mode=OneWay}"
-                			VerticalAlignment="Top"
-                			Grid.Row="1"
-                			Style="{StaticResource PhoneTextTitle3Style}"
-                			FontFamily="Segoe WP Semibold"
-                			Margin="12,0,12,6"
-                			Foreground="{StaticResource PhoneSubtleBrush}" />
-                        <telerikPrimitives:RadUniformGrid x:Name="threadNavigationGrid"
-                                                          Grid.Row="2"
-                                                          NumberOfColumns="4">
-                            <Button x:Name="FirstPageButton"
-                                    Content="&lt;&lt;"
-                                    Command="{Binding FirstPageCommand, Mode=OneWay}" />
-                            <TextBox x:Name="CustomPageText"
-                                     TextWrapping="Wrap"
-                                     Text="{Binding CurrentPage, Mode=OneWay}"
-                                     InputScope="Number"
-                                     TextAlignment="Center"
-                                     LostFocus="OnCustomPageNavTextLostFocus"
-                                     GotFocus="OnCustomPageNavTextGotFocus" />
-                            <Button x:Name="CustomPageButton"
-                                    Content="&gt;"
-                                    CommandParameter="{Binding Text, ElementName=CustomPageText}"
-                                    Command="{Binding CustomPageCommand, Mode=OneWay}" />
-                            <Button x:Name="LastPageText"
-                                    Content="&gt;&gt;"
-                                    Command="{Binding LastPageCommand, Mode=OneWay}" />
-                        </telerikPrimitives:RadUniformGrid>
-                    </Grid>
-                	<Rectangle x:Name="titleSeparator"
-                		Fill="{StaticResource PhoneAccentBrush}" Grid.Row="1" />
                 
-                </Grid>
                 
                 <telerikPrimitives:RadImageButton x:Name="postJumpListShowButton"
                                                   Content=""

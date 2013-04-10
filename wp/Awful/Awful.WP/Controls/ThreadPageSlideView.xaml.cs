@@ -45,22 +45,14 @@ namespace Awful.Controls
 
         public ThreadPageManager PageManager { get { return ThreadPageManager.Instance; } }
         private bool _measurePinch;
-        private readonly DispatcherTimer _hideTitleTimer;
-
+       
         public ThreadPageSlideView()
         {
             InitializeComponent();
 
             this._toggleAppBar = ToggleAppBarDummy;
-            this._hideTitleTimer = new DispatcherTimer();
-            this._hideTitleTimer.Interval = TimeSpan.FromSeconds(2);
-            this._hideTitleTimer.Tick += (o, te) =>
-            {
-                (o as DispatcherTimer).Stop();
-                VisualStateManager.GoToState(this, "HideTitle", true);
-            };
-
-            VisualStateManager.GoToState(this, "HideTitle", false);
+           
+            HideTitleOverlay();
             VisualStateManager.GoToState(this, "Loading", false);
 
             var gestures = GestureService.GetGestureListener(this.LayoutRoot);
@@ -72,6 +64,18 @@ namespace Awful.Controls
 
             Loaded += OnLoad;
             Unloaded += OnUnload;
+        }
+
+        private void HideTitleOverlay()
+        {
+            if (this.pageSlideView != null && this.pageSlideView.IsOverlayContentDisplayed)
+                this.pageSlideView.HideOverlayContent();
+        }
+
+        private void ShowTitleOverlay()
+        {
+            if (this.pageSlideView != null && !this.pageSlideView.IsOverlayContentDisplayed)
+                this.pageSlideView.ShowOverlayContent();
         }
 
         #region Pinch Events
@@ -295,7 +299,7 @@ namespace Awful.Controls
             ToggleAppBar(true);
             VisualStateManager.GoToState(this, "ShowPage", true);
             if (SystemTray.IsVisible)
-                SystemTray.BackgroundColor = (WP7.App.Current.Resources["PhoneBackgroundBrush"] as SolidColorBrush).Color;
+                SystemTray.BackgroundColor = (App.Current.Resources["PhoneBackgroundBrush"] as SolidColorBrush).Color;
         }
 
         private void ShowPostJumpList(object sender, System.Windows.RoutedEventArgs e)
@@ -303,13 +307,13 @@ namespace Awful.Controls
             ToggleAppBar(false);
             VisualStateManager.GoToState(this, "ShowJumpList", true);
             if (SystemTray.IsVisible)
-                SystemTray.BackgroundColor = (WP7.App.Current.Resources["PhoneChromeBrush"] as SolidColorBrush).Color; 
+                SystemTray.BackgroundColor = (App.Current.Resources["PhoneChromeBrush"] as SolidColorBrush).Color; 
         }
 
         private void ShowThreadTitle(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            VisualStateManager.GoToState(this, "ShowTitle", true);
-            this._hideTitleTimer.Start();
+            this.ShowTitleOverlay();
+            
         }
 
         #endregion
@@ -317,13 +321,12 @@ namespace Awful.Controls
         private void OnCustomPageNavTextLostFocus(object sender, RoutedEventArgs e)
         {
             // set the timer to 2 seconds again and start
-            this._hideTitleTimer.Interval = TimeSpan.FromSeconds(2);
-            this._hideTitleTimer.Start();
+          
         }
 
         private void OnCustomPageNavTextGotFocus(object sender, RoutedEventArgs e)
         {
-            this._hideTitleTimer.Stop();
+           
         }
 
         private void ScrollToTop(object sender, System.Windows.Input.GestureEventArgs e)

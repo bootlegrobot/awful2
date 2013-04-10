@@ -67,7 +67,9 @@ namespace Awful
                 }
                 success = true;
             }
-            catch (Exception ex) { success = false; }
+            catch (Exception ex) {
+                AwfulDebugger.AddLog(new object(), AwfulDebugger.Level.Critical, ex);
+                success = false; }
             return success;
 
         }
@@ -80,7 +82,11 @@ namespace Awful
                 var bytes = ReadFileFromResourceStore(source);
                 success = bytes.SaveBinaryToIsoStore(destination);
             }
-            catch (Exception ex) { success = false; }
+            catch (Exception ex) 
+            {
+                AwfulDebugger.AddLog(new object(), AwfulDebugger.Level.Critical, ex);
+                success = false; 
+            }
             return success;
         }
 
@@ -95,7 +101,7 @@ namespace Awful
                     result = reader.ReadBytes((int)stream.Length);
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { AwfulDebugger.AddLog(new object(), AwfulDebugger.Level.Critical, ex); }
             return result;
         }
 
@@ -121,7 +127,9 @@ namespace Awful
                     }
                 }
             }
-            catch (Exception ex) { success = false; }
+            catch (Exception ex) {
+                AwfulDebugger.AddLog(new object(), AwfulDebugger.Level.Critical, ex);
+                success = false; }
             return success;
         }
 
@@ -535,7 +543,7 @@ namespace Awful
     
         public static IEnumerable<ForumMetadata> LoadForums(this UserMetadata user)
         {
-            if (user.Username.Equals(AwfulLoginClient.TEST_USER))
+            if (user.Username.Equals(AwfulLoginClient.TEST_USER, StringComparison.CurrentCultureIgnoreCase))
                 ForumParser.UseWhitelist = true;
             else
                 ForumParser.UseWhitelist = false;

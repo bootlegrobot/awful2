@@ -14,7 +14,6 @@ using Awful.Helpers;
 using Awful.WP7;
 using System.IO.IsolatedStorage;
 using System.Windows.Media.Imaging;
-using ImageTools;
 using System.IO;
 
 namespace Awful.Data

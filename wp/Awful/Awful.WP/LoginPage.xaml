@@ -8,7 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:telerikData="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Data"
     xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
-    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -31,8 +30,10 @@
                         VerticalAlignment="Center" 
                         Margin="0,120,0,0">
 
-                <toolkit:PerformanceProgressBar x:Name="LoadingBar"
-                                                IsIndeterminate="{Binding IsBusy}" />
+                <telerikPrimitives:RadBusyIndicator x:Name="LoadingBar"
+                                                    Background="Transparent"
+                                                    AnimationStyle="AnimationStyle9"
+                                                    IsRunning="{Binding IsBusy}" />
 
                 <telerikPrimitives:RadTextBox x:Name="UsernameBox"
                                               Header="Username"

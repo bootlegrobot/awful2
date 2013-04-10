@@ -109,7 +109,7 @@ namespace Awful.Commands
             string quote = arg as string;
             Clipboard.SetText(quote);
             CurrentQuote = quote;
-            Notification.Show(WP7.App.Model.DefaultNotification,
+            Notification.Show(App.Model.DefaultNotification,
                 "Quote added to clipboard. Tap to view.", 
                 "Quote",
                 OnShowQuote);
@@ -326,7 +326,7 @@ namespace Awful.Commands
             string message = "Tap here to view.";
 
             Notification.Show(
-                Awful.WP7.App.Model.DefaultNotification,
+                Awful.App.Model.DefaultNotification,
                 message, 
                 "Post was successful!",
                 () => { RedirectToUri(request); });

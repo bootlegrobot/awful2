@@ -54,7 +54,7 @@ namespace Awful.ViewModels
             return false;
         }
 
-        public void Refresh()
+        public override void Refresh()
         {
             this.SelectedItem = null;
             this.SelectedItemIndex = -1;

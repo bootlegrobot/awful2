@@ -330,7 +330,7 @@ namespace Awful.Data
         }
 
         private ImageSource _image;
-        public ImageSource Image
+        public new ImageSource Image
         {
             get 
             {

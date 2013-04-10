@@ -115,7 +115,7 @@ namespace Awful.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to /Awful.WP7;component/www/awful.js.
+        ///   Looks up a localized string similar to /Awful.WP;component/www/awful.js.
         /// </summary>
         internal static string RESOURCE_PATH_AWFUL_JAVASCRIPT {
             get {
@@ -124,7 +124,7 @@ namespace Awful.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to /Awful.WP7;component/www/main.css.
+        ///   Looks up a localized string similar to /Awful.WP;component/www/main.css.
         /// </summary>
         internal static string RESOURCE_PATH_CSS {
             get {
@@ -133,7 +133,7 @@ namespace Awful.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to /Awful.WP7;component/www/jquery.min.js.
+        ///   Looks up a localized string similar to /Awful.WP;component/www/jquery.min.js.
         /// </summary>
         internal static string RESOURCE_PATH_JQUERY {
             get {
@@ -142,7 +142,7 @@ namespace Awful.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to /Awful.WP7;component/www/view.html.
+        ///   Looks up a localized string similar to /Awful.WP;component/www/view.html.
         /// </summary>
         internal static string RESOURCE_PATH_THREADVIEW {
             get {

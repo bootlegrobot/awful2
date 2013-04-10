@@ -22,6 +22,17 @@ namespace Awful
             viewmodel.LoginSuccess += viewmodel_LoginSuccess;
             viewmodel.LoginFailed += viewmodel_LoginFailed;
             this.DataContext = viewmodel;
+
+            Loaded += LoginPage_Loaded;
+        }
+
+        private void LoginPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            // check if user has already logged in
+            if (Data.MainDataSource.Instance.CurrentUser.CanLogIn)
+                NavigateToHomePage();
+            else
+                ShowLoginScreen();
         }
 
         private void viewmodel_LoginFailed(object sender, EventArgs e)
@@ -40,11 +51,7 @@ namespace Awful
         {
             base.OnNavigatedTo(e);
             
-            // check if user has already logged in
-            if (Data.MainDataSource.Instance.CurrentUser.CanLogIn)
-                NavigateToHomePage();
-            else
-                ShowLoginScreen();
+           
         }
 
         private void ShowLoginScreen()

@@ -13,7 +13,7 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 
-namespace Awful.WP7
+namespace Awful
 {
     public partial class App : Application
     {
@@ -72,11 +72,14 @@ namespace Awful.WP7
                 // which shows areas of a page that are handed off to GPU with a colored overlay.
                 //Application.Current.Host.Settings.EnableCacheVisualization = true;
 
+#if WP7
                 // Disable the application idle detection by setting the UserIdleDetectionMode property of the
                 // application's PhoneApplicationService object to Disabled.
                 // Caution:- Use this under debug mode only. Application that disables user idle detection will continue to run
                 // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
+#endif
+
 #endif
             }
 
@@ -86,11 +89,6 @@ namespace Awful.WP7
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
-
-#if DEBUG
-            //IsolatedStorageExplorer.Explorer.Start("localhost");
-#endif
-
             Model.LoadSettings();
             Model.Init();
         }
@@ -99,11 +97,6 @@ namespace Awful.WP7
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
-
-#if DEBUG
-            //IsolatedStorageExplorer.Explorer.RestoreFromTombstone();
-#endif
-
             Model.LoadSettings();
             Model.LoadStateFromIsoStorage();
         }

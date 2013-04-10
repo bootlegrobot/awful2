@@ -8,7 +8,6 @@
                             xmlns:viewModels="clr-namespace:Awful"
                             xmlns:viewmodel="clr-namespace:Awful.ViewModels"
                             xmlns:doc="clr-namespace:System.Windows.Documents;assembly=System.Windows"
-                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:telerikInput="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Input"
                             xmlns:dataform="clr-namespace:Telerik.Windows.Controls.DataForm;assembly=Telerik.Windows.Controls.Input"
                             xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
@@ -67,7 +66,7 @@
                                       MiscText2="icons provided by the Awful iOS team" />
         </Grid.Resources>
 
-        <toolkit:LockablePivot x:Name="MainPivot">
+        <controls:Pivot x:Name="MainPivot">
             <controls:PivotItem x:Name="SettingsPivot"
                                 Header="settings"
                                 DataContext="{StaticResource SettingsDataSource}">
@@ -245,9 +244,11 @@
                                 <RowDefinition />
                             </Grid.RowDefinitions>
 
-                            <toolkit:PerformanceProgressBar x:Name="FileLoadingBar"
-                                                            Margin="0,6"
-                                                            IsIndeterminate="{Binding IsRunning}" />
+                            <telerikPrimitives:RadBusyIndicator x:Name="FileLoadingBar"
+                                                                Margin="0,6"
+                                                                Background="Transparent"
+                                                                AnimationStyle="AnimationStyle9"
+                                                                IsRunning="{Binding IsRunning}" />
 
                             <telerikPrimitives:RadDataBoundListBox x:Name="LogFileViewer"
                                                                    Grid.Row="1"
@@ -284,7 +285,7 @@
 
                 </Grid>
             </controls:PivotItem>
-        </toolkit:LockablePivot>
+        </controls:Pivot>
 
 
     </Grid>

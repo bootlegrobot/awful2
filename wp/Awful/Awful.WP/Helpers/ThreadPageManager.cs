@@ -418,7 +418,9 @@ namespace Awful
                     this.IsReady = false;
             }
 
-            catch (Exception ex) { this.IsReady = false; }
+            catch (Exception ex) {
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex);
+                this.IsReady = false; }
         }
 
         void PageBrowser_Navigating(object sender, NavigatingEventArgs e)

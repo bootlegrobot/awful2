@@ -49,7 +49,9 @@ namespace Awful.ViewModels
                 this._allSmilies = new List<Data.SmilieyDataModel>(
                     this._smilies.Select(item => new Data.SmilieyDataModel(item)));
 
-                this._maxPages = (int)Math.Ceiling(this._smilies.Count / SMILIES_PER_PAGE);
+                double maxPages = this._smilies.Count / SMILIES_PER_PAGE;
+
+                this._maxPages = (int)Math.Ceiling(maxPages);
             }
 
             // create a sub set of smilies at a time

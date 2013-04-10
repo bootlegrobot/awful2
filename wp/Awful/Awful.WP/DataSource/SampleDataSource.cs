@@ -14,7 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Collections.Specialized;
 using System.Runtime.Serialization;
-using ImageTools;
 using System.IO;
 
 // The data model defined by this file serves as a representative example of a strongly-typed

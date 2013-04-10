@@ -142,18 +142,18 @@
     <comment>The file path to the local html page used for rendering thread pages.</comment>
   </data>
   <data name="RESOURCE_PATH_AWFUL_JAVASCRIPT" xml:space="preserve">
-    <value>/Awful.WP7;component/www/awful.js</value>
+    <value>/Awful.WP;component/www/awful.js</value>
     <comment>The file path to the read-only custom javascript.</comment>
   </data>
   <data name="RESOURCE_PATH_CSS" xml:space="preserve">
-    <value>/Awful.WP7;component/www/main.css</value>
+    <value>/Awful.WP;component/www/main.css</value>
     <comment>The file path to the read-only css stylesheet.</comment>
   </data>
   <data name="RESOURCE_PATH_JQUERY" xml:space="preserve">
-    <value>/Awful.WP7;component/www/jquery.min.js</value>
+    <value>/Awful.WP;component/www/jquery.min.js</value>
   </data>
   <data name="RESOURCE_PATH_THREADVIEW" xml:space="preserve">
-    <value>/Awful.WP7;component/www/view.html</value>
+    <value>/Awful.WP;component/www/view.html</value>
     <comment>The file path to the read-only html page for Thread Viewing.</comment>
   </data>
   <data name="STATE_CURRENT_THREAD_KEY" xml:space="preserve">
