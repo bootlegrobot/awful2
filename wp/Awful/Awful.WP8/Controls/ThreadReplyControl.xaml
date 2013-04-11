@@ -34,6 +34,7 @@
                 
     			<shell:ApplicationBarMenuItem Text="cancel edit"
     				Click="CancelEditRequest" />
+                
     		</shell:ApplicationBar.MenuItems>
             
     		<shell:ApplicationBarIconButton IconUri="/Assets/AppBar/appbar.save.rest.png"

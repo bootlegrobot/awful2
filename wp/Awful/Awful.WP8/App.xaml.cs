@@ -18,6 +18,17 @@ namespace Awful
 {
     public partial class App : Application
     {
+        public static bool IsWP8
+        {
+            get
+            {
+#if WP7
+                return false;
+#endif
+                return true;
+            }
+        }
+
         public const string THREAD_RATING_COLOR_1 = "ThreadRating1Brush";
         public const string THREAD_RATING_COLOR_2 = "ThreadRating2Brush";
         public const string THREAD_RATING_COLOR_3 = "ThreadRating3Brush";

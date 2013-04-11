@@ -93,7 +93,7 @@ namespace Awful.ViewModels
 
         public void SendThreadRequestAsync()
         {
-            if (Request != null)
+            if (Request != null && !IsRunning)
             {
                 
                 AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Sending thread request.");
@@ -171,5 +171,44 @@ namespace Awful.ViewModels
         	// TODO: Add event handler implementation here.
 			OnPropertyChanged("IsEnabled");
         }
+
+#if WP7
+        /// <summary>
+        /// Not supported in Windows Phone OS versions &lt; 8.0.
+        /// </summary>
+        /// <param name="obj"></param>
+        internal void AttachImage(object obj) { }
+#endif
+
+#if WP8
+        internal async void AttachImage(Microsoft.Phone.Tasks.PhotoResult e)
+        {
+            this.IsRunning = true;
+
+            try
+            {
+                List<ImgurUploader.DataUploadItem> items = new List<ImgurUploader.DataUploadItem>();
+                items.Add(new DataUploadItem(e));
+                var request = ImgurUploader.ImgurUploadRequest.CreateUploadRequest(items, ImgurUploader.ImgurLinkType.Normal);
+                var response = await request.UploadAsync();
+                var result = response.CreateResult();
+
+                if (result.ToClipboard())
+                    Notification.Show("Image link copied to clipboard.", "Success!");
+
+                else
+                    Notification.ShowError("Image upload failed.", "Error");
+            }
+
+            catch (Exception ex)
+            {
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex);
+                Notification.ShowError("Image upload failed.", "Error");
+            }
+
+            this.IsRunning = false;
+        }
+#endif
+
     }
 }

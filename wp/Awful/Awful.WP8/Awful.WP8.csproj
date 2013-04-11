@@ -462,6 +462,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\ImgurUploader\ImgurUploader\ImgurUploader.csproj">
+      <Project>{8A43C9AE-68CA-427F-B8FF-52236D205F89}</Project>
+      <Name>ImgurUploader</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Awful.V2.Core\Awful.V2.Core.csproj">
       <Project>{CE3F4D7C-B819-4590-9816-C311B8CF8734}</Project>
       <Name>Awful.V2.Core</Name>
