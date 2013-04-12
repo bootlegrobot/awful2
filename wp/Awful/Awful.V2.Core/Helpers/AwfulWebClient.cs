@@ -103,7 +103,125 @@ namespace Awful
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "END Authenticate()");
         }
 
-		/// <summary>
+        #region FetchHtmlState
+
+        class FetchHtmlState
+        {
+            public HttpWebRequest Request { get; set; }
+            public Action<string> HtmlAction { get; set; }
+            public Action<FetchHtmlState> Callback { get; set; }
+            public Exception Error { get; set; }
+            public string Html { get; set; }
+            public bool IgnoreTimeout { get; set; }
+            private Timer Timer { get; set; }
+            public int TimeoutInMilliseconds { get; private set; }
+
+            public FetchHtmlState(int timeoutInMilliseconds)
+            {
+                IgnoreTimeout = false;
+                TimeoutInMilliseconds = timeoutInMilliseconds;
+            }
+
+            public void StartTimer()
+            {
+                // new timer, fire callback according to timeoutInMilliseconds, don't repeat
+                Timer = new Timer(new TimerCallback(ThrowTimeoutException),
+                    null,
+                    TimeoutInMilliseconds,
+                    System.Threading.Timeout.Infinite);
+            }
+
+            private void ThrowTimeoutException(object state)
+            {
+                if (!IgnoreTimeout)
+                {
+                    // create new exception to be thrown
+                    Error = new TimeoutException("fetch html timeout reached.");
+                    Callback(this);
+                }
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Fetches raw html from the specified url.
+        /// </summary>
+        /// <param name="url">The location of the target html.</param>
+        /// <param name="callback">Callback function when html response is received from the server.</param>
+        /// <param name="timeout">The timeout value, in milliseconds. If the timeout is reached, a TimeoutException is thrown.
+        /// If no value is supplied, a default value of 10 seconds is used.</param>
+        public void FetchHtmlAsync(string url, Action<string> callback, int timeout = DefaultTimeoutInMilliseconds)
+        {
+            FetchHtmlStateAsync(url, state =>
+                {
+                    if (state.Error != null)
+                        throw state.Error;
+
+                    callback(state.Html);
+                });
+        }
+
+        private void FetchHtmlStateAsync(string url, Action<FetchHtmlState> callback, int timeout = DefaultTimeoutInMilliseconds)
+        {
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, string.Format("START FetchHtml({0}, {1})", url, timeout));
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Performing authentication check...");
+
+            Authenticate();
+
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Authentication check complete.");
+            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, string.Format("Requesting html from url '{0}'...", url));
+
+            if (!NetworkInterface.GetIsNetworkAvailable())
+                throw new Exception("The network is unavailable. Check your network settings and please try again.");
+
+            if (SimulateTimeout)
+            {
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "SimulateTimeout = true.");
+                Random random = new Random();
+                int value = random.Next(1, 101);
+                if (value <= SimulateTimeoutChance)
+                {
+                    AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Timeout generated.");
+                    throw new TimeoutException("Artificial timeout generated!");
+                }
+            }
+
+            FetchHtmlState state = new FetchHtmlState(timeout);
+            state.Callback = callback;
+            state.Request = AwfulWebRequest.CreateGetRequest(url);
+            state.Request.BeginGetResponse(FetchHtmlAsyncResponse, state);
+            state.StartTimer();
+        }
+
+        private void FetchHtmlAsyncResponse(IAsyncResult result)
+        {
+            FetchHtmlState state = result.AsyncState as FetchHtmlState;
+            state.IgnoreTimeout = true;
+
+            try
+            {
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "START ProcessResponse()");
+
+                using (var response = state.Request.EndGetResponse(result))
+                using (var stream = new StreamReader(response.GetResponseStream(),
+                    Encoding.GetEncoding(CoreConstants.WEB_RESPONSE_ENCODING)))
+                {
+                    state.Html = stream.ReadToEnd();
+                }
+
+                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "END ProcessResponse()");
+
+                if (string.IsNullOrEmpty(state.Html))
+                    throw new NullReferenceException("fetch html result is null or empty");
+            }
+
+            catch (Exception ex) { state.Error = ex; }
+
+            state.Callback(state);
+        }
+
+        /// <summary>
         /// Fetches raw html from the specified url.
         /// </summary>
         /// <param name="url">The location of the target html.</param>
@@ -112,94 +230,23 @@ namespace Awful
         /// <returns>A string representing the raw html.</returns>
         public string FetchHtml(string url, int timeout = DefaultTimeoutInMilliseconds)
         {
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, string.Format("START FetchHtml({0}, {1})", url, timeout));
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Performing authentication check...");
-            
-            Authenticate();
+            AutoResetEvent signal = new AutoResetEvent(false);
+            FetchHtmlState state = null;
 
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Authentication check complete.");
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, string.Format("Requesting html from url '{0}'...", url));
-
-            if (!NetworkInterface.GetIsNetworkAvailable())
-                throw new Exception("The network is unavailable. Check your network settings and please try again.");
-            
-            if (SimulateTimeout)
+            FetchHtmlStateAsync(url, callback =>
             {
-                AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "SimulateTimeout = true.");
-                Random random = new Random();
-                int value = random.Next(1, 100);
-                if (value <= SimulateTimeoutChance)
-                {
-                    AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info, "Timeout generated.");
-                    throw new TimeoutException("Artificial timeout generated!");
-                }
-            }
+                state = callback;
+                signal.Set();
 
-            var request = AwfulWebRequest.CreateGetRequest(url);
-            var signal = new AutoResetEvent(false);
-            var result = request.BeginGetResponse(callback => ProcessResponse(callback, signal), request);
+            }, timeout);
             
-            signal.WaitOne(timeout);
-            if (!result.IsCompleted)
-                throw new TimeoutException();
-            
-            string html = this.ProcessResponse(request.EndGetResponse(result));
+          
+            signal.WaitOne();
 
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Verbose, "Html result:");
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Verbose, html);
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Verbose, "End Html.");
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Info,  "Request complete.");
+            if (state.Error != null)
+                throw state.Error;
 
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, string.Format("END FetchHtml({0}, {1})", url, timeout));
-
-            return html;
-        }
-
-		/// <summary>
-        /// Asyncronously begins an html fetch request; Call EndFetchHtml to retrieve the fetch results.
-        /// </summary>
-        /// <param name="url">The location of the target html.</param>
-        /// <param name="callback">The callback delegate to execute after this method is run.</param>
-        /// <param name="timeout">The timeout value, in milliseconds, before the request is cancelled.
-        /// If no value is supplied, a default value of 10 seconds is used.</param>
-        /// <returns></returns>
-        public IAsyncResult BeginFetchHtml(string url, AsyncCallback callback, 
-            int timeout = DefaultTimeoutInMilliseconds)
-        {
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, string.Format("START BeginFetchHtml({0}, {1})", url, timeout));
-            FetchHtmlDelegate fetch = FetchHtml;
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, string.Format("END BeginFetchHtml({0}, {1})", url, timeout));
-
-            return fetch.BeginInvoke(url, timeout, callback, this);
-        }
-
-        public string EndFetchHtml(IAsyncResult result)
-        {
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "START EndFetchHtml()");
-            
-            FetchHtmlDelegate fetch = (result.AsyncState as AwfulWebClient).FetchHtml;
-            var doc = fetch.EndInvoke(result);
-
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "END EndFetchHtml()");
-            return doc;
-        }
-
-        private void ProcessResponse(IAsyncResult result, AutoResetEvent signal) { signal.Set(); }
-
-        private string ProcessResponse(WebResponse response)
-        {
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "START ProcessResponse()");
-
-            string html = string.Empty;
-            using (var stream = new StreamReader(response.GetResponseStream(), 
-                Encoding.GetEncoding(CoreConstants.WEB_RESPONSE_ENCODING)))
-            {
-                html = stream.ReadToEnd();
-            }
-
-            AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "END ProcessResponse()");
-
-            return html;
+            return state.Html;
         }
     }
 

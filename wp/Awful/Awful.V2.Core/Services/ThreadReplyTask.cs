@@ -162,7 +162,7 @@ namespace Awful
             signal.WaitOne(timeout);
 
             if (!result.IsCompleted)
-                throw new TimeoutException();
+                throw new TimeoutException("Thread Reply: timeout reached");
 
             // process response and return status value
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Debug, "Processing response...");
