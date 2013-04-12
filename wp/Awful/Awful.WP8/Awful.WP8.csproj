@@ -208,6 +208,8 @@
     <Compile Include="Controls\VariableTemplateControl.cs" />
     <Compile Include="DataSource\CodeTagDataModel.cs" />
     <Compile Include="DataSource\MainDataSource.cs" />
+    <Compile Include="DataSource\PrivateMessageDataSource.cs" />
+    <Compile Include="DataSource\PrivateMessageFolderDataSource.cs" />
     <Compile Include="DataSource\SampleDataSource.cs" />
     <Compile Include="DataSource\ThreadDataSource.cs" />
     <Compile Include="ForumViewPage.xaml.cs">
@@ -232,6 +234,9 @@
       <DependentUpon>PrivateMessageViewPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SampleData\SamplePrivateMessage\SamplePrivateMessage.xaml.cs">
+      <DependentUpon>SamplePrivateMessage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
@@ -248,6 +253,7 @@
     <Compile Include="ViewModels\LoggingViewModel.cs" />
     <Compile Include="ViewModels\LoginPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <Compile Include="ViewModels\PrivateMessagesPageViewModel.cs" />
     <Compile Include="ViewModels\RatingViewModel.cs" />
     <Compile Include="ViewModels\ReplyViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
@@ -313,6 +319,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <DesignTimeOnly Include="SampleData\SamplePrivateMessage\SamplePrivateMessage.xaml">
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <SubType>Designer</SubType>
+    </DesignTimeOnly>
     <Page Include="SettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -363,6 +373,13 @@
     <Content Include="Assets\AppBar\appbar.upload.rest.png" />
     <Content Include="Assets\AppBar\BookmarkIcon.png" />
     <Content Include="Assets\AppBar\check.png" />
+    <Content Include="Assets\AppBar\favs.png" />
+    <Content Include="Assets\AppBar\feature.email.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\AppBar\tasks.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\default_thread_tag.png" />
     <Content Include="Assets\ForumIcons\1.png" />
     <Content Include="Assets\ForumIcons\122.png" />
@@ -441,6 +458,7 @@
     <Content Include="SubmissionInfo\AppIcon_173.png" />
     <Content Include="SubmissionInfo\AppIcon_300.png" />
     <Content Include="SubmissionInfo\ApplicationIcon_300.png" />
+    <DesignTimeOnly Include="SampleData\SamplePrivateMessage\SamplePrivateMessage.xsd" />
     <Resource Include="www\awful.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>

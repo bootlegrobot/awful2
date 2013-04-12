@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using Awful.ViewModels;
 
 namespace Awful
 {
@@ -15,6 +16,15 @@ namespace Awful
         public PrivateMessageViewPage()
         {
             InitializeComponent();
+            Loaded += PrivateMessageViewPage_Loaded;
+        }
+
+        private PrivateMessagesPageViewModel Viewmodel { get { return this.Resources["dataSource"] as PrivateMessagesPageViewModel; } }
+
+        private void PrivateMessageViewPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!Viewmodel.IsDataLoaded)
+                Viewmodel.LoadData();
         }
     }
 }

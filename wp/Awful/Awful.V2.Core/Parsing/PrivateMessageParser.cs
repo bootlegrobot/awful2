@@ -2,6 +2,7 @@
 using System.Linq;
 using HtmlAgilityPack;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Awful
 {
@@ -55,6 +56,7 @@ namespace Awful
                     try
                     {
                         PrivateMessageFolderMetadata folder = new PrivateMessageFolderMetadata();
+                        folder.Messages = new List<PrivateMessageMetadata>();
                         string name = option.NextSibling.InnerText.Trim();
                         string value = option.GetAttributeValue("value", "");
                         folder.FolderId = value;
@@ -115,6 +117,9 @@ namespace Awful
 
             // remove last element from the table
             messageTable[messageTable.Length - 1] = null;
+
+            // remove first element from the table
+            messageTable[0] = null;
 
             foreach (var item in messageTable)
             {
@@ -218,7 +223,8 @@ namespace Awful
 
             if (subjectNode != null)
             {
-                pm.Subject = subjectNode.ParseTitleFromBreadcrumbsNode();
+                string subject = subjectNode.ParseTitleFromBreadcrumbsNode();
+                pm.Subject = subject;
             }
 
             // ***** PARSE POST MARK *****
@@ -364,7 +370,7 @@ namespace Awful
 
             }
             catch (Exception) { result = PRIVATE_MESSAGE_UNKNOWN_TITLE; }
-            return result;
+            return HttpUtility.HtmlDecode(result);
         }
 
         private static string GetMessageIDFromNode(HtmlNode node)

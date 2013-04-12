@@ -53,8 +53,10 @@
             <common:CollapseOnTrue x:Key="collapseOnTrueConverter" />
             <common:CollapseOnFalse x:Key="collapseOnFalseConverter" />
             <common:AssetRetriever x:Key="assetRetriever" />
-          
-            
+            <common:CollapseOnNull x:Key="collapseOnNull" />
+            <common:UppercaseConverter x:Key="uppercase" />
+
+
             <common:ContentFilterConverter x:Key="contentFilter" />
 
             <!-- Helpers -->

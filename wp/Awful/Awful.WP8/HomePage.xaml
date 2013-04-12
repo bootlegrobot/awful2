@@ -26,6 +26,7 @@
         <shell:ApplicationBarMenuItem Text="settings..."
                                       Click="NavigateToSettings" />
       </shell:ApplicationBar.MenuItems>
+    	<shell:ApplicationBarIconButton IconUri="/Assets/AppBar/feature.email.png" Text="messages" Click="AppBarMessageButton_Click"/>
     </shell:ApplicationBar>
   </phone:PhoneApplicationPage.ApplicationBar>
 

@@ -52,6 +52,18 @@ namespace Awful.Common
         }
     }
 
+    public class CollapseOnNull : VisibilityConverter<object>
+    {
+        public override bool ShowCondition(object value)
+        {
+            if (value is string)
+                return !string.IsNullOrEmpty(value as string);
+
+            return value != null;
+        }
+    }
+
+
     #endregion
 
     public class ShadowColorConverter : IValueConverter
@@ -294,4 +306,5 @@ namespace Awful.Common
             throw new NotImplementedException();
         }
     }
+
 }

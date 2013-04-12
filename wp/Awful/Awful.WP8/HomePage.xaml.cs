@@ -69,5 +69,10 @@ namespace Awful
         {
             NavigationService.Navigate(new Uri("/SettingsPage.xaml", UriKind.RelativeOrAbsolute));
         }
+
+        private void AppBarMessageButton_Click(object sender, System.EventArgs e)
+        {
+        	NavigationService.Navigate(new Uri("/PrivateMessageViewPage.xaml", UriKind.RelativeOrAbsolute));
+        }
     }
 }

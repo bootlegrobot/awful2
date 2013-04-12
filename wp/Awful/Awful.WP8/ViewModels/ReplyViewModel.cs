@@ -188,7 +188,7 @@ namespace Awful.ViewModels
             try
             {
                 List<ImgurUploader.DataUploadItem> items = new List<ImgurUploader.DataUploadItem>();
-                items.Add(new DataUploadItem(e));
+                items.Add(new ImgurUploader.DataUploadItem(e));
                 var request = ImgurUploader.ImgurUploadRequest.CreateUploadRequest(items, ImgurUploader.ImgurLinkType.Normal);
                 var response = await request.UploadAsync();
                 var result = response.CreateResult();
