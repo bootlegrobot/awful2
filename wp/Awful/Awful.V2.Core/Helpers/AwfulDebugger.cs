@@ -7,6 +7,7 @@ using System.IO.IsolatedStorage;
 using System.IO;
 using System.Threading;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Awful
 {
@@ -44,26 +45,41 @@ namespace Awful
 
         public static void SaveAndDispose()
         {
+            if (Instance.IsInDesignMode)
+                return;
+
             Instance.Dispose();
         }
 
         public static void AddLog(object sender, Level level, string message)
         {
+            if (Instance.IsInDesignMode)
+                return;
+
             Instance.AddMessage(sender, level, message);
         }
 
         public static void AddLog(object sender, Level level, Exception ex)
         {
+            if (Instance.IsInDesignMode)
+                return;
+
             Instance.AddMessage(sender, level, ex);
         }
 
         public static string ViewLog(DateTime date)
         {
+            if (Instance.IsInDesignMode)
+                return string.Empty;
+
             return Instance.LoadLogFrom(date);
         }
 
         public static void StopLogging()
         {
+            if (Instance.IsInDesignMode)
+                return;
+
             try
             {
                 AwfulDebugger.SaveAndDispose();
@@ -72,12 +88,18 @@ namespace Awful
             catch (Exception) { }
         }
 
+        public bool IsInDesignMode = true;
+
         private AwfulDebugger()
         {
-            InitializeViewer();
-            this._messageQueue = new Queue<string>();
-            this._signal = new AutoResetEvent(false);
-            ThreadPool.QueueUserWorkItem(ProcessMessages);
+            if (!DesignerProperties.IsInDesignTool)
+            {
+                IsInDesignMode = false;
+                InitializeViewer();
+                this._messageQueue = new Queue<string>();
+                this._signal = new AutoResetEvent(false);
+                ThreadPool.QueueUserWorkItem(ProcessMessages);
+            }
         }
 
         private void InitializeViewer()
@@ -85,33 +107,35 @@ namespace Awful
 #if DEBUG
             Debug.WriteLine("AwfulDebugger: Getting User store...");
 #endif
-            var storageFile = IsolatedStorageFile.GetUserStoreForApplication();
-            var filePath = string.Format("{0}/{1}.log", CoreConstants.LOG_DIRECTORY,
-                DateTime.Now.ToString(CoreConstants.LOG_FILE_FORMAT));
+                var storageFile = IsolatedStorageFile.GetUserStoreForApplication();
+                var filePath = string.Format("{0}/{1}.log", CoreConstants.LOG_DIRECTORY,
+                    DateTime.Now.ToString(CoreConstants.LOG_FILE_FORMAT));
 
-            if (!storageFile.DirectoryExists(CoreConstants.LOG_DIRECTORY))
-            {
-                storageFile.CreateDirectory(CoreConstants.LOG_DIRECTORY);
+                if (!storageFile.DirectoryExists(CoreConstants.LOG_DIRECTORY))
+                {
+                    storageFile.CreateDirectory(CoreConstants.LOG_DIRECTORY);
 #if DEBUG
                 Debug.WriteLine("AwfulDebugger: Created log directory...");
 #endif
-            }
+                }
 
 #if DEBUG
             Debug.WriteLine("AwfulDebugger: Opening logfile ...");
             Debug.WriteLine(string.Format("File is '{0}'", filePath));
 #endif
 
-            this._logStream = storageFile.OpenFile(filePath,
-                FileMode.Append, FileAccess.Write, FileShare.Read);
+                this._logStream = storageFile.OpenFile(filePath,
+                    FileMode.Append, FileAccess.Write, FileShare.Read);
 
-            CurrentFilePath = filePath;
+                CurrentFilePath = filePath;
 
 #if DEBUG
             Debug.WriteLine(string.Format("AwfulDebugger: log file size: {0}", _logStream.Length));
 #endif
 
-            this._logWriter = new StreamWriter(this._logStream);
+                this._logWriter = new StreamWriter(this._logStream);
+
+            
         }
 
         private void ProcessMessages(object state)

@@ -159,9 +159,12 @@ function navigate(url) {
 function scrollTo(id, isSmooth) {
     try {
         if (isSmooth == 'true') {
-            var link = document.getElementById(id);
+            //var link = document.getElementById(id);
             //window.external.notify('smooth: true, ' + link.href);
-            clickLink(link); 
+            //clickLink(link); 
+            $('html, body').animate({
+                scrollTop: $("#" + id).offset().top
+            }, 2000);
         }
         else {
             var divid = document.getElementById(id);

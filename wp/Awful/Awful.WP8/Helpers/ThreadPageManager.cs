@@ -191,12 +191,12 @@ namespace Awful
             if (post == null) return;
 
             string smooth;
-            bool smoothScroll = false;
+            bool smoothScroll = App.Model.IsSmoothScrollEnabled;
 
             if (smoothScroll)
             {
                 smooth = "true";
-                this._browser.InvokeScript("scrollTo", "postlink" + post.Data.PageIndex, smooth);
+                this._browser.InvokeScript("scrollTo", "post_" + post.Data.PageIndex, smooth);
             }
             else
             {

@@ -99,6 +99,10 @@
                                                            Header="Refresh bookmarks automatically"
                                                            IsChecked="{Binding RefreshBookmarks, Mode=TwoWay}" />
 
+                        <telerikPrimitives:RadToggleSwitch x:Name="SmoothScrollingSwitch"
+                                                           Header="Smooth scrolling"
+                                                           IsChecked="{Binding SmoothScrolling, Mode=TwoWay}" />
+
                         <telerikPrimitives:RadToggleSwitch x:Name="ContentFilterSwitch"
                                                            Header="Content filter"
                                                            IsChecked="{Binding ContentFilterEnabled, Mode=TwoWay}" />

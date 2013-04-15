@@ -203,6 +203,18 @@ namespace Awful
             }
         }
 
+        private const bool SMOOTH_SCROLL_DEFAULT = false;
+        public const string SMOOTH_SCROLL_KEY = "SmoothScroll";
+        public bool IsSmoothScrollEnabled
+        {
+            get { return GetValueOrDefault<bool>(SMOOTH_SCROLL_KEY, SMOOTH_SCROLL_DEFAULT); }
+            set
+            {
+                AddOrUpdateValue(SMOOTH_SCROLL_KEY, value);
+                OnPropertyChanged("IsSmoothScrollEnabled");
+            }
+        }
+
         private const int NOTIFICATION_DEFAULT = 0;
         public const string NOTIFICATION_KEY = "DefaultNotification";
         public NotificationMethod DefaultNotification

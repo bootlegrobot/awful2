@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Tasks;
 using System.Text.RegularExpressions;
+using System.ComponentModel;
 
 namespace Awful.Commands
 {
@@ -58,6 +59,9 @@ namespace Awful.Commands
 
         private bool Log(string email, string pattern)
         {
+            if (DesignerProperties.IsInDesignTool)
+                return false;
+
             bool inValue = !string.IsNullOrEmpty(email) && Regex.Match(email, pattern).Success;
 
             if (inValue)

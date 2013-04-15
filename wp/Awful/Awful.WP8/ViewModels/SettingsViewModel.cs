@@ -47,6 +47,16 @@ namespace Awful.ViewModels
             }
         }
 
+        public bool SmoothScrolling
+        {
+            get { return appModel.IsSmoothScrollEnabled; }
+            set
+            {
+                appModel.IsSmoothScrollEnabled = value;
+                OnPropertyChanged("SmoothScrolling");
+            }
+        }
+
         public AppDataModel.HomePageSection SelectedHomePage
         {
             get { return appModel.DefaultHomePage; }
