@@ -16,6 +16,7 @@ namespace Awful
         string FormCookie { get; }
         bool IsForward { get; }
         string Body { get; set; }
+        List<TagMetadata> TagOptions { get; set; }
     }
 
     [DataContract]
@@ -37,5 +38,7 @@ namespace Awful
         public string Subject { get; set; }
         [DataMember]
         public string Body { get; set; }
+        [DataMember]
+        public List<TagMetadata> TagOptions { get; set; }
     }
 }

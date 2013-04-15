@@ -175,9 +175,34 @@ namespace Awful
             pmRequest.To = toUser;
             pmRequest.Subject = title;
             pmRequest.IsForward = forward != string.Empty;
+            pmRequest.TagOptions = ParseFormTagOptions(doc);
 
             return pmRequest;
         }
+
+        private static List<TagMetadata> ParseFormTagOptions(HtmlDocument doc)
+        {
+            var tagNodes = doc.DocumentNode.Descendants("div")
+                .Where(node => node.GetAttributeValue("class", "").Equals("posticon"));
+
+            return tagNodes.Select(node => ParseTag(node)).ToList();
+
+        }
+
+        private static TagMetadata ParseTag(HtmlNode node)
+        {
+            TagMetadata tag = new TagMetadata();
+            var imgNode = node.Descendants("img").FirstOrDefault();
+            if (imgNode != null)
+                tag.TagUri = imgNode.GetAttributeValue("src", "");
+
+            var inputNode = node.Descendants("input").FirstOrDefault();
+            if (inputNode != null)
+                tag.Value = inputNode.GetAttributeValue("value", "");
+
+            return tag;
+        }
+
         /// <summary>
         /// 
         /// </summary>

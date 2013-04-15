@@ -31,7 +31,14 @@ namespace Awful.ViewModels
             }
         }
 
-        public bool HasPrev { get { return _selectedIndex > 1; } }
+        private bool _showWebView = false;
+        public bool ShowWebView
+        {
+            get { return _showWebView; }
+            set { SetProperty(ref _showWebView, value, "ShowWebView"); }
+        }
+
+        public bool HasPrev { get { return _selectedIndex > 0; } }
         public bool HasNext { get { return _selectedIndex < _items.Count; } }
 
         private PrivateMessageFolderDataSource _currentFolder;

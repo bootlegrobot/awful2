@@ -21,7 +21,7 @@
                             shell:SystemTray.IsVisible="True">
   
   <phone:PhoneApplicationPage.ApplicationBar>
-    <shell:ApplicationBar Opacity="0.75" Mode="Minimized">
+    <shell:ApplicationBar>
       <shell:ApplicationBar.MenuItems>
         <shell:ApplicationBarMenuItem Text="settings..."
                                       Click="NavigateToSettings" />

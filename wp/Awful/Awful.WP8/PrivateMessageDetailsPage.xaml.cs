@@ -42,6 +42,8 @@ namespace Awful
         void PageManager_Loaded(object sender, EventArgs e)
         {
             //throw new NotImplementedException();
+            if (!ViewModel.ShowWebView)
+                ViewModel.ShowWebView = true;
         }
 
         void PageManager_ReadyForContent(object sender, EventArgs e)
@@ -90,6 +92,21 @@ namespace Awful
             ShowCurrentMessage();
             NextButton.IsEnabled = ViewModel.HasNext;
             PrevButton.IsEnabled = ViewModel.HasPrev;
+        }
+
+        private void AppBarReplyButton_Click(object sender, EventArgs e)
+        {
+            RespondOptionsWindow.IsOpen = !RespondOptionsWindow.IsOpen;
+        }
+
+        private void ForwardText_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+        }
+
+        private void ReplyText_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
         }
     }
 }

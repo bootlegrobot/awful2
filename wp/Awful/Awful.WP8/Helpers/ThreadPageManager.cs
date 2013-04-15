@@ -110,9 +110,10 @@ namespace Awful
             {
                 WebBrowser pageView = new WebBrowser();
                 
-                // set background to transparent color
-                KollaSoft.KSWebBrowserHelper.SetBrowserBackground(pageView,
-                    new SolidColorBrush(Color.FromArgb(0,255,255,255)));
+                // set background to background color
+                KollaSoft.KSWebBrowserHelper.SetBrowserBackground(pageView, this._bg == null
+                    ? new SolidColorBrush(Color.FromArgb(0,255,255,255))
+                    : this._bg);
 
                 // disable double tap
                 KollaSoft.KSWebBrowserHelper.SetSupressDoubleTap(pageView, true);
@@ -167,6 +168,7 @@ namespace Awful
         private SolidColorBrush _bg;
 
         public event EventHandler ReadyForContent;
+        public event EventHandler ContentLoaded;
         public event EventHandler Loading;
         public event EventHandler Loaded;
         public event EventHandler PostListRequested;
@@ -299,6 +301,8 @@ namespace Awful
                 theme.AccentColor,
                 theme.ThreadPageOldPostColor,
                 App.Model.ContentFontSize);
+
+            
         }
 
         private void OnPageContentLoading(string response)
@@ -312,6 +316,7 @@ namespace Awful
 
         private void OnDOMLoaded(string response)
         {
+            this.ClearHtml();
             this.IsReady = true;
             if (ReadyForContent != null)
                 ReadyForContent(this, null);

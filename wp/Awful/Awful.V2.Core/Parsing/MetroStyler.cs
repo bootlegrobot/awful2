@@ -102,7 +102,8 @@ namespace Awful
                 .Where(node => node.GetAttributeValue("class", "").Equals("postbody"))
                 .FirstOrDefault();
 
-            return new ForumContentParser(postbody.FirstChild).Body;
+            string result = new ForumContentParser(postbody.FirstChild).Body;
+            return result;
         }
     }
 }
