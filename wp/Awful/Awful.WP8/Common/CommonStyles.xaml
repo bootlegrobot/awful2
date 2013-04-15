@@ -3,15 +3,25 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                    xmlns:telerikInput="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Input"
+                    xmlns:localControls="clr-namespace:Awful.Controls"
                     xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
+                    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                    xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
                     xmlns:Controls="clr-namespace:Awful.Controls"
+                    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                    xmlns:Primitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone"
                     mc:Ignorable="d">
-	
-	<Style x:Key="EmptyListContentStyle" BasedOn="{StaticResource PhoneTextSubtleStyle}" TargetType="TextBlock">
-		<Setter Property="FontSize" Value="{StaticResource PhoneFontSizeLarge}"/>
-		<Setter Property="TextWrapping" Value="Wrap"/>
-	</Style>
-	
+
+    <Style x:Key="EmptyListContentStyle"
+           BasedOn="{StaticResource PhoneTextSubtleStyle}"
+           TargetType="TextBlock">
+        <Setter Property="FontSize"
+                Value="{StaticResource PhoneFontSizeLarge}" />
+        <Setter Property="TextWrapping"
+                Value="Wrap" />
+    </Style>
+
     <DataTemplate x:Key="Standard200IconItemTemplate">
         <Grid Height="200"
               Background="{StaticResource PhoneAccentBrush}"
@@ -656,7 +666,87 @@
         </Border>
     </DataTemplate>
     <Thickness x:Key="DefaultTitlePanelMargin">12,17,0,12</Thickness>
-  
-    <!-- Resource dictionary entries should be defined here. -->
+    <Style x:Key="ReplyPivotHeaderStyle"
+           TargetType="Primitives:PivotHeaderItem">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Padding"
+                Value="21,0,1,0" />
+        <Setter Property="Margin"
+                Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Primitives:PivotHeaderItem">
+                    <Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="SelectionStates">
+                                <VisualState x:Name="Unselected" />
+                                <VisualState x:Name="Selected">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0"
+                                                         To="1"
+                                                         Storyboard.TargetProperty="(UIElement.Opacity)"
+                                                         Storyboard.TargetName="contentPresenter" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <ContentPresenter x:Name="contentPresenter"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Content="{TemplateBinding Content}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}"
+                                          Opacity="{StaticResource PhonePivotUnselectedItemOpacity}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
+    <!-- Resource dictionary entries should be defined here. -->
+    <Style x:Key="ReplyPivotStyle"
+           TargetType="phone:Pivot">
+        <Setter Property="Margin"
+                Value="0" />
+        <Setter Property="Padding"
+                Value="0" />
+        <Setter Property="Foreground"
+                Value="{StaticResource PhoneForegroundBrush}" />
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <Grid />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="phone:Pivot">
+                    <Grid HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                          VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid Background="{TemplateBinding Background}"
+                              Grid.RowSpan="3" />
+                        <ContentControl ContentTemplate="{TemplateBinding TitleTemplate}"
+                                        Content="{TemplateBinding Title}"
+                                        HorizontalAlignment="Left"
+                                        Margin="24,17,0,-7"
+                                        Style="{StaticResource PivotTitleStyle}" />
+                        <Primitives:PivotHeadersControl x:Name="HeadersListElement"
+                                                        Grid.Row="1"
+                                                        Foreground="{StaticResource PhoneAccentBrush}" />
+                        <ItemsPresenter x:Name="PivotItemPresenter"
+                                        Margin="{TemplateBinding Padding}"
+                                        Grid.Row="2" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

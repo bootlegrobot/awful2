@@ -22,8 +22,7 @@
     <phone:PhoneApplicationPage.Resources>
         <SampleData:SamplePrivateMessage x:Key="SamplePrivateMessage"
                                          d:IsDataSource="True" />
-        <viewmodel:PrivateMessagesPageViewModel x:Key="dataSource" />
-
+       
         <data:PrivateMessageDataSource x:Key="sampleMessage"
                                        Title="Sample Title"
                                        Subtitle="Sample subtitle that is a bit long so here is text"
@@ -42,7 +41,8 @@
                                             Text="new" />
             <shell:ApplicationBarIconButton x:Name="AppbarSelectButton"
                                             IconUri="/Assets/AppBar/tasks.png"
-                                            Text="select" />
+                                            Text="select"
+                                            Click="AppBarSelectButton_Click" />
             <shell:ApplicationBarIconButton x:Name="AppbarRefreshButton"
                                             IconUri="/Assets/AppBar/appbar.refresh.rest.png"
                                             Text="refresh" />
@@ -94,7 +94,7 @@
     </phone:PhoneApplicationPage.Foreground>
 
     <phone:Pivot x:Name="LayoutRoot"
-                 DataContext="{StaticResource dataSource}"
+                 DataContext="{StaticResource PMFoldersSource}"
                  d:DataContext="{StaticResource SamplePrivateMessage}"
                  Title="{Binding SelectedFolder.Title, Converter={StaticResource uppercase}}">
 
@@ -139,7 +139,7 @@
             </Style>
 
             <DataTemplate x:Key="MessageItemTemplate">
-                <Grid>
+                <Grid Background="Blue">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
@@ -211,9 +211,11 @@
             <DataTemplate x:Key="GroupedMessageListTemplate">
 
                 <telerikPrimitives:RadDataBoundListBox x:Name="groupList"
+                                                       IsCheckModeActive="{Binding IsSelectModeActive}"
                                                        ScrollViewer.VerticalScrollBarVisibility="Disabled"
                                                        ItemsSource="{Binding Items}"
                                                        IsCheckModeEnabled="True"
+                                                       ItemTap="groupList_ItemTap"
                                                        ItemContainerStyle="{StaticResource itemContainerStyle}"
                                                        ItemTemplate="{StaticResource MessageItemTemplate}" />
             </DataTemplate>
@@ -255,7 +257,9 @@
             <Grid Margin="0">
                 <telerikPrimitives:RadDataBoundListBox x:Name="allItemsListBox"
                                                        ItemsSource="{Binding Items}"
+                                                       IsCheckModeActive="{Binding IsSelectModeActive, Source={StaticResource PMFoldersSource}}"
                                                        IsCheckModeEnabled="True"
+                                                       ItemTap="groupList_ItemTap"
                                                        ItemContainerStyle="{StaticResource itemContainerStyle}"
                                                        ItemTemplateSelector="{StaticResource messageTemplateSelector}">
                 </telerikPrimitives:RadDataBoundListBox>

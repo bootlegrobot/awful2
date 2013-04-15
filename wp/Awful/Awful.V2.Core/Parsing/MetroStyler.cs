@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 using HtmlAgilityPack;
@@ -88,6 +89,20 @@ namespace Awful
             }
 
             return string.Format("<span class='text_title3style'><span class='{0}'>{1}</span></span><br/>", style, post.Author);
+        }
+
+        public static string Metrofy(PrivateMessageMetadata message)
+        {
+            if (message.Body == null)
+                message = message.Refresh();
+
+            HtmlDocument html = new HtmlDocument();
+            html.LoadHtml(message.Body);
+            HtmlNode postbody = html.DocumentNode.Descendants()
+                .Where(node => node.GetAttributeValue("class", "").Equals("postbody"))
+                .FirstOrDefault();
+
+            return new ForumContentParser(postbody.FirstChild).Body;
         }
     }
 }

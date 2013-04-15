@@ -33,6 +33,31 @@ namespace Awful.ViewModels
             }
         }
 
+        #region SelectMode
+
+        private bool _isSelectModeActive = false;
+        public bool IsSelectModeActive
+        {
+            get { return _isSelectModeActive; }
+            set
+            {
+                if (SetProperty(ref _isSelectModeActive, value))
+                    OnSelectModeChanged(this);
+            }
+        }
+
+        private event EventHandler SelectModeChanged;
+
+        private void OnSelectModeChanged(PrivateMessagesPageViewModel privateMessagesPageViewModel)
+        {
+            var handler = SelectModeChanged;
+            if (handler != null)
+                handler(privateMessagesPageViewModel, EventArgs.Empty);
+        }
+
+       
+        #endregion
+
         protected override void OnError(Exception exception)
         {
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, exception);
@@ -53,7 +78,7 @@ namespace Awful.ViewModels
 
         protected override IEnumerable<Data.PrivateMessageDataSource> LoadDataInBackground()
         {
-            IEnumerable<PrivateMessageMetadata> messages = null;
+            IEnumerable<Data.PrivateMessageDataSource> messages = null;
 
             // Is the folder list null? That means we need to grab all folders from the web.
             // The function always starts at the inbox, so we can grab the messages right now.
@@ -62,34 +87,27 @@ namespace Awful.ViewModels
                 var folders = PrivateMessageFolderDataSource.LoadUserFolders();
                 this._folders = new List<PrivateMessageFolderDataSource>(folders);
                 this._selectedFolder = this._folders[0];
-                messages = this._selectedFolder.Metadata.Messages;
-            }
-
-            // get messages from selected folder and group up accordingly
-            if (messages == null)
-            {
-                this._selectedFolder.Metadata = this._selectedFolder.Metadata.Refresh();
-                messages = this._selectedFolder.Metadata.Messages;
+                messages = this._selectedFolder.GetMessages();
             }
 
             return CondenseMessages(messages);
         }
 
-        private IEnumerable<Data.PrivateMessageDataSource> CondenseMessages(IEnumerable<PrivateMessageMetadata> items)
+        private IEnumerable<Data.PrivateMessageDataSource> CondenseMessages(IEnumerable<Data.PrivateMessageDataSource> items)
         {
             var itemsAsList = items.ToList();
-            var dataItems = new List<Data.PrivateMessageDataSource>(itemsAsList.Count);
+            var condensedItems = new List<Data.PrivateMessageDataSource>(itemsAsList.Count);
 
             foreach (var item in items)
             {
                 if (itemsAsList.Contains(item))
                 {
-
                     // find all items that contain the same subject and author
-                    string subject = item.Subject;
-                    string author = item.From;
+                    string subject = item.Metadata.Subject.ToLower();
+                    string author = item.Metadata.From;
                     var conversation = items
-                        .Where(message => message.Subject.Contains(subject) && message.From.Equals(author))
+                        .Where(message => message.Metadata.Subject.ToLower().Contains(subject) && 
+                            message.Metadata.From.Equals(author))
                         .ToArray();
 
                     // if there is more than one, then remove them from the list
@@ -98,20 +116,22 @@ namespace Awful.ViewModels
                         foreach (var found in conversation)
                             itemsAsList.Remove(found);
 
-                        dataItems.Add(new Data.PrivateMessageDataGroup(conversation));
+                        condensedItems.Add(new Data.PrivateMessageDataGroup(conversation));
                     }
 
                     else
                     {
-                        dataItems.Add(new Data.PrivateMessageDataSource() { Metadata = item });
+                        condensedItems.Add(item);
                         itemsAsList.Remove(item);
                     }
                 }
             }
 
             // sort items by postdate, decending
-            return dataItems.OrderByDescending(data =>{ return data.Metadata.PostDate.GetValueOrDefault().Ticks; });
+            return condensedItems.OrderByDescending(data =>{ return data.Metadata.PostDate.GetValueOrDefault().Ticks; });
         }
+
+        public PrivateMessageDataSource SelectedItem { get; set; }
     }
 
     public class PrivateMessageTemplateSelector : Telerik.Windows.Controls.DataTemplateSelector

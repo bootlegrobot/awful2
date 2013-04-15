@@ -90,6 +90,14 @@ namespace Awful
             InitializeThreadMenu(threadMenu);
         }
 
+        public ThreadPageManager(WebBrowser browser, ThreadPageContextMenuProvider threadMenu,
+            SolidColorBrush foreground, SolidColorBrush background)
+            : this(browser, threadMenu)
+        {
+            this._fg = foreground;
+            this._bg = background;
+        }
+
         public ThreadPageManager() 
         { 
             InitializeEventManager();
@@ -155,6 +163,8 @@ namespace Awful
         public int SelectedPostIndex { get; private set; }
         public string SelectedImageUrl { get; private set; }
         public string SelectedLinkUrl { get; private set; }
+        private SolidColorBrush _fg;
+        private SolidColorBrush _bg;
 
         public event EventHandler ReadyForContent;
         public event EventHandler Loading;
@@ -281,9 +291,11 @@ namespace Awful
         {
             // Set styles
             var theme = ThemeManager.Instance.CurrentTheme;
+            Color fg = this._fg == null ? theme.ThreadPageForegroundColor : this._fg.Color;
+            Color bg = this._bg == null ? theme.ThreadPageBackgroundColor : this._bg.Color;
 
-            SetPageStyle(theme.ThreadPageForegroundColor,
-                theme.ThreadPageBackgroundColor,
+            SetPageStyle(fg,
+                bg,
                 theme.AccentColor,
                 theme.ThreadPageOldPostColor,
                 App.Model.ContentFontSize);

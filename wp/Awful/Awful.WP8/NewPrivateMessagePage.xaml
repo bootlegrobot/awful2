@@ -1,0 +1,87 @@
+﻿<phone:PhoneApplicationPage
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
+    xmlns:SampleData="clr-namespace:Expression.Blend.SampleData.SampleNewMessage"
+    xmlns:Controls="clr-namespace:Awful.Controls"
+    x:Class="Awful.NewPrivateMessagePage"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="True">
+	<phone:PhoneApplicationPage.Resources>
+		<SampleData:SampleNewMessage x:Key="SampleNewMessage" d:IsDataSource="True"/>
+		<Color x:Key="MessageSubtleColor">#FFC8C8C8</Color>
+		<DataTemplate x:Key="ReplyHeaderTemplate">
+			<Grid>
+				<TextBlock Text="{Binding}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+			</Grid>
+		</DataTemplate>
+	</phone:PhoneApplicationPage.Resources>
+	<phone:PhoneApplicationPage.FontFamily>
+		<StaticResource ResourceKey="PhoneFontFamilyNormal"/>
+	</phone:PhoneApplicationPage.FontFamily>
+	<phone:PhoneApplicationPage.FontSize>
+		<StaticResource ResourceKey="PhoneFontSizeNormal"/>
+	</phone:PhoneApplicationPage.FontSize>
+	<phone:PhoneApplicationPage.Foreground>
+		<StaticResource ResourceKey="PhoneForegroundBrush"/>
+	</phone:PhoneApplicationPage.Foreground>
+	<phone:PhoneApplicationPage.ApplicationBar>
+		<shell:ApplicationBar BackgroundColor="{StaticResource MessageSubtleColor}" 
+		ForegroundColor="Black">
+			<shell:ApplicationBarIconButton IconUri="/Assets/AppBar/feature.camera.png" Text="picture"/>
+			<shell:ApplicationBarIconButton IconUri="/Assets/AppBar/MB_0002_mail_sent.png" Text="send"/>
+		</shell:ApplicationBar>
+	</phone:PhoneApplicationPage.ApplicationBar>
+
+	
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+	<phone:Pivot x:Name="LayoutRoot"
+		Title="{Binding Title, Converter={StaticResource uppercase}}"
+		Background="White" 
+		Style="{StaticResource ReplyPivotStyle}" 
+		DataContext="{Binding Source={StaticResource SampleNewMessage}}" 
+		Foreground="{StaticResource PhoneAccentBrush}" >
+		<phone:PivotItem x:Name="MessagePivot" Header="new" Foreground="{StaticResource PhoneAccentBrush}" Margin="12,12,12,0">
+			<Grid x:Name="MessageRoot" Background="Transparent">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+
+			<!--TitlePanel contains the name of the application and page title-->
+				<StackPanel Grid.Row="0" Margin="0,0,0,12">
+					<telerikPrimitives:RadTextBox x:Name="MessageSubjectInput" TextWrapping="Wrap" Text="{Binding Subject, Mode=TwoWay}" Margin="-4,-7,0,0" FontSize="{StaticResource PhoneFontSizeLarge}" FontFamily="{StaticResource PhoneFontFamilySemiLight}" Padding="0,2,2,2" BorderThickness="0,0,0,1" BorderBrush="Black" Foreground="Black" Background="#BFFFFFFF" SelectionForeground="White" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Visible" InputScope="Text"/>
+					<TextBlock x:Name="PostDateText" TextWrapping="Wrap" Text="4/13/2013" Style="{StaticResource PhoneTextNormalStyle}" Margin="12,-12,12,0">
+						<TextBlock.Foreground>
+							<SolidColorBrush Color="{StaticResource MessageSubtleColor}"/>
+						</TextBlock.Foreground>
+					</TextBlock>
+				</StackPanel>
+
+			<!--ContentPanel - place additional content here-->
+				<Grid x:Name="ContentPanel" Grid.Row="1" Margin="0">
+					<telerikPrimitives:RadTextBox x:Name="MessageBodyInput" TextWrapping="Wrap" Text="{Binding Body, Mode=TwoWay}" Margin="-4,0,0,0" Padding="0,2,2,2" Foreground="Black" SelectionForeground="White" BorderBrush="#BFFFFFFF" Background="#BFFFFFFF" FontSize="{StaticResource PhoneFontSizeSmall}" AcceptsReturn="True" InputScope="Text" VerticalScrollBarVisibility="Visible"/>
+				</Grid>
+			</Grid>
+		</phone:PivotItem>
+		<phone:PivotItem x:Name="TagsPivot" Header="tags">
+			<Grid>
+				<Controls:AwfulTagsControl/>
+			</Grid>
+		</phone:PivotItem>
+		<phone:PivotItem x:Name="SmiliesPivot" Header="smilies" Margin="12,28,12,0">
+			<Grid>
+                <Controls:AwfulSmileyControl HorizontalAlignment="Left"
+                                             VerticalAlignment="Top" />
+            </Grid>
+        </phone:PivotItem>
+	</phone:Pivot>
+
+</phone:PhoneApplicationPage>

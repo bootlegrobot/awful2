@@ -3,6 +3,7 @@
 function loadHTML(html) {
     window.external.notify('htmlloading');
     document.body.innerHTML = html;
+    $("html").scrollTop(0);
     window.external.notify('htmlloaded');
 }
 

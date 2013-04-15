@@ -23,43 +23,53 @@ namespace Awful
             StringBuilder builder = new StringBuilder();
             while (node != null)
             {
-                switch (node.Name)
+                try { ProcessNode(node, builder); }
+                catch (Exception ex)
                 {
-                    case "#text":
-                        builder.Append(HandleText(node.InnerText));
-                        break;
-
-                    case "span":
-                        builder.Append(HandleSpoilers(node));
-                        break;
-
-                    case "img":
-                        builder.Append(HandleImages(node));
-                        break;
-
-                    case "a":
-                        builder.Append(HandleLinks(node));
-                        break;
-
-                    case "div":
-                        builder.Append(HandleQuotes(node));
-                        break;
-
-                    case "iframe":
-                        builder.Append(HandleObjects(node));
-                        break;
-
-                    case "object":
-                        builder.Append(HandleObjects(node));
-                        break;
-
-                    default:
-                        builder.Append(HandleNode(node));
-                        break;
+                    AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex);
                 }
+
                 node = node.NextSibling;
             }
             return builder.ToString();
+        }
+
+        private void ProcessNode(HtmlNode node, StringBuilder builder)
+        {
+            switch (node.Name)
+            {
+                case "#text":
+                    builder.Append(HandleText(node.InnerText));
+                    break;
+
+                case "span":
+                    builder.Append(HandleSpoilers(node));
+                    break;
+
+                case "img":
+                    builder.Append(HandleImages(node));
+                    break;
+
+                case "a":
+                    builder.Append(HandleLinks(node));
+                    break;
+
+                case "div":
+                    builder.Append(HandleQuotes(node));
+                    break;
+
+                case "iframe":
+                    builder.Append(HandleObjects(node));
+                    break;
+
+                case "object":
+                    builder.Append(HandleObjects(node));
+                    break;
+
+                default:
+                    builder.Append(HandleNode(node));
+                    break;
+            }
         }
     }
 

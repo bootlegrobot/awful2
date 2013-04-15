@@ -122,22 +122,97 @@
     		</Grid>
     	</DataTemplate>
 
-    	<Style x:Key="ThreadReplyControlListBoxItemStyle"
-    		TargetType="telerikPrimitives:RadDataBoundListBoxItem">
-    		<Setter Property="Padding" Value="6"/>
-    		<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-    		<Setter Property="VerticalContentAlignment" Value="Stretch"/>
-    	</Style>
+        <Style x:Key="ReplyControlListBoxItemStyle"
+               TargetType="telerikPrimitives:RadDataBoundListBoxItem">
+            <Setter Property="Padding"
+                    Value="6" />
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Stretch" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Stretch" />
+        </Style>
 
-    	<Style x:Key="ThreadReplyControlListBoxStyle" 
-    		TargetType="telerikPrimitives:RadDataBoundListBox">
-    		<Setter Property="ItemContainerStyle" Value="{StaticResource ThreadReplyControlListBoxItemStyle}"/>
-    		<Setter Property="VirtualizationStrategyDefinition">
-    			<Setter.Value>	
-    				<telerikPrimitives:WrapVirtualizationStrategyDefinition Orientation="Horizontal"/>
-    			</Setter.Value>
-    		</Setter>
-    	</Style>
+        <Style x:Key="ReplyControlListBoxStyle"
+               TargetType="telerikPrimitives:RadDataBoundListBox">
+            <Setter Property="ItemContainerStyle"
+                    Value="{StaticResource ReplyControlListBoxItemStyle}" />
+            <Setter Property="VirtualizationStrategyDefinition">
+                <Setter.Value>
+                    <telerikPrimitives:WrapVirtualizationStrategyDefinition Orientation="Horizontal" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate x:Key="ReplyControlBlockItemTemplate">
+            <Border Width="130"
+                    Height="130">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Border Background="{StaticResource PhoneChromeBrush}"
+                            BorderThickness="1"
+                            BorderBrush="{StaticResource PhoneSubtleBrush}"
+                            Grid.RowSpan="2">
+                        <TextBlock TextWrapping="Wrap"
+                                   Text="{Binding Tag}"
+                                   Style="{StaticResource PhoneTextTitle2Style}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Margin="0" />
+                    </Border>
+                    <TextBlock HorizontalAlignment="Right"
+                               TextWrapping="Wrap"
+                               Text="{Binding Title}"
+                               VerticalAlignment="Top"
+                               Grid.Row="1"
+                               Style="{StaticResource PhoneTextSmallStyle}"
+                               Margin="0,0,6,3"
+                               TextAlignment="Right" />
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ReplyControlImageItemTemplate">
+            <Border Width="130"
+                    Height="130">
+                <Grid xmlns:imagetools="clr-namespace:ImageTools.Controls;assembly=ImageTools.Controls">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.Resources>
+                        <imagetools:ImageConverter x:Key="gifConverter" />
+                    </Grid.Resources>
+
+                    <Border Background="lightgray"
+                            BorderThickness="1"
+                            BorderBrush="{StaticResource PhoneBorderBrush}"
+                            Grid.RowSpan="2">
+
+                        <imagetools:AnimatedImage Height="60"
+                                                  Width="60"
+                                                  Source="{Binding ImageUri, Converter={StaticResource gifConverter}}"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  Margin="0"
+                                                  AutoSize="True" />
+
+                    </Border>
+                    <TextBlock HorizontalAlignment="Right"
+                               TextWrapping="Wrap"
+                               Text="{Binding Title}"
+                               VerticalAlignment="Top"
+                               Grid.Row="1"
+                               Foreground="Black"
+                               Style="{StaticResource PhoneTextSmallStyle}"
+                               Margin="0,0,6,3"
+                               TextAlignment="Right" />
+                </Grid>
+            </Border>
+        </DataTemplate>
 
     </UserControl.Resources>
 	<UserControl.FontFamily>
@@ -222,7 +297,7 @@
 		<controls:PivotItem x:Name="TagsSection" Header="tags" HorizontalAlignment="Left" VerticalAlignment="Top">
 			<Grid>
                 <telerikPrimitives:RadDataBoundListBox x:Name="TagsListBox"
-                                                       Style="{StaticResource ThreadReplyControlListBoxStyle}"
+                                                       Style="{StaticResource ReplyControlListBoxStyle}"
                                                        ItemTap="AppendTagToReplyText"
                                                        ItemsSource="{Binding Items, Source={StaticResource CodeTags}}">
 
@@ -272,7 +347,7 @@
                                                        DataContext="{StaticResource smileyViewModel}"
                                                        Grid.Row="1"
                                                        Margin="12,0,0,0"
-                                                       Style="{StaticResource ThreadReplyControlListBoxStyle}"
+                                                       Style="{StaticResource ReplyControlListBoxStyle}"
                                                        IsAsyncBalanceEnabled="True"
                                                        EmptyContent="loading..."
                                                        ItemTap="AppendSmilieyToReplyText"
