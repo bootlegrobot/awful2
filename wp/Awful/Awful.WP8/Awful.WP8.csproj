@@ -163,6 +163,7 @@
     <Compile Include="Commands\SendAnEmailCommand.cs" />
     <Compile Include="Commands\ThreadCommands.cs" />
     <Compile Include="Common\ActionCommand.cs" />
+    <Compile Include="Common\BackgroundThread.cs" />
     <Compile Include="Common\Constants1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -209,6 +210,7 @@
     </Compile>
     <Compile Include="Controls\VariableTemplateControl.cs" />
     <Compile Include="DataSource\CodeTagDataModel.cs" />
+    <Compile Include="DataSource\IconTagDataModel.cs" />
     <Compile Include="DataSource\MainDataSource.cs" />
     <Compile Include="DataSource\PrivateMessageDataSource.cs" />
     <Compile Include="DataSource\PrivateMessageFolderDataSource.cs" />
@@ -264,6 +266,7 @@
     <Compile Include="ViewModels\LoggingViewModel.cs" />
     <Compile Include="ViewModels\LoginPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <Compile Include="ViewModels\NewPrivateMessagePageViewModel.cs" />
     <Compile Include="ViewModels\PrivateMessageDetailsViewModel.cs" />
     <Compile Include="ViewModels\PrivateMessagesPageViewModel.cs" />
     <Compile Include="ViewModels\RatingViewModel.cs" />

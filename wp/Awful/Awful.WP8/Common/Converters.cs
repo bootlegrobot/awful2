@@ -237,6 +237,9 @@ namespace Awful.Common
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
+            if (value == null)
+                return value;
+
             return value.ToString().ToUpper();
         }
 

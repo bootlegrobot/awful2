@@ -26,7 +26,8 @@ namespace Awful.ViewModels
         private string _title;
         public string Title
         {
-            get { return _title; }
+            // forum title in all uppercase
+            get { return string.IsNullOrEmpty(_title) ? null : _title.ToUpper(); }
             private set { SetProperty(ref _title, value, "Title"); }
         }
 

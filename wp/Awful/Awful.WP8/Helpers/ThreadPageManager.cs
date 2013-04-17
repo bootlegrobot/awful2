@@ -168,7 +168,6 @@ namespace Awful
         private SolidColorBrush _bg;
 
         public event EventHandler ReadyForContent;
-        public event EventHandler ContentLoaded;
         public event EventHandler Loading;
         public event EventHandler Loaded;
         public event EventHandler PostListRequested;

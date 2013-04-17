@@ -66,6 +66,7 @@
             <!-- view models -->
             <viewmodel:PrivateMessagesPageViewModel x:Key="PMFoldersSource" />
             <viewmodel:PrivateMessageDetailsViewModel x:Key="PMDetailsSource" />
+            <viewmodel:NewPrivateMessagePageViewModel x:Key="PMNewSource" />
 
             <!-- Helpers -->
             <helpers:ThreadIconViewer x:Key="IconViewer" />

@@ -52,6 +52,7 @@ namespace Awful
         }
 
         private readonly ThreadPageManager PageManager;
+        private NewPrivateMessagePageViewModel NewMessage { get { return App.Current.Resources["PMNewSource"] as NewPrivateMessagePageViewModel; } }
         private PrivateMessageDetailsViewModel ViewModel { get { return App.Current.Resources["PMDetailsSource"] as PrivateMessageDetailsViewModel; } }
         private IApplicationBarIconButton PrevButton
         {
@@ -101,12 +102,22 @@ namespace Awful
 
         private void ForwardText_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-
+            NewMessage.IsForward = true;
+            NewMessage.InitCallback = NavigateToNewMessagePage;
+            NewMessage.LoadMessage(ViewModel.SelectedItem);
         }
 
         private void ReplyText_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            NewMessage.IsForward = false;
+            NewMessage.InitCallback = NavigateToNewMessagePage;
+            NewMessage.LoadMessage(ViewModel.SelectedItem);
+        }
 
+        private void NavigateToNewMessagePage(bool success)
+        {
+            if (success)
+                NavigationService.Navigate(new Uri("/NewPrivateMessagePage.xaml", UriKind.Relative));
         }
     }
 }

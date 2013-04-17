@@ -39,9 +39,12 @@ namespace Awful
 
             if (colorNode != null)
             {
-                string colorValue = colorNode.GetAttributeValue("class", "");
-                string categoryToken = colorValue.Split(new char[] { ' ' })[1];
-                try { thread.ColorCategory = ConvertColorValueToBookmarkCategory(categoryToken); }
+                try
+                {
+                    string colorValue = colorNode.GetAttributeValue("class", "");
+                    string categoryToken = colorValue.Split(new char[] { ' ' })[1];
+                    thread.ColorCategory = ConvertColorValueToBookmarkCategory(categoryToken);
+                }
                 catch (Exception ex)
                 {
                     AwfulDebugger.AddLog(thread, AwfulDebugger.Level.Info, ex);

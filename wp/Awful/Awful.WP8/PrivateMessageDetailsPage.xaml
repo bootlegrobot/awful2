@@ -25,11 +25,9 @@
     <phone:PhoneApplicationPage.Resources>
         <Color x:Key="MenuBackgroundColor">#FFC8C8C8</Color>
     	<Storyboard x:Name="ShowBrowserStoryboard"
-		BeginTime="0:0:3">
-    		<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="PrivateMessageWebView">
-    			<DiscreteDoubleKeyFrame KeyTime="0" Value="1"/>
-    		</DoubleAnimationUsingKeyFrames>
-    	</Storyboard>
+        	BeginTime="0:0:1">
+        	<DoubleAnimation Duration="0:0:0.3" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="PrivateMessageWebView" d:IsOptimized="True"/>
+        </Storyboard>
 
     </phone:PhoneApplicationPage.Resources>
 	<phone:PhoneApplicationPage.DataContext>

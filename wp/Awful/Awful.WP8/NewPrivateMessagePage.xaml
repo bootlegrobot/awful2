@@ -9,18 +9,109 @@
     xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
     xmlns:SampleData="clr-namespace:Expression.Blend.SampleData.SampleNewMessage"
     xmlns:Controls="clr-namespace:Awful.Controls"
+	xmlns:viewmodel="clr-namespace:Awful.ViewModels"
+	xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:el="clr-namespace:Microsoft.Expression.Interactivity.Layout;assembly=Microsoft.Expression.Interactions"
+             xmlns:eim="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
+             xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
     x:Class="Awful.NewPrivateMessagePage"
+    DataContext="{StaticResource PMNewSource}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
 	<phone:PhoneApplicationPage.Resources>
-		<SampleData:SampleNewMessage x:Key="SampleNewMessage" d:IsDataSource="True"/>
+		<!--<SampleData:SampleNewMessage x:Key="SampleNewMessage" d:IsDataSource="True"/>-->
 		<Color x:Key="MessageSubtleColor">#FFC8C8C8</Color>
+		
 		<DataTemplate x:Key="ReplyHeaderTemplate">
 			<Grid>
 				<TextBlock Text="{Binding}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
 			</Grid>
 		</DataTemplate>
+
+		<DataTemplate x:Key="tagOptionsItemTemplate">
+		  <Border x:Name="ThreadIconBorder"
+                            Width="100"
+                            BorderThickness="2"
+                            BorderBrush="{StaticResource PhoneBorderBrush}"
+                            Height="100"
+                            VerticalAlignment="Top">
+			
+			  <Border.Resources>
+                    <Storyboard x:Key="ShowThreadTagAnimation">
+                        <DoubleAnimation Storyboard.TargetName="ThreadTagImage"
+                                         Storyboard.TargetProperty="Opacity"
+                                         To="1"
+                                         Duration="0:0:0.5">
+                            <DoubleAnimation.EasingFunction>
+                                <CircleEase EasingMode="EaseIn" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </Border.Resources>
+
+                        <i:Interaction.Triggers>
+                            <ec:DataTrigger Binding="{Binding ShowImage}"
+                                            Comparison="Equal"
+                                            Value="True">
+                                <eim:ControlStoryboardAction Storyboard="{StaticResource ShowThreadTagAnimation}"
+                                                             ControlStoryboardOption="Play" />
+                            </ec:DataTrigger>
+                        </i:Interaction.Triggers>
+
+                        <Grid>
+                            <TextBlock Text="{Binding Tag}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       TextAlignment="Center"
+                                       TextWrapping="Wrap"
+                                       FontSize="10"
+                                       Style="{StaticResource PhoneTextAccentStyle}" />
+
+
+                            <Image Source="/Assets/default_thread_tag.png"
+                                   Canvas.ZIndex="9"
+                                   Stretch="UniformToFill"
+                                   AutomationProperties.Name="{Binding Tag}" />
+
+                            <Image x:Name="ThreadTagImage"
+                                   Opacity="0"
+                                   Source="{Binding Image}"
+                                   Canvas.ZIndex="10"
+                                   Stretch="UniformToFill"
+                                   AutomationProperties.Name="{Binding Tag}" />
+                        </Grid>
+
+                    </Border>
+				</DataTemplate>
+
+				<Style x:Key="ReplyControlListBoxItemStyle"
+           TargetType="telerikPrimitives:RadDataBoundListBoxItem">
+        <Setter Property="Padding"
+                Value="6" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Stretch" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Stretch" />
+    </Style>
+
+    <Style x:Key="ReplyControlListBoxStyle"
+           TargetType="telerikPrimitives:RadDataBoundListBox">
+        <Setter Property="ItemContainerStyle"
+                Value="{StaticResource ReplyControlListBoxItemStyle}" />
+        <Setter Property="VirtualizationStrategyDefinition">
+            <Setter.Value>
+                <telerikPrimitives:WrapVirtualizationStrategyDefinition Orientation="Horizontal" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+				<DataTemplate x:Key="tagOptionsListTemplate">
+					<telerikPrimitives:RadDataBoundListBox ItemsSource="{Binding}"
+						ItemTemplate="{StaticResource tagOptionsItemTemplate}"
+						Style="{StaticResource ReplyControlListBoxStyle}"/>
+				</DataTemplate>
+
 	</phone:PhoneApplicationPage.Resources>
 	<phone:PhoneApplicationPage.FontFamily>
 		<StaticResource ResourceKey="PhoneFontFamilyNormal"/>
@@ -32,8 +123,7 @@
 		<StaticResource ResourceKey="PhoneForegroundBrush"/>
 	</phone:PhoneApplicationPage.Foreground>
 	<phone:PhoneApplicationPage.ApplicationBar>
-		<shell:ApplicationBar BackgroundColor="{StaticResource MessageSubtleColor}" 
-		ForegroundColor="Black">
+		<shell:ApplicationBar>
 			<shell:ApplicationBarIconButton IconUri="/Assets/AppBar/feature.camera.png" Text="picture"/>
 			<shell:ApplicationBarIconButton IconUri="/Assets/AppBar/MB_0002_mail_sent.png" Text="send"/>
 		</shell:ApplicationBar>
@@ -44,10 +134,7 @@
     <!--LayoutRoot is the root grid where all page content is placed-->
 	<phone:Pivot x:Name="LayoutRoot"
 		Title="{Binding Title, Converter={StaticResource uppercase}}"
-		Background="White" 
-		Style="{StaticResource ReplyPivotStyle}" 
-		DataContext="{Binding Source={StaticResource SampleNewMessage}}" 
-		Foreground="{StaticResource PhoneAccentBrush}" >
+		Background="{x:Null}">
 		<phone:PivotItem x:Name="MessagePivot" Header="new" Foreground="{StaticResource PhoneAccentBrush}" Margin="12,12,12,0">
 			<Grid x:Name="MessageRoot" Background="Transparent">
 				<Grid.RowDefinitions>
@@ -57,7 +144,7 @@
 
 			<!--TitlePanel contains the name of the application and page title-->
 				<StackPanel Grid.Row="0" Margin="0,0,0,12">
-					<telerikPrimitives:RadTextBox x:Name="MessageSubjectInput" TextWrapping="Wrap" Text="{Binding Subject, Mode=TwoWay}" Margin="-4,-7,0,0" FontSize="{StaticResource PhoneFontSizeLarge}" FontFamily="{StaticResource PhoneFontFamilySemiLight}" Padding="0,2,2,2" BorderThickness="0,0,0,1" BorderBrush="Black" Foreground="Black" Background="#BFFFFFFF" SelectionForeground="White" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Visible" InputScope="Text"/>
+					<telerikPrimitives:RadTextBox x:Name="MessageSubjectInput" TextWrapping="Wrap" Text="{Binding Subject, Mode=TwoWay}" Margin="-4,-7,0,0" FontSize="{StaticResource PhoneFontSizeLarge}" FontFamily="{StaticResource PhoneFontFamilySemiLight}" Padding="0,2,2,2" BorderThickness="0,0,0,1" BorderBrush="{StaticResource PhoneForegroundBrush}" Foreground="{StaticResource PhoneForegroundBrush}" Background="{StaticResource PhoneBackgroundBrush}" SelectionForeground="White" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Visible" InputScope="Text" Watermark="Add Title" HideWatermarkOnFocus="True"/>
 					<TextBlock x:Name="PostDateText" TextWrapping="Wrap" Text="4/13/2013" Style="{StaticResource PhoneTextNormalStyle}" Margin="12,-12,12,0">
 						<TextBlock.Foreground>
 							<SolidColorBrush Color="{StaticResource MessageSubtleColor}"/>
@@ -67,7 +154,26 @@
 
 			<!--ContentPanel - place additional content here-->
 				<Grid x:Name="ContentPanel" Grid.Row="1" Margin="0">
-					<telerikPrimitives:RadTextBox x:Name="MessageBodyInput" TextWrapping="Wrap" Text="{Binding Body, Mode=TwoWay}" Margin="-4,0,0,0" Padding="0,2,2,2" Foreground="Black" SelectionForeground="White" BorderBrush="#BFFFFFFF" Background="#BFFFFFFF" FontSize="{StaticResource PhoneFontSizeSmall}" AcceptsReturn="True" InputScope="Text" VerticalScrollBarVisibility="Visible"/>
+					<Grid.RowDefinitions>
+						<RowDefinition/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+					<telerikPrimitives:RadTextBox x:Name="MessageBodyInput" TextWrapping="Wrap" Text="{Binding Body, Mode=TwoWay}" Margin="-4,0,0,0" Padding="0,2,2,2" Foreground="{StaticResource PhoneForegroundBrush}" SelectionForeground="White" BorderBrush="{StaticResource PhoneForegroundBrush}" Background="{StaticResource PhoneBackgroundBrush}" FontSize="{StaticResource PhoneFontSizeSmall}" AcceptsReturn="True" InputScope="Text" VerticalScrollBarVisibility="Visible" BorderThickness="0,0,0,1" Watermark="Tap to start message" HideWatermarkOnFocus="True"/>
+					<telerikPrimitives:RadPickerBox x:Name="MessageTagPicker" 
+						HorizontalContentAlignment="Center"
+						PopupContent="{Binding TagOptions}"
+						PopupContentTemplate="{StaticResource tagOptionsListTemplate}"
+						IsFullScreen="True"
+						Content="Select thread tag..." 
+						VerticalAlignment="Top" 
+						Grid.Row="1" 
+						BorderThickness="3" 
+						Header="Select tag">
+						
+						<telerikPrimitives:RadPickerBox.HeaderTemplate>
+							<DataTemplate/>
+						</telerikPrimitives:RadPickerBox.HeaderTemplate>
+					</telerikPrimitives:RadPickerBox>
 				</Grid>
 			</Grid>
 		</phone:PivotItem>
