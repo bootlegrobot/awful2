@@ -24,14 +24,14 @@ namespace Awful.Data
 		}
     }
 
-    public class SmilieyDataModel : CodeTagDataModel, Common.IUpdateable<SmilieyDataModel>
+    public class SmileyDataModel : CodeTagDataModel, Common.IUpdateable<SmileyDataModel>
     {
-        static SmilieyDataModel() { ImageTools.IO.Decoders.AddDecoder<ImageTools.IO.Gif.GifDecoder>(); }
-        public SmilieyDataModel() : base() { }
+        static SmileyDataModel() { ImageTools.IO.Decoders.AddDecoder<ImageTools.IO.Gif.GifDecoder>(); }
+        public SmileyDataModel() : base() { }
 
         private TagMetadata _data;
 
-        public SmilieyDataModel(TagMetadata data)
+        public SmileyDataModel(TagMetadata data)
             : this()
         {
             SetMetadata(data);
@@ -51,7 +51,7 @@ namespace Awful.Data
             get { return new Uri(ImagePath, UriKind.Absolute); }
         }
 
-        public void Update(SmilieyDataModel updated)
+        public void Update(SmileyDataModel updated)
         {
             SetMetadata(updated._data);
         }

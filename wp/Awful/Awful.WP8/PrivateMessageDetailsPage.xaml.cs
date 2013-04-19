@@ -17,10 +17,8 @@ namespace Awful
         public PrivateMessageDetailsPage()
         {
             InitializeComponent();
-            this.PageManager = new ThreadPageManager(this.PrivateMessageWebView, null,
-                this.TitleText.Foreground as SolidColorBrush,
-                this.LayoutRoot.Background as SolidColorBrush);
 
+            this.PageManager = new ThreadPageManager(this.PrivateMessageWebView, null);
             this.PageManager.Loading += PageManager_Loading;
             this.PageManager.Loaded += PageManager_Loaded;
             this.PageManager.ReadyForContent += PageManager_ReadyForContent;

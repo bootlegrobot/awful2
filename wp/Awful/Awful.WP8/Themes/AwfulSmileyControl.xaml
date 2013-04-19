@@ -77,17 +77,14 @@
                     <Grid xmlns:telerikCore="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Core"
                           xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
                           xmlns:telerikInput="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Input"
-                          xmlns:viewmodel="clr-namespace:Awful.ViewModels">
+                          xmlns:viewmodel="clr-namespace:Awful.ViewModels"
+                          x:Name="LayoutRoot">
 
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         
-                        <Grid.DataContext>
-                            <viewmodel:SmileyListViewModel />
-                        </Grid.DataContext>
-
                         <telerikInput:RadAutoCompleteBox x:Name="autoComplete"
                                                          Grid.Row="0"
                                                          Header="Filter:"
@@ -103,9 +100,10 @@
                                                                Grid.Row="1"
                                                                Margin="12,0,0,0"
                                                                Style="{StaticResource ReplyControlListBoxStyle}"
+                                                               ItemTemplate="{StaticResource ReplyControlImageItemTemplate}"
                                                                IsAsyncBalanceEnabled="True"
                                                                EmptyContent="loading..."
-                                                               ItemsSource="{Binding FilteredSuggestions, ElementName=SmileyAutoComplete}">
+                                                               ItemsSource="{Binding FilteredSuggestions, ElementName=autoComplete}">
                         </telerikPrimitives:RadDataBoundListBox>
                     </Grid>
                 </ControlTemplate>

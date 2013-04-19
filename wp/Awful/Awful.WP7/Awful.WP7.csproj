@@ -146,6 +146,9 @@
     <Compile Include="..\Awful.WP8\Commands\RateThisAppCommand.cs">
       <Link>Commands\RateThisAppCommand.cs</Link>
     </Compile>
+    <Compile Include="..\Awful.WP8\Commands\RelayCommand.cs">
+      <Link>Commands\RelayCommand.cs</Link>
+    </Compile>
     <Compile Include="..\Awful.WP8\Commands\SendAnEmailCommand.cs">
       <Link>Commands\SendAnEmailCommand.cs</Link>
     </Compile>
@@ -154,6 +157,9 @@
     </Compile>
     <Compile Include="..\Awful.WP8\Common\ActionCommand.cs">
       <Link>Common\ActionCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\Awful.WP8\Common\BackgroundThread.cs">
+      <Link>Common\BackgroundThread.cs</Link>
     </Compile>
     <Compile Include="..\Awful.WP8\Common\Constants1.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -200,6 +206,12 @@
     <Compile Include="..\Awful.WP8\Common\ThemeManager.cs">
       <Link>Common\ThemeManager.cs</Link>
     </Compile>
+    <Compile Include="..\Awful.WP8\Controls\AwfulSmileyControl.cs">
+      <Link>Controls\AwfulSmileyControl.cs</Link>
+    </Compile>
+    <Compile Include="..\Awful.WP8\Controls\AwfulTagsControl.cs">
+      <Link>Controls\AwfulTagsControl.cs</Link>
+    </Compile>
     <Compile Include="..\Awful.WP8\Controls\ContextMenus.cs">
       <Link>Controls\ContextMenus.cs</Link>
     </Compile>
@@ -209,6 +221,9 @@
     </Compile>
     <Compile Include="..\Awful.WP8\Controls\LoadMoreControl.cs">
       <Link>Controls\LoadMoreControl.cs</Link>
+    </Compile>
+    <Compile Include="..\Awful.WP8\Controls\PivotWrapper.cs">
+      <Link>Controls\PivotWrapper.cs</Link>
     </Compile>
     <Compile Include="..\Awful.WP8\Controls\RatingIcon.cs">
       <Link>Controls\RatingIcon.cs</Link>
@@ -243,8 +258,17 @@
     <Compile Include="..\Awful.WP8\DataSource\CodeTagDataModel.cs">
       <Link>DataSource\CodeTagDataModel.cs</Link>
     </Compile>
+    <Compile Include="..\Awful.WP8\DataSource\IconTagDataModel.cs">
+      <Link>DataSource\IconTagDataModel.cs</Link>
+    </Compile>
     <Compile Include="..\Awful.WP8\DataSource\MainDataSource.cs">
       <Link>DataSource\MainDataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Awful.WP8\DataSource\PrivateMessageDataSource.cs">
+      <Link>DataSource\PrivateMessageDataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Awful.WP8\DataSource\PrivateMessageFolderDataSource.cs">
+      <Link>DataSource\PrivateMessageFolderDataSource.cs</Link>
     </Compile>
     <Compile Include="..\Awful.WP8\DataSource\SampleDataSource.cs">
       <Link>DataSource\SampleDataSource.cs</Link>
@@ -286,9 +310,9 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
       <Link>MainPage.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\Awful.WP8\PrivateMessageViewPage.xaml.cs">
-      <DependentUpon>PrivateMessageViewPage.xaml</DependentUpon>
-      <Link>PrivateMessageViewPage.xaml.cs</Link>
+    <Compile Include="..\Awful.WP8\NewPrivateMessagePage.xaml.cs">
+      <DependentUpon>NewPrivateMessagePage.xaml</DependentUpon>
+      <Link>NewPrivateMessagePage.xaml.cs</Link>
     </Compile>
     <Compile Include="..\Awful.WP8\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
@@ -323,6 +347,15 @@
     <Compile Include="..\Awful.WP8\ViewModels\MainPageViewModel.cs">
       <Link>ViewModels\MainPageViewModel.cs</Link>
     </Compile>
+    <Compile Include="..\Awful.WP8\ViewModels\NewPrivateMessagePageViewModel.cs">
+      <Link>ViewModels\NewPrivateMessagePageViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Awful.WP8\ViewModels\PrivateMessageDetailsViewModel.cs">
+      <Link>ViewModels\PrivateMessageDetailsViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Awful.WP8\ViewModels\PrivateMessagesPageViewModel.cs">
+      <Link>ViewModels\PrivateMessagesPageViewModel.cs</Link>
+    </Compile>
     <Compile Include="..\Awful.WP8\ViewModels\RatingViewModel.cs">
       <Link>ViewModels\RatingViewModel.cs</Link>
     </Compile>
@@ -343,6 +376,14 @@
     </Compile>
     <Compile Include="..\Awful.WP8\ViewModels\ThreadViewModel.cs">
       <Link>ViewModels\ThreadViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Awful.WP8\PrivateMessageDetailsPage.xaml.cs">
+	<Link>PrivateMessageDetailsPage.xaml.cs</Link>
+      <DependentUpon>PrivateMessageDetailsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Awful.WP8\PrivateMessageViewPage.xaml.cs">
+      <DependentUpon>PrivateMessageViewPage.xaml</DependentUpon>
+      <Link>PrivateMessageViewPage.xaml.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -401,6 +442,21 @@
     </Content>
     <Content Include="..\Awful.WP8\Assets\AppBar\check.png">
       <Link>Assets\AppBar\check.png</Link>
+    </Content>
+    <Content Include="..\Awful.WP8\Assets\AppBar\Export.png">
+      <Link>Assets\AppBar\Export.png</Link>
+    </Content>
+    <Content Include="..\Awful.WP8\Assets\AppBar\feature.camera.png">
+      <Link>Assets\AppBar\feature.camera.png</Link>
+    </Content>
+    <Content Include="..\Awful.WP8\Assets\AppBar\feature.email.png">
+      <Link>Assets\AppBar\feature.email.png</Link>
+    </Content>
+    <Content Include="..\Awful.WP8\Assets\AppBar\MB_0002_mail_sent.png">
+      <Link>Assets\AppBar\MB_0002_mail_sent.png</Link>
+    </Content>
+    <Content Include="..\Awful.WP8\Assets\AppBar\tasks.png">
+      <Link>Assets\AppBar\tasks.png</Link>
     </Content>
     <Content Include="..\Awful.WP8\Assets\Awful.png">
       <Link>Assets\Awful.png</Link>
@@ -699,13 +755,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="..\Awful.WP8\PrivateMessageViewPage.xaml">
-      <Link>PrivateMessageViewPage.xaml</Link>
+    <Page Include="..\Awful.WP8\NewPrivateMessagePage.xaml">
+      <Link>NewPrivateMessagePage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="..\Awful.WP8\SettingsPage.xaml">
       <Link>SettingsPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Awful.WP8\Themes\AwfulSmileyControl.xaml">
+      <Link>Themes\AwfulSmileyControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Awful.WP8\Themes\AwfulTagsControl.xaml">
+      <Link>Themes\AwfulTagsControl.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -726,6 +792,16 @@
     </Page>
     <Page Include="..\Awful.WP8\ThreadViewPage.xaml">
       <Link>ThreadViewPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Awful.WP8\PrivateMessageDetailsPage.xaml">
+      <Link>PrivateMessageDetailsPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Awful.WP8\PrivateMessageViewPage.xaml">
+      <Link>PrivateMessageViewPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

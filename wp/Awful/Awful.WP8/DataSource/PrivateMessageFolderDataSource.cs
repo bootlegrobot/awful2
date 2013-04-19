@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Awful.Data
 {
@@ -40,7 +39,9 @@ namespace Awful.Data
       
         private void SetProperties(PrivateMessageFolderMetadata value)
         {
-            this.Title = value.Name;
+            if (!string.IsNullOrEmpty(value.Name))
+                Title = value.Name;
+
             if (!value.Messages.IsNullOrEmpty())
                 this._messages = value.Messages
                     .Select(message => new PrivateMessageDataSource() { Metadata = message })

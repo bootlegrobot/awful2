@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
   <DefaultLanguage xmlns="" code="en-US" />
-  <App xmlns="" ProductID="{e59f01bc-4e3e-4c16-8bd0-570c03373674}" Title="Awful!! HD" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Nathan Simpson" Description="Something Awful in your pocket." Publisher="Awful.App" PublisherID="{55ce588b-2b2a-41da-9833-7c37ab75e0f8}">
+  <App xmlns="" ProductID="{e59f01bc-4e3e-4c16-8bd0-570c03373674}" Title="Awful!!" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Nathan Simpson" Description="Something Awful in your pocket." Publisher="Awful.App" PublisherID="{55ce588b-2b2a-41da-9833-7c37ab75e0f8}">
     <IconPath IsRelative="true" IsResource="false">SubmissionInfo\ApplicationIcon_300.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_IDENTITY_DEVICE" />

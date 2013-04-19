@@ -667,7 +667,7 @@
     </DataTemplate>
     <Thickness x:Key="DefaultTitlePanelMargin">12,17,0,12</Thickness>
     <Style x:Key="ReplyPivotHeaderStyle"
-           TargetType="Primitives:PivotHeaderItem">
+           TargetType="localControls:PivotHeaderWrapper">
         <Setter Property="Background"
                 Value="Transparent" />
         <Setter Property="Padding"
@@ -676,7 +676,7 @@
                 Value="0" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="Primitives:PivotHeaderItem">
+                <ControlTemplate TargetType="localControls:PivotHeaderWrapper">
                     <Grid>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="SelectionStates">
@@ -705,7 +705,7 @@
 
     <!-- Resource dictionary entries should be defined here. -->
     <Style x:Key="ReplyPivotStyle"
-           TargetType="phone:Pivot">
+           TargetType="localControls:PivotWrapper">
         <Setter Property="Margin"
                 Value="0" />
         <Setter Property="Padding"
@@ -723,7 +723,7 @@
         </Setter>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="phone:Pivot">
+                <ControlTemplate TargetType="localControls:PivotWrapper">
                     <Grid HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
                           VerticalAlignment="{TemplateBinding VerticalAlignment}">
                         <Grid.RowDefinitions>
@@ -738,7 +738,7 @@
                                         HorizontalAlignment="Left"
                                         Margin="24,17,0,-7"
                                         Style="{StaticResource PivotTitleStyle}" />
-                        <Primitives:PivotHeadersControl x:Name="HeadersListElement"
+                        <localControls:PivotHeaderControlWrapper x:Name="HeadersListElement"
                                                         Grid.Row="1"
                                                         Foreground="{StaticResource PhoneAccentBrush}" />
                         <ItemsPresenter x:Name="PivotItemPresenter"

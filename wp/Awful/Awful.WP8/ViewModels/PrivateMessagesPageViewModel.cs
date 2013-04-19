@@ -2,17 +2,37 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Awful.Data;
 using System.Windows;
 using System.Windows.Data;
 using System.Globalization;
 using System.Windows.Controls;
+using System.Collections.ObjectModel;
 
 namespace Awful.ViewModels
 {
     public class PrivateMessagesPageViewModel : ListViewModel<Data.PrivateMessageDataSource>
     {
+        public PrivateMessagesPageViewModel()
+            : base()
+        {
+            Items.CollectionChanged += Items_CollectionChanged;
+        }
+
+        void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            // TODO: Implement Add, Delete Sync with server
+        }
+
+        private bool IgnoreCollectionChanged { get; set; }
+
+        private IList<PrivateMessageDataSource> _unreadItems;
+        public IList<PrivateMessageDataSource> UnreadItems
+        {
+            get { return _unreadItems; }
+            set { SetProperty(ref _unreadItems, value, "UnreadItems"); }
+        }
+
         private List<PrivateMessageFolderDataSource> _folders = null;
         public List<PrivateMessageFolderDataSource> Folders
         {
@@ -60,6 +80,8 @@ namespace Awful.ViewModels
 
         protected override void OnError(Exception exception)
         {
+            IsRunning = false;
+            Items.Clear();
             AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, exception);
             MessageBox.Show("Could not fetch private messages from the server.", "Error", MessageBoxButton.OK);
         }
@@ -81,14 +103,24 @@ namespace Awful.ViewModels
             IEnumerable<Data.PrivateMessageDataSource> messages = null;
 
             // Is the folder list null? That means we need to grab all folders from the web.
-            // The function always starts at the inbox, so we can grab the messages right now.
             if (this._folders == null)
             {
                 var folders = PrivateMessageFolderDataSource.LoadUserFolders();
                 this._folders = new List<PrivateMessageFolderDataSource>(folders);
                 this._selectedFolder = this._folders[0];
-                messages = this._selectedFolder.GetMessages();
             }
+                
+            messages = this._selectedFolder.GetMessages();
+
+            // filter unread items
+            try
+            {
+                var unread = messages.Where(m => m.Metadata.Status == PrivateMessageMetadata.MessageStatus.New);
+                unread = CondenseMessages(unread);
+                List<Data.PrivateMessageDataSource> unreadList = new List<PrivateMessageDataSource>(unread);
+                this._unreadItems = unreadList;
+            }
+            catch (Exception ex) { }
 
             return CondenseMessages(messages);
         }
@@ -152,29 +184,21 @@ namespace Awful.ViewModels
         }
     }
 
-    public class MessageGlyphSelector : IValueConverter
+    public class MessageGlyphSelector : Controls.DataTemplateSelector
     {
-        public UIElement ReplyGlyph { get; set; }
-        public UIElement ForwardGlyph { get; set; }
+        public DataTemplate ReplyGlyph { get; set; }
+        public DataTemplate ForwardGlyph { get; set; }
+        public DataTemplate EmptyGlyph { get; set; }
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        protected override DataTemplate SelectTemplate(object newContent, DependencyObject container)
         {
-            if (value is PrivateMessageMetadata)
-            {
-                try
-                {
-                    value = GetGlyph((PrivateMessageMetadata)value);
-                }
-                catch (Exception ex) { AwfulDebugger.AddLog(this, AwfulDebugger.Level.Critical, ex); }
-                
-            }
-
-            return value;
+            var message = newContent as PrivateMessageMetadata;
+            return GetGlyph(message);
         }
 
-        private UIElement GetGlyph(PrivateMessageMetadata metadata)
+        private DataTemplate GetGlyph(PrivateMessageMetadata metadata)
         {
-            UIElement value = null;
+            DataTemplate value = null;
             var status = metadata.Status;
             switch (status)
             {
@@ -187,16 +211,11 @@ namespace Awful.ViewModels
                     break;
 
                 default:
-                    value = new Grid();
+                    value = EmptyGlyph;
                     break;
             }
 
             return value;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
         }
     }
 }

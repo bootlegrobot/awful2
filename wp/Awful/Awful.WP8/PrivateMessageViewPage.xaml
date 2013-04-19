@@ -4,7 +4,7 @@
                             xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                            xmlns:localControl="clr-namespace:Awful.Controls"
+                            xmlns:Controls="clr-namespace:Awful.Controls"
                             xmlns:telerikCore="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Core"
                             xmlns:telerikSlideView="clr-namespace:Telerik.Windows.Controls.SlideView;assembly=Telerik.Windows.Controls.Primitives"
                             xmlns:telerikPagination="clr-namespace:Telerik.Windows.Controls.Pagination;assembly=Telerik.Windows.Controls.Primitives"
@@ -13,74 +13,174 @@
                             xmlns:data="clr-namespace:Awful.Data"
                             xmlns:System="clr-namespace:System;assembly=mscorlib"
                             xmlns:SampleData="clr-namespace:Expression.Blend.SampleData.SamplePrivateMessage"
+                            xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                            xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
                             x:Class="Awful.PrivateMessageViewPage"
                             SupportedOrientations="Portrait"
                             Orientation="Portrait"
                             mc:Ignorable="d"
-                            shell:SystemTray.IsVisible="True">
+                            shell:SystemTray.IsVisible="True"
+                            shell:SystemTray.Opacity="0">
 
     <phone:PhoneApplicationPage.Resources>
+
+        <!-- Uncomment for WP8 
         <SampleData:SamplePrivateMessage x:Key="SamplePrivateMessage"
                                          d:IsDataSource="True" />
-       
+       -->
+
         <data:PrivateMessageDataSource x:Key="sampleMessage"
                                        Title="Sample Title"
                                        Subtitle="Sample subtitle that is a bit long so here is text"
                                        Description="Sample Description Here"
                                        d:IsDataSource="True" />
-        
+        <DataTemplate x:Key="EmptyListContentTemplate">
+        	<TextBlock Style="{StaticResource EmptyListContentStyle}"
+        		Text="{Binding}" />
+        </DataTemplate>
+        <DataTemplate x:Key="MessageGroupContentTemplate">
+        	<StackPanel d:DataContext="{StaticResource sampleMessage}">
+        		<TextBlock x:Name="SubtitleText"
+        			Text="{Binding Subtitle}"
+        			Style="{StaticResource PhoneTextSubtleStyle}"
+        			FontFamily="Segoe WP Semibold"
+        			TextTrimming="WordEllipsis" />
+        		<TextBlock x:Name="DescriptionText"
+        			Text="{Binding Description}"
+        			Visibility="{Binding Description, Converter={StaticResource collapseOnNull}}"
+        			Style="{StaticResource PhoneTextSubtleStyle}" />
+        	</StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="MessageItemTemplate">
+        	<Grid>
+        		<Grid.ColumnDefinitions>
+        			<ColumnDefinition Width="*" />
+        			<ColumnDefinition Width="Auto" />
+        		</Grid.ColumnDefinitions>
+
+        		<StackPanel d:DataContext="{StaticResource sampleMessage}"
+        			Margin="-12,0,0,0">
+        			<TextBlock x:Name="TitleText"
+        				Text="{Binding Title}"
+        				Style="{StaticResource PhoneTextExtraLargeStyle}" />
+        			<TextBlock x:Name="SubtitleText"
+        				Text="{Binding Subtitle}"
+        				Style="{StaticResource PhoneTextSubtleStyle}"
+        				FontFamily="Segoe WP Semibold"
+        				TextTrimming="WordEllipsis" />
+        			<TextBlock x:Name="DescriptionText"
+        				Text="{Binding PostDate}"
+        				Visibility="{Binding PostDate, Converter={StaticResource collapseOnNull}}"
+        				Style="{StaticResource PhoneTextSubtleStyle}" />
+        		</StackPanel>
+
+        		<ContentControl Grid.Column="1"
+        			RenderTransformOrigin="0.5,0.5">
+        			<ContentControl.RenderTransform>
+        				<CompositeTransform ScaleX="0.5"
+        					TranslateX="0"
+        					TranslateY="0"
+        					ScaleY="0.5" />
+        			</ContentControl.RenderTransform>
+        			<Canvas Width="76"
+        				Height="76"
+        				Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+        				<Path Width="42.75"
+        					Height="39.5833"
+        					Canvas.Left="17.4167"
+        					Canvas.Top="17.4167"
+        					Stretch="Fill"
+        					Fill="{StaticResource PhoneForegroundBrush}"
+        					Data="F1 M 44.3333,31.6667L 30.0833,31.6667L 38,39.5833L 28.7309,39.5833L 17.4167,28.6649L 28.7309,17.4167L 38,17.4167L 30.0833,25.3333L 44.3333,25.3333C 53.0778,25.3333 60.1667,32.4222 60.1667,41.1667C 60.1667,49.9112 53.0778,57 44.3333,57L 39.5833,57L 39.5833,50.6667L 44.3333,50.6667C 49.58,50.6667 53.8333,46.4134 53.8333,41.1667C 53.8333,35.92 49.58,31.6667 44.3333,31.6667 Z M 34.8333,50.6667L 34.8333,57L 28.5,57L 28.5,50.6667L 34.8333,50.6667 Z " />
+        			</Canvas>
+        		</ContentControl>
+
+        	</Grid>
+        </DataTemplate>
+        <Style x:Key="itemContainerStyle"
+               BasedOn="{StaticResource RadDataBoundListBoxItemStyle}"
+               TargetType="telerikPrimitives:RadDataBoundListBoxItem">
+        	<Setter Property="Padding"
+        		Value="0,12,12,12" />
+        </Style>
+        <DataTemplate x:Key="GroupedMessageListTemplate">
+
+        	<telerikPrimitives:RadDataBoundListBox x:Name="groupList"
+        		IsCheckModeActive="{Binding IsSelectModeActive, Source={StaticResource PMFoldersSource}}"
+        		ScrollViewer.VerticalScrollBarVisibility="Disabled"
+        		ItemsSource="{Binding Items}"
+        		Margin="-12,0,0,0"
+        		IsCheckModeEnabled="True"
+        		ItemTap="groupList_ItemTap"
+        		ItemContainerStyle="{StaticResource itemContainerStyle}"
+        		ItemTemplate="{StaticResource MessageItemTemplate}" />
+        </DataTemplate>
+        <Style x:Key="groupBorderStyle"
+               TargetType="telerikPrimitives:RadExpanderControl">
+        	<Setter Property="BorderThickness"
+        		Value="3,0,0,0" />
+        	<Setter Property="Margin"
+        		Value="24,0,0,0" />
+        	<Setter Property="BorderBrush"
+        		Value="{StaticResource PhoneAccentBrush}" />
+        </Style>
+        <DataTemplate x:Key="MessageGroupItemTemplate">
+        	<StackPanel  d:DataContext="{StaticResource sampleMessage}">
+
+        		<TextBlock x:Name="TitleText"
+        			Margin="0"
+        			Text="{Binding Title}"
+        			Style="{StaticResource PhoneTextExtraLargeStyle}" />
+
+        		<telerikPrimitives:RadExpanderControl x:Name="groupExpander"
+        			Style="{StaticResource groupBorderStyle}"
+        			Content="{Binding}"
+        			ContentTemplate="{StaticResource MessageGroupContentTemplate}"
+        			ExpandableContent="{Binding}"
+        			ExpandableContentTemplate="{StaticResource GroupedMessageListTemplate}">
+        			<telerikPrimitives:RadExpanderControl.AnimatedIndicatorContentTemplate>
+        				<DataTemplate />
+        			</telerikPrimitives:RadExpanderControl.AnimatedIndicatorContentTemplate>
+        		</telerikPrimitives:RadExpanderControl>
+        	</StackPanel>
+        </DataTemplate>
+        <viewmodel:PrivateMessageTemplateSelector x:Key="messageTemplateSelector"
+                                                  PrivateMessageTemplate="{StaticResource MessageItemTemplate}"
+                                                  PrivateMessageGroupTemplate="{StaticResource MessageGroupItemTemplate}" />
+
     </phone:PhoneApplicationPage.Resources>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar>
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem x:Name="AppbarFoldersMenu"
-                                              Text="folders" />
-            </shell:ApplicationBar.MenuItems>
             <shell:ApplicationBarIconButton x:Name="AppbarNewButton"
                                             IconUri="/Assets/AppBar/appbar.add.rest.png"
+                                            Click="AppbarNewButton_Click"
                                             Text="new" />
+            <!--
             <shell:ApplicationBarIconButton x:Name="AppbarSelectButton"
                                             IconUri="/Assets/AppBar/tasks.png"
                                             Text="select"
                                             Click="AppBarSelectButton_Click" />
+            -->
             <shell:ApplicationBarIconButton x:Name="AppbarRefreshButton"
                                             IconUri="/Assets/AppBar/appbar.refresh.rest.png"
+                                            Click="AppbarRefreshButton_Click"
                                             Text="refresh" />
+
+            <shell:ApplicationBarIconButton x:Name="AppbarFoldersButton"
+                                            IconUri="/Assets/AppBar/folder.png"
+                                            Click="AppbarFoldersMenu_Click"
+                                            Text="folders" />
+
+            <!--
             <shell:ApplicationBarIconButton x:Name="AppbarSeachButton"
                                             IconUri="/Assets/AppBar/appbar.feature.search.rest.png"
+                                            Click="AppbarSeachButton_Click"
                                             Text="search"
                                             IsEnabled="True" />
+            -->
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 
-    <!--<phone:PhoneApplicationPage.Resources>
-
-        <System:Double x:Key="TransparentGraphicHeight">25</System:Double>
-        <System:String x:Key="LockOrientationButtonText">lock view</System:String>
-
-        <shell:ApplicationBar x:Key="PrivateMessageAppBar"
-                              BackgroundColor="{StaticResource PhoneBackgroundColor}">
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="clear all text"
-                                              Click="ClearAllReplyText" />
-                <shell:ApplicationBarMenuItem Text="{StaticResource LockOrientationButtonText}"
-                                              Click="TogglePageOrientationLock" />
-            </shell:ApplicationBar.MenuItems>
-            <shell:ApplicationBarIconButton IconUri="/Assets/AppBar/appbar.back.rest.png"
-                                            Text="hide"
-                                            Click="HideThreadReplyPanel" />
-            <shell:ApplicationBarIconButton  Text="tags"
-                                             IconUri="/Assets/AppBar/appbar.add.rest.png"
-                                             Click="ShowTagWindow" />
-            <shell:ApplicationBarIconButton IconUri="/Assets/AppBar/appbar.refresh.rest.png"
-                                            Text="Refresh"
-                                            Click="Refresh" />
-            <shell:ApplicationBarIconButton  IconUri="/Assets/AppBar/appbar.add.rest.png"
-                                             Text="Send New Reply"
-                                             Click="SendReply" />
-        </shell:ApplicationBar>
-
-    </phone:PhoneApplicationPage.Resources> -->
     <!--LayoutRoot is the root grid where all page content is placed-->
 
     <phone:PhoneApplicationPage.FontFamily>
@@ -93,186 +193,238 @@
         <StaticResource ResourceKey="PhoneForegroundBrush" />
     </phone:PhoneApplicationPage.Foreground>
 
-    <phone:Pivot x:Name="LayoutRoot"
-                 DataContext="{StaticResource PMFoldersSource}"
-                 d:DataContext="{StaticResource SamplePrivateMessage}"
-                 Title="{Binding SelectedFolder.Title, Converter={StaticResource uppercase}}">
+	<Grid x:Name="LayoutRoot">
 
-        <phone:Pivot.Resources>
-            <Canvas x:Key="forwardGlyph" 
-                Width="76"
-                    Height="76"
-                    Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                <Path Width="39.25"
-                      Height="28"
-                      Canvas.Left="19.0002"
-                      Canvas.Top="24"
-                      Stretch="Fill"
-                      Fill="{StaticResource PhoneForegroundBrush}"
-                      Data="F1 M 19.0002,34L 19.0002,42L 43.7502,42L 33.7502,52L 44.2502,52L 58.2502,38L 44.2502,24L 33.7502,24L 43.7502,34L 19.0002,34 Z " />
-            </Canvas>
+		<Grid.Resources>
+            <DataTemplate x:Key="forwardGlyph">
+                <Canvas
+                        Width="76"
+                        Height="76"
+                        Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+                    <Path Width="39.25"
+                          Height="28"
+                          Canvas.Left="19.0002"
+                          Canvas.Top="24"
+                          Stretch="Fill"
+                          Fill="{StaticResource PhoneForegroundBrush}"
+                          Data="F1 M 19.0002,34L 19.0002,42L 43.7502,42L 33.7502,52L 44.2502,52L 58.2502,38L 44.2502,24L 33.7502,24L 43.7502,34L 19.0002,34 Z " />
+                </Canvas>
+            </DataTemplate>
+			
 
-            <Canvas x:Key="replyGlyph"
-                Width="76"
-                    Height="76"
-                    Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                <Path Width="42.75"
-                      Height="39.5833"
-                      Canvas.Left="17.4167"
-                      Canvas.Top="17.4167"
-                      Stretch="Fill"
-                      Fill="{StaticResource PhoneForegroundBrush}"
-                      Data="F1 M 44.3333,31.6667L 30.0833,31.6667L 38,39.5833L 28.7309,39.5833L 17.4167,28.6649L 28.7309,17.4167L 38,17.4167L 30.0833,25.3333L 44.3333,25.3333C 53.0778,25.3333 60.1667,32.4222 60.1667,41.1667C 60.1667,49.9112 53.0778,57 44.3333,57L 39.5833,57L 39.5833,50.6667L 44.3333,50.6667C 49.58,50.6667 53.8333,46.4134 53.8333,41.1667C 53.8333,35.92 49.58,31.6667 44.3333,31.6667 Z M 34.8333,50.6667L 34.8333,57L 28.5,57L 28.5,50.6667L 34.8333,50.6667 Z " />
-            </Canvas>
+            <DataTemplate  x:Key="replyGlyph">
+                <Canvas Width="76"
+                        Height="76"
+                        Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+                    <Path Width="42.75"
+                          Height="39.5833"
+                          Canvas.Left="17.4167"
+                          Canvas.Top="17.4167"
+                          Stretch="Fill"
+                          Fill="{StaticResource PhoneForegroundBrush}"
+                          Data="F1 M 44.3333,31.6667L 30.0833,31.6667L 38,39.5833L 28.7309,39.5833L 17.4167,28.6649L 28.7309,17.4167L 38,17.4167L 30.0833,25.3333L 44.3333,25.3333C 53.0778,25.3333 60.1667,32.4222 60.1667,41.1667C 60.1667,49.9112 53.0778,57 44.3333,57L 39.5833,57L 39.5833,50.6667L 44.3333,50.6667C 49.58,50.6667 53.8333,46.4134 53.8333,41.1667C 53.8333,35.92 49.58,31.6667 44.3333,31.6667 Z M 34.8333,50.6667L 34.8333,57L 28.5,57L 28.5,50.6667L 34.8333,50.6667 Z " />
+                </Canvas>
+            </DataTemplate>
 
-            <viewmodel:MessageGlyphSelector x:Key="glyphSelector"
-                                            ForwardGlyph="{StaticResource forwardGlyph}"
-                                            ReplyGlyph="{StaticResource replyGlyph}">
-               
-            </viewmodel:MessageGlyphSelector>
-            
-            <Style x:Key="itemContainerStyle"
-                   BasedOn="{StaticResource RadDataBoundListBoxItemStyle}"
-                   TargetType="telerikPrimitives:RadDataBoundListBoxItem">
-                <Setter Property="Padding"
-                        Value="0,12,12,12" />
-            </Style>
+                <Style x:Key="itemContainerStyle"
+				BasedOn="{StaticResource RadDataBoundListBoxItemStyle}"
+				TargetType="telerikPrimitives:RadDataBoundListBoxItem">
+				<Setter Property="Padding"
+					Value="0,12,12,12" />
+			</Style>
 
-            <DataTemplate x:Key="MessageItemTemplate">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    
-                    <StackPanel d:DataContext="{StaticResource sampleMessage}"
-                                Margin="-12,0,0,0">
-                        <TextBlock x:Name="TitleText"
-                                   Text="{Binding Title}"
-                                   Style="{StaticResource PhoneTextExtraLargeStyle}" />
-                        <TextBlock x:Name="SubtitleText"
-                                   Text="{Binding Subtitle}"
-                                   Style="{StaticResource PhoneTextSubtleStyle}"
-                                   FontFamily="Segoe WP Semibold"
-                                   TextTrimming="WordEllipsis" />
-                        <TextBlock x:Name="DescriptionText"
-                                   Text="{Binding PostDate}"
-                                   Visibility="{Binding PostDate, Converter={StaticResource collapseOnNull}}"
-                                   Style="{StaticResource PhoneTextSubtleStyle}" />
-                    </StackPanel>
+			<DataTemplate x:Key="MessageItemTemplate">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
 
-                    <ContentControl Grid.Column="1"
-                                    RenderTransformOrigin="0.5,0.5">
-                        <ContentControl.RenderTransform>
+					<StackPanel d:DataContext="{StaticResource sampleMessage}"
+						Margin="-12,0,0,0">
+						<TextBlock x:Name="TitleText"
+							Text="{Binding Title}"
+							Style="{StaticResource PhoneTextExtraLargeStyle}" />
+						<TextBlock x:Name="SubtitleText"
+							Text="{Binding Subtitle}"
+							Style="{StaticResource PhoneTextSubtleStyle}"
+							FontFamily="Segoe WP Semibold"
+							TextTrimming="WordEllipsis" />
+						<TextBlock x:Name="DescriptionText"
+							Text="{Binding PostDate}"
+							Visibility="{Binding PostDate, Converter={StaticResource collapseOnNull}}"
+							Style="{StaticResource PhoneTextSubtleStyle}" />
+					</StackPanel>
+
+                    <viewmodel:MessageGlyphSelector Grid.Column="1"
+                                                    Content="{Binding Metadata}"
+                                                    ForwardGlyph="{StaticResource forwardGlyph}"
+                                                    ReplyGlyph="{StaticResource replyGlyph}"
+                                                    RenderTransformOrigin="0.5,0.5">
+                        <viewmodel:MessageGlyphSelector.EmptyGlyph>
+                            <DataTemplate />
+                        </viewmodel:MessageGlyphSelector.EmptyGlyph>
+                        <viewmodel:MessageGlyphSelector.RenderTransform>
                             <CompositeTransform ScaleX="0.5"
                                                 TranslateX="0"
                                                 TranslateY="0"
                                                 ScaleY="0.5" />
-                        </ContentControl.RenderTransform>
-                        <Canvas
-                                Width="76"
-                                Height="76"
-                                Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                            <Path Width="42.75"
-                                  Height="39.5833"
-                                  Canvas.Left="17.4167"
-                                  Canvas.Top="17.4167"
-                                  Stretch="Fill"
-                                  Fill="{StaticResource PhoneForegroundBrush}"
-                                  Data="F1 M 44.3333,31.6667L 30.0833,31.6667L 38,39.5833L 28.7309,39.5833L 17.4167,28.6649L 28.7309,17.4167L 38,17.4167L 30.0833,25.3333L 44.3333,25.3333C 53.0778,25.3333 60.1667,32.4222 60.1667,41.1667C 60.1667,49.9112 53.0778,57 44.3333,57L 39.5833,57L 39.5833,50.6667L 44.3333,50.6667C 49.58,50.6667 53.8333,46.4134 53.8333,41.1667C 53.8333,35.92 49.58,31.6667 44.3333,31.6667 Z M 34.8333,50.6667L 34.8333,57L 28.5,57L 28.5,50.6667L 34.8333,50.6667 Z " />
-                        </Canvas>
-                    </ContentControl>
+                        </viewmodel:MessageGlyphSelector.RenderTransform>
+                    </viewmodel:MessageGlyphSelector>
 
                 </Grid>
-            </DataTemplate>
-            
-            <Style x:Key="groupBorderStyle" 
-                   TargetType="telerikPrimitives:RadExpanderControl">
-                <Setter Property="BorderThickness"
-                        Value="3,0,0,0" />
-                <Setter Property="Margin"
-                        Value="24,0,0,0" />
-                <Setter Property="BorderBrush"
-                        Value="{StaticResource PhoneAccentBrush}" />
-            </Style>
-            
-            <DataTemplate x:Key="MessageGroupContentTemplate">
-                <StackPanel d:DataContext="{StaticResource sampleMessage}">
-                    <TextBlock x:Name="SubtitleText"
-                               Text="{Binding Subtitle}"
-                               Style="{StaticResource PhoneTextSubtleStyle}"
-                               FontFamily="Segoe WP Semibold"
-                               TextTrimming="WordEllipsis" />
-                    <TextBlock x:Name="DescriptionText"
-                               Text="{Binding Description}"
-                               Visibility="{Binding Description, Converter={StaticResource collapseOnNull}}"
-                               Style="{StaticResource PhoneTextSubtleStyle}" />
-                </StackPanel>
-            </DataTemplate>
-              
-            <DataTemplate x:Key="GroupedMessageListTemplate">
+			</DataTemplate>
 
-                <telerikPrimitives:RadDataBoundListBox x:Name="groupList"
-                                                       IsCheckModeActive="{Binding IsSelectModeActive, Source={StaticResource PMFoldersSource}}"
-                                                       ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                                       ItemsSource="{Binding Items}"
-                                                       Margin="-12,0,0,0"
-                                                       IsCheckModeEnabled="True"
-                                                       ItemTap="groupList_ItemTap"
-                                                       ItemContainerStyle="{StaticResource itemContainerStyle}"
-                                                       ItemTemplate="{StaticResource MessageItemTemplate}" />
-            </DataTemplate>
-            
-            <DataTemplate x:Key="MessageGroupItemTemplate">
-                <StackPanel  d:DataContext="{StaticResource sampleMessage}">
+			<Style x:Key="groupBorderStyle"
+				TargetType="telerikPrimitives:RadExpanderControl">
+				<Setter Property="BorderThickness"
+					Value="3,0,0,0" />
+				<Setter Property="Margin"
+					Value="24,0,0,0" />
+				<Setter Property="BorderBrush"
+					Value="{StaticResource PhoneAccentBrush}" />
+			</Style>
 
-                    <TextBlock x:Name="TitleText"
-                               Margin="0"
-                               Text="{Binding Title}"
-                               Style="{StaticResource PhoneTextExtraLargeStyle}" />
+			<DataTemplate x:Key="MessageGroupContentTemplate">
+				<StackPanel d:DataContext="{StaticResource sampleMessage}">
+					<TextBlock x:Name="SubtitleText"
+						Text="{Binding Subtitle}"
+						Style="{StaticResource PhoneTextSubtleStyle}"
+						FontFamily="Segoe WP Semibold"
+						TextTrimming="WordEllipsis" />
+					<TextBlock x:Name="DescriptionText"
+						Text="{Binding Description}"
+						Visibility="{Binding Description, Converter={StaticResource collapseOnNull}}"
+						Style="{StaticResource PhoneTextSubtleStyle}" />
+				</StackPanel>
+			</DataTemplate>
 
-                    <telerikPrimitives:RadExpanderControl x:Name="groupExpander"
-                                                          Style="{StaticResource groupBorderStyle}"
-                                                          Content="{Binding}"
-                                                          ContentTemplate="{StaticResource MessageGroupContentTemplate}"
-                                                          ExpandableContent="{Binding}"
-                                                          ExpandableContentTemplate="{StaticResource GroupedMessageListTemplate}">
-                        <telerikPrimitives:RadExpanderControl.AnimatedIndicatorContentTemplate>
-                            <DataTemplate />
-                        </telerikPrimitives:RadExpanderControl.AnimatedIndicatorContentTemplate>
-                    </telerikPrimitives:RadExpanderControl>
-                </StackPanel>
-            </DataTemplate>
+			<DataTemplate x:Key="GroupedMessageListTemplate">
 
-            <viewmodel:PrivateMessageTemplateSelector x:Key="messageTemplateSelector"
-                                                      PrivateMessageTemplate="{StaticResource MessageItemTemplate}"
-                                                      PrivateMessageGroupTemplate="{StaticResource MessageGroupItemTemplate}" />
+				<telerikPrimitives:RadDataBoundListBox x:Name="groupList"
+					IsCheckModeActive="{Binding IsSelectModeActive, Source={StaticResource PMFoldersSource}}"
+					ScrollViewer.VerticalScrollBarVisibility="Disabled"
+					ItemsSource="{Binding Items}"
+					Margin="-12,0,0,0"
+					IsCheckModeEnabled="True"
+					ItemTap="groupList_ItemTap"
+					ItemContainerStyle="{StaticResource itemContainerStyle}"
+					ItemTemplate="{StaticResource MessageItemTemplate}" />
+			</DataTemplate>
 
-        </phone:Pivot.Resources>
+			<DataTemplate x:Key="MessageGroupItemTemplate">
+				<StackPanel  d:DataContext="{StaticResource sampleMessage}">
+
+					<TextBlock x:Name="TitleText"
+						Margin="0"
+						Text="{Binding Title}"
+						Style="{StaticResource PhoneTextExtraLargeStyle}" />
+
+					<telerikPrimitives:RadExpanderControl x:Name="groupExpander"
+						Style="{StaticResource groupBorderStyle}"
+						Content="{Binding}"
+						ContentTemplate="{StaticResource MessageGroupContentTemplate}"
+						ExpandableContent="{Binding}"
+						ExpandableContentTemplate="{StaticResource GroupedMessageListTemplate}">
+						<telerikPrimitives:RadExpanderControl.AnimatedIndicatorContentTemplate>
+							<DataTemplate />
+						</telerikPrimitives:RadExpanderControl.AnimatedIndicatorContentTemplate>
+					</telerikPrimitives:RadExpanderControl>
+				</StackPanel>
+			</DataTemplate>
+
+			<DataTemplate x:Key="EmptyListContentTemplate">
+				<TextBlock Style="{StaticResource EmptyListContentStyle}"
+					Text="{Binding}" />
+			</DataTemplate>
+
+			<viewmodel:PrivateMessageTemplateSelector x:Key="messageTemplateSelector"
+				PrivateMessageTemplate="{StaticResource MessageItemTemplate}"
+				PrivateMessageGroupTemplate="{StaticResource MessageGroupItemTemplate}" />
+
+		</Grid.Resources>
+
+		<Grid.DataContext>
+			<StaticResource ResourceKey="PMFoldersSource"/>
+		</Grid.DataContext>
         
-        <!--
-		<phone:Pivot.DataContext>
-			<Binding Source="{StaticResource dataSource}"/>
-		</phone:Pivot.DataContext>
-		-->
-        <phone:PivotItem CacheMode="{x:Null}"
-                         Header="all"
-                         Margin="0,28,12,0">
-            <Grid Margin="0">
-                <telerikPrimitives:RadDataBoundListBox x:Name="allItemsListBox"
-                                                       ItemsSource="{Binding Items}"
-                                                       IsCheckModeActive="{Binding IsSelectModeActive, Source={StaticResource PMFoldersSource}}"
-                                                       IsCheckModeEnabled="True"
-                                                       ItemTap="groupList_ItemTap"
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+		<StackPanel x:Name="TitlePanel"
+			Grid.Row="0"
+			Margin="12,52,0,28">
+			<TextBlock x:Name="ApplicationTitle"
+				Text="{Binding SelectedFolder.Title, Converter={StaticResource uppercase}, FallbackValue=INBOX}"
+				Style="{StaticResource PhoneTextNormalStyle}" />
+			<TextBlock x:Name="PageTitle"
+				Text="messages"
+				Margin="9,-7,0,0"
+				Style="{StaticResource PhoneTextTitle1Style}" />
+		</StackPanel>
+
+		<Grid x:Name="ContentPanel" Grid.Row="1">
+            <telerikPrimitives:RadBusyIndicator IsRunning="{Binding IsRunning}"
+                                                Content="{Binding Status}" />
+            
+            <telerikPrimitives:RadDataBoundListBox x:Name="allItemsListBox"
+				ItemsSource="{Binding Items}"
+				IsCheckModeActive="{Binding IsSelectModeActive, Source={StaticResource PMFoldersSource}}"
+				IsCheckModeEnabled="True"
+				EmptyContent="{Binding Status}"
+				EmptyContentTemplate="{StaticResource EmptyListContentTemplate}"
+				ItemTap="groupList_ItemTap"
+				ItemContainerStyle="{StaticResource itemContainerStyle}"
+				ItemTemplateSelector="{StaticResource messageTemplateSelector}"
+				ItemTemplate="{StaticResource MessageGroupItemTemplate}"/>
+		</Grid>
+        <telerikPrimitives:RadWindow x:Name="folderListWindow"
+                                     PlacementTarget="{Binding ElementName=LayoutRoot}"
+                                     Grid.RowSpan="2"
+                                     IsFullScreen="True">
+            <Grid Background="{StaticResource PhoneChromeBrush}">
+                <telerikPrimitives:RadBusyIndicator IsRunning="{Binding IsRunning}"
+                                                    Content="{Binding Status}" />
+                <telerikPrimitives:RadDataBoundListBox x:Name="foldersList"
+                                                       Margin="0,36,0,0"
+                                                       ListHeaderContent="SELECT A FOLDER"
+                                                       ItemsSource="{Binding Folders}"
+                                                       EmptyContent="{Binding Status}"
+                                                       EmptyContentTemplate="{StaticResource EmptyListContentTemplate}"
+                                                       SelectedItem="{Binding SelectedFolder, Mode=TwoWay}"
                                                        ItemContainerStyle="{StaticResource itemContainerStyle}"
-                                                       ItemTemplateSelector="{StaticResource messageTemplateSelector}" ItemTemplate="{StaticResource MessageGroupItemTemplate}">
+                                                       ItemTemplateSelector="{StaticResource messageTemplateSelector}">
+                    <telerikPrimitives:RadDataBoundListBox.ListHeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}"
+                                       
+                                       Style="{StaticResource PhoneTextTitle3Style}"
+                                       FontFamily="{StaticResource PhoneFontFamilySemiBold}" />
+                        </DataTemplate>
+                    </telerikPrimitives:RadDataBoundListBox.ListHeaderTemplate>
+                    <telerikPrimitives:RadDataBoundListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBlock Text="{Binding Title}"
+                                           Style="{StaticResource PhoneTextTitle2Style}" />
+                            </Grid>
+                        </DataTemplate>
+                    </telerikPrimitives:RadDataBoundListBox.ItemTemplate>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <ec:ChangePropertyAction PropertyName="IsOpen"
+                                                     TargetObject="{Binding ElementName=folderListWindow}"
+                                                     Value="False" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                 </telerikPrimitives:RadDataBoundListBox>
             </Grid>
-        </phone:PivotItem>
-        <phone:PivotItem CacheMode="{x:Null}"
-                         Header="unread">
-            <Grid />
-        </phone:PivotItem>
-    </phone:Pivot>
+         
+		</telerikPrimitives:RadWindow>
+
+	</Grid>
 
 </phone:PhoneApplicationPage>

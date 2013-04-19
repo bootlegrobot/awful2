@@ -5,13 +5,30 @@ using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace Awful.Data
 {
     public class IconTagDataModel : CommonDataItem
     {
+        public static readonly IconTagDataModel NoIcon;
+
+        static IconTagDataModel()
+        {
+            NoIcon = new IconTagDataModel()
+            {
+                Tag = "no icon",
+                Value = "0"
+            };
+        }
+
+        private string _value;
+        public string Value
+        {
+            get { return _value; }
+            set { SetProperty(ref _value, value, "Value"); }
+        }
+
         private string _tag;
         public string Tag
         {

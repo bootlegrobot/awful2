@@ -15,7 +15,8 @@
     <!-- Category colors -->
     <SolidColorBrush x:Key="OrangeBrush" Color="Orange"/>
     <SolidColorBrush x:Key="YellowBrush" Color="Yellow"/>
-    <SolidColorBrush x:Key="RedBrush" Color="Red"/>
+    <SolidColorBrush x:Key="RedBrush"
+                     Color="#BF0000" />
 
     <!-- Code Tags -->
 

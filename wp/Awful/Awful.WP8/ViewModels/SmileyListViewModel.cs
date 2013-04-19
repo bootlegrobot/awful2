@@ -6,15 +6,15 @@ using System.Windows;
 
 namespace Awful.ViewModels
 {
-    public class SmileyListViewModel : PagedListViewModel<Data.SmilieyDataModel>
+    public class SmileyListViewModel : PagedListViewModel<Data.SmileyDataModel>
     {
         private readonly List<TagMetadata> _smilies = new List<TagMetadata>();
-        private List<Data.SmilieyDataModel> _allSmilies;
+        private List<Data.SmileyDataModel> _allSmilies;
         private int _maxPages;
 
         private const int SMILIES_PER_PAGE = 40;
 
-        public List<Data.SmilieyDataModel> Suggestions
+        public List<Data.SmileyDataModel> Suggestions
         {
             get { return _allSmilies; }
             set { SetProperty(ref _allSmilies, value, "Suggestions"); }
@@ -26,9 +26,9 @@ namespace Awful.ViewModels
 
         }
 
-        protected override IEnumerable<Data.SmilieyDataModel> LoadPageInBackground(int index)
+        protected override IEnumerable<Data.SmileyDataModel> LoadPageInBackground(int index)
         {
-            var list = new List<Data.SmilieyDataModel>();
+            var list = new List<Data.SmileyDataModel>();
 
             if (System.ComponentModel.DesignerProperties.IsInDesignTool)
                 return list;
@@ -46,8 +46,8 @@ namespace Awful.ViewModels
                 if (this._smilies.Count != 0)
                     this._smilies.SaveToFile("smilies.xml");
 
-                this._allSmilies = new List<Data.SmilieyDataModel>(
-                    this._smilies.Select(item => new Data.SmilieyDataModel(item)));
+                this._allSmilies = new List<Data.SmileyDataModel>(
+                    this._smilies.Select(item => new Data.SmileyDataModel(item)));
 
                 double maxPages = this._smilies.Count / SMILIES_PER_PAGE;
 

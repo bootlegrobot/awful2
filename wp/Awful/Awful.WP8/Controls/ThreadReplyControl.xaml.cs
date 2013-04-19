@@ -26,7 +26,7 @@ namespace Awful.Controls
         {   
             SmileyAutoComplete.FilterKeyProvider = (object item) =>
                 {
-                    var smiley = item as Data.SmilieyDataModel;
+                    var smiley = item as Data.SmileyDataModel;
                     return smiley.Code;
                 };
         }
@@ -167,7 +167,7 @@ namespace Awful.Controls
 		{
 			// TODO: Add event handler implementation here.
             // TODO: Add event handler implementation here.
-            var item = e.Item.AssociatedDataItem.Value as Data.SmilieyDataModel;
+            var item = e.Item.AssociatedDataItem.Value as Data.SmileyDataModel;
 
             // set clipboard text to title text
             Clipboard.SetText(item.Code);

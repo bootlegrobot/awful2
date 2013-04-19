@@ -160,6 +160,7 @@
     <Compile Include="Commands\LinkCommands.cs" />
     <Compile Include="Commands\LogoutCommand.cs" />
     <Compile Include="Commands\RateThisAppCommand.cs" />
+    <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\SendAnEmailCommand.cs" />
     <Compile Include="Commands\ThreadCommands.cs" />
     <Compile Include="Common\ActionCommand.cs" />
@@ -185,10 +186,12 @@
     <Compile Include="Controls\AwfulSmileyControl.cs" />
     <Compile Include="Controls\AwfulTagsControl.cs" />
     <Compile Include="Controls\ContextMenus.cs" />
+    <Compile Include="Controls\DataTemplateSelector.cs" />
     <Compile Include="Controls\ForumListControl.xaml.cs">
       <DependentUpon>ForumListControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\LoadMoreControl.cs" />
+    <Compile Include="Controls\PivotWrapper.cs" />
     <Compile Include="Controls\RatingIcon.cs" />
     <Compile Include="Controls\ThreadListControl.xaml.cs">
       <DependentUpon>ThreadListControl.xaml</DependentUpon>
@@ -415,6 +418,7 @@
     <Content Include="Assets\AppBar\feature.email.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\AppBar\folder.png" />
     <Content Include="Assets\AppBar\tasks.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

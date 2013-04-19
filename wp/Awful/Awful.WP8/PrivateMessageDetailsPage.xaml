@@ -13,15 +13,11 @@
                             xmlns:eim="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
                             x:Class="Awful.PrivateMessageDetailsPage"
                             x:Name="page"
-                            Foreground="Black"
-                            Background="White"
+                            Foreground="{StaticResource PhoneForegroundBrush}"
                             SupportedOrientations="Portrait"
                             Orientation="Portrait"
                             mc:Ignorable="d"
-                            shell:SystemTray.IsVisible="True"
-                            shell:SystemTray.BackgroundColor="White"
-                            shell:SystemTray.ForegroundColor="Black"
-                            >
+                            shell:SystemTray.IsVisible="True">
     <phone:PhoneApplicationPage.Resources>
         <Color x:Key="MenuBackgroundColor">#FFC8C8C8</Color>
     	<Storyboard x:Name="ShowBrowserStoryboard"
@@ -40,15 +36,16 @@
         <StaticResource ResourceKey="PhoneFontSizeNormal" />
     </phone:PhoneApplicationPage.FontSize>
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar BackgroundColor="{StaticResource MenuBackgroundColor}"
-                              ForegroundColor="Black">
+        <shell:ApplicationBar>
             <shell:ApplicationBarIconButton x:Name="AppBarReplyButton"
                                             IconUri="/Assets/AppBar/Export.png"
                                             Text="respond"
                                             Click="AppBarReplyButton_Click" />
+            <!--
             <shell:ApplicationBarIconButton x:Name="AppBarDeleteButton"
                                             IconUri="/Assets/AppBar/appbar.delete.rest.png"
                                             Text="delete" />
+            -->
             <shell:ApplicationBarIconButton x:Name="AppBarPrevButton"
                                             IconUri="/Assets/AppBar/appbar.back.rest.png"
                                             Text="prev"
@@ -60,8 +57,7 @@
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 
-	<Grid x:Name="LayoutRoot"
-		Background="White">
+	<Grid x:Name="LayoutRoot">
 		<VisualStateManager.VisualStateGroups>
 			<VisualStateGroup x:Name="RespondMenuStates">
 				<VisualState x:Name="RespondMenuOpen">
@@ -156,8 +152,7 @@
 				Style="{StaticResource PhoneTextNormalStyle}" />
 			<TextBlock x:Name="DetailsText"
 				Text="{Binding CurrentFolder.Subtitle}"
-				Style="{StaticResource PhoneTextSubtleStyle}"
-				Foreground="#99000000" />
+				Style="{StaticResource PhoneTextSubtleStyle}"/>
 			<TextBlock x:Name="SenderText"
 				Text="{Binding SelectedItem.Title}"
 				Margin="9,-7,0,0"
@@ -169,8 +164,7 @@
 				Style="{StaticResource PhoneTextAccentStyle}" />
 			<TextBlock x:Name="PostDateText"
 				Text="{Binding SelectedItem.Description}"
-				Style="{StaticResource PhoneTextSubtleStyle}"
-				Foreground="#99000000" />
+				Style="{StaticResource PhoneTextSubtleStyle}" />
 		</StackPanel>
 
         <!--ContentPanel - place additional content here-->
@@ -186,10 +180,9 @@
 				IsRunning="{Binding IsRunning}" />
             
 			<phone:WebBrowser x:Name="PrivateMessageWebView"
-				Background="White"
 				IsScriptEnabled="True"
 				Opacity="0"
-				kollasoft:KSWebBrowserHelper.BrowserBackground="White"
+				kollasoft:KSWebBrowserHelper.BrowserBackground="Transparent"
 				kollasoft:KSWebBrowserHelper.SuppressPanAndZoom="True"
 				kollasoft:KSWebBrowserHelper.SupressDoubleTap="True" >
 				<i:Interaction.Triggers>
@@ -210,21 +203,19 @@
 			<StackPanel x:Name="RespondOptionsPanel"
 				VerticalAlignment="Bottom">
 				<StackPanel.Background>
-					<SolidColorBrush Color="{StaticResource MenuBackgroundColor}" />
+					<SolidColorBrush Color="{StaticResource PhoneChromeColor}" />
 				</StackPanel.Background>
 				<TextBlock x:Name="ReplyText"
 					TextWrapping="Wrap"
 					Text="reply"
 					Tap="ReplyText_Tap"
 					Style="{StaticResource PhoneTextTitle2Style}"
-					Foreground="Black"
 					Margin="{StaticResource PhoneTouchTargetOverhang}" />
 				<TextBlock x:Name="ForwardText"
 					TextWrapping="Wrap"
 					Text="foward"
 					Tap="ForwardText_Tap"
 					Style="{StaticResource PhoneTextTitle2Style}"
-					Foreground="Black"
 					Margin="{StaticResource PhoneTouchTargetOverhang}" />
 			</StackPanel>
 		</telerikPrimitives:RadWindow>

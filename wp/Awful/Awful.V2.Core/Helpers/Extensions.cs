@@ -564,6 +564,12 @@ namespace Awful
             return messages;
         }
 
+        public static IPrivateMessageRequest CreateNewPrivateMessage(this UserMetadata user)
+        {
+            var request = PrivateMessageService.Service.BeginNewMessageRequestAsync();
+            return request;
+        }
+
         #endregion
     }
 }
