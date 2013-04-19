@@ -56,7 +56,7 @@ namespace Awful
         {
             get
             {
-                return this.ApplicationBar.Buttons[2] as IApplicationBarIconButton; 
+                return this.ApplicationBar.Buttons[1] as IApplicationBarIconButton; 
             }
         }
 
@@ -64,7 +64,7 @@ namespace Awful
         {
             get
             {
-                return this.ApplicationBar.Buttons[3] as IApplicationBarIconButton;
+                return this.ApplicationBar.Buttons[2] as IApplicationBarIconButton;
             }
         }
 
