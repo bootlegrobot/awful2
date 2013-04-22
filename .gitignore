@@ -16,6 +16,9 @@ design/
 marketplace/
 # private 3rd-party library folder
 lib/private/
+lib/WP7/*
+lib/WP8/*
+lib/WinRT/*
 # Thumbnail cache
 [Tt]humbs.db
 # backup folder
@@ -24,3 +27,40 @@ backup/
 screenshots/
 # ThreadIcons folder
 ThreadIcons/
+#Ignore files build by Visual Studio
+*.obj
+*.pdb
+*.user
+*.aps
+*.pch
+*.vspscc
+*.pri
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+ClientBin
+[Bb]in
+[Dd]ebug*/
+*.lib
+*.sbr
+obj/
+PerfLogs/
+[Rr]elease*/
+_ReSharper*/
+[Tt]est[Rr]esult*
+Examples*/
+SerializerTest*/
+*.csproj.user
+*.resharper*
+Download/
+#Ignore files from MonoDevelop
+*.pidb
+*.userprefs
+SubmissionInfo/
