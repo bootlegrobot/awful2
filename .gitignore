@@ -64,3 +64,5 @@ Download/
 *.pidb
 *.userprefs
 SubmissionInfo/
+
+/Awful.WP8/Awful.WP8.Core.Test/Awful.WP8.Core.Test/TestConfiguration.cs

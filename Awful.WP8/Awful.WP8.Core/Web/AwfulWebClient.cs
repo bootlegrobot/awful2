@@ -8,11 +8,6 @@ using System.Net;
 using System.IO;
 using Kollasoft;
 
-#if WINPHONE
-using System.Net.Browser;
-
-#endif
-
 namespace Awful.Web
 {
     public static class AwfulWebExtensions
