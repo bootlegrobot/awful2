@@ -136,13 +136,27 @@ namespace Awful.Web
             });
         }
 
-        public static async Task<ThreadPageMetadata> GetLastPostAsync(this ThreadMetadata thread, int pageNumber)
+        public static async Task<ThreadPageMetadata> GetLastPostAsync(this ThreadMetadata thread)
         {
             // http://forums.somethingawful.com/showthread.php?threadid=3545394&goto=lastpost
 
             RestSharp.RestRequest request = new RestSharp.RestRequest("showthread.php", RestSharp.Method.GET);
-            
+            request.AddParameter("threadid", thread.ThreadID);
             request.AddParameter("goto", "lastpost");
+            return await Client.ExecuteRequestAsync<ThreadPageMetadata>(request, response =>
+            {
+                HtmlAgilityPack.HtmlDocument doc = response.ToHtmlDocument();
+                return ThreadPageParser.ParseThreadPage(doc);
+            });
+        }
+
+        public static async Task<ThreadPageMetadata> GetNewPostAsync(this ThreadMetadata thread)
+        {
+            // http://forums.somethingawful.com/showthread.php?threadid=3545394&goto=lastpost
+
+            RestSharp.RestRequest request = new RestSharp.RestRequest("showthread.php", RestSharp.Method.GET);
+            request.AddParameter("threadid", thread.ThreadID);
+            request.AddParameter("goto", "newpost");
             return await Client.ExecuteRequestAsync<ThreadPageMetadata>(request, response =>
             {
                 HtmlAgilityPack.HtmlDocument doc = response.ToHtmlDocument();
@@ -170,7 +184,7 @@ namespace Awful.Web
             });
         }
 
-        public static async Task<bool> MarkAsRead(this ThreadPostMetadata post)
+        public static async Task<bool> MarkAsReadAsync(this ThreadPostMetadata post)
         {
             // http://forums.somethingawful.com/showthread.php?action=setseen&threadid=3545394&index=23
 
