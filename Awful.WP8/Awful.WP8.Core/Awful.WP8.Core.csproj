@@ -101,7 +101,6 @@
     <Compile Include="Helpers\AwfulWebRequest.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\ContentFilter.cs" />
-    <Compile Include="Helpers\Exceptions.cs" />
     <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Models\ForumHiearchy.cs" />
     <Compile Include="Models\Metadata.cs" />
