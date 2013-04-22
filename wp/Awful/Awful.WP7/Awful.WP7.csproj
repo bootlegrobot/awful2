@@ -215,6 +215,9 @@
     <Compile Include="..\Awful.WP8\Controls\ContextMenus.cs">
       <Link>Controls\ContextMenus.cs</Link>
     </Compile>
+    <Compile Include="..\Awful.WP8\Controls\DataTemplateSelector.cs">
+      <Link>Controls\DataTemplateSelector.cs</Link>
+    </Compile>
     <Compile Include="..\Awful.WP8\Controls\ForumListControl.xaml.cs">
       <DependentUpon>ForumListControl.xaml</DependentUpon>
       <Link>Controls\ForumListControl.xaml.cs</Link>
@@ -378,7 +381,7 @@
       <Link>ViewModels\ThreadViewModel.cs</Link>
     </Compile>
     <Compile Include="..\Awful.WP8\PrivateMessageDetailsPage.xaml.cs">
-	<Link>PrivateMessageDetailsPage.xaml.cs</Link>
+      <Link>PrivateMessageDetailsPage.xaml.cs</Link>
       <DependentUpon>PrivateMessageDetailsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="..\Awful.WP8\PrivateMessageViewPage.xaml.cs">
@@ -451,6 +454,9 @@
     </Content>
     <Content Include="..\Awful.WP8\Assets\AppBar\feature.email.png">
       <Link>Assets\AppBar\feature.email.png</Link>
+    </Content>
+    <Content Include="..\Awful.WP8\Assets\AppBar\folder.png">
+      <Link>Assets\AppBar\folder.png</Link>
     </Content>
     <Content Include="..\Awful.WP8\Assets\AppBar\MB_0002_mail_sent.png">
       <Link>Assets\AppBar\MB_0002_mail_sent.png</Link>

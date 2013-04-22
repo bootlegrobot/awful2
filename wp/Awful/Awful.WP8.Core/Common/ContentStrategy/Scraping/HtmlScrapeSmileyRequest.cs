@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Awful.Web;
+
+namespace Awful.Deprecated
+{
+    internal sealed class HtmlScrapeSmileyRequest : SmileyRequestStrategy
+    {
+        protected override Uri GetSmileyPageUri()
+        {
+            return new Uri("http://forums.somethingawful.com/misc.php?action=showsmilies");
+        }
+
+        public override IEnumerable<TagMetadata> LoadSmilies()
+        {
+            var url = GetSmileyPageUri().AbsoluteUri;
+            var doc = new AwfulWebClient().FetchHtml(url).ToHtmlDocument();
+            return SmileyParser.ParseSmiliesFromNode(doc);
+        }
+    }
+}
