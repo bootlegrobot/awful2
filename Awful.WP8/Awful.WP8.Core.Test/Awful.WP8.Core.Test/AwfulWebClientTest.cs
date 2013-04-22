@@ -15,8 +15,11 @@ namespace Awful.Core.Test
         [TestInitialize]
         public void Intialize()
         {
-            string username = "bootleg robot";
-            string password = "NateDawg@1754!";
+            string username = string.Empty;
+            string password = string.Empty;
+
+            Assert.IsNotNull(username);
+            Assert.IsNotNull(password);
 
             UserMetadata user = AwfulWebExtensions.LoginAsync(username, password).Result;
             var cookies = user.Cookies;
