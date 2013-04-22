@@ -129,6 +129,10 @@
     <Reference Include="ImageTools.Utils">
       <HintPath>..\packages\ImageTools.0.3.1\lib\sl3-wp\ImageTools.Utils.dll</HintPath>
     </Reference>
+    <Reference Include="ImgurUploader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\ImgurUploader.dll</HintPath>
+    </Reference>
     <Reference Include="KollaSoft.WP7">
       <HintPath>..\..\..\lib\KollaSoft.WP7.dll</HintPath>
     </Reference>
@@ -529,10 +533,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\ImgurUploader\ImgurUploader\ImgurUploader.csproj">
-      <Project>{8A43C9AE-68CA-427F-B8FF-52236D205F89}</Project>
-      <Name>ImgurUploader</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Awful.V2.Core\Awful.V2.Core.csproj">
       <Project>{CE3F4D7C-B819-4590-9816-C311B8CF8734}</Project>
       <Name>Awful.V2.Core</Name>
