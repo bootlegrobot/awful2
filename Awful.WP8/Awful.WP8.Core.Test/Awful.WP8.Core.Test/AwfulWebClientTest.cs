@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 using Awful;
 using Awful.Web;
 using System.Linq;
+using System.Diagnostics;
 
 namespace Awful.Core.Test
 {
@@ -14,21 +15,21 @@ namespace Awful.Core.Test
         [TestInitialize]
         public void Intialize()
         {
-            string username = "Awful!.dll";
-            string password = "q2bddf";
+            string username = "bootleg robot";
+            string password = "NateDawg@1754!";
 
-            UserMetadata user = AwfulWebClient.LoginAsync(username, password).Result;
+            UserMetadata user = AwfulWebExtensions.LoginAsync(username, password).Result;
             var cookies = user.Cookies;
             Assert.IsNotNull(cookies);
             Assert.IsTrue(cookies.Count > 0);
             TestUser = user;
-            Assert.IsTrue(AwfulWebClient.LoadSession(user));
+            Assert.IsTrue(AwfulWebExtensions.LoadSession(user));
         }
 
         [TestMethod]
         public void TestGetSmiliesAsync()
         {
-            var smilies = AwfulWebClient.GetSmiliesAsync().Result;
+            var smilies = AwfulWebExtensions.GetSmiliesAsync().Result;
             Assert.IsNotNull(smilies);
             Assert.IsTrue(smilies.ToList().Count > 0);
         }
@@ -36,7 +37,7 @@ namespace Awful.Core.Test
         [TestMethod]
         public void TestGetForumListAsync()
         {
-            var forums = AwfulWebClient.GetForumListAsync().Result;
+            var forums = AwfulWebExtensions.GetForumListAsync().Result;
             Assert.IsNotNull(forums);
             Assert.IsTrue(forums.ToList().Count > 0);
         }
@@ -50,6 +51,15 @@ namespace Awful.Core.Test
             Assert.IsTrue(page.Threads.Count > 0);
             Assert.IsTrue(page.ForumID.Equals("1"));
             Assert.IsTrue(page.PageCount.Equals(1));
+        }
+
+        [TestMethod]
+        public void TestGetBookmarksAsync()
+        {
+            Assert.IsNotNull(TestUser);
+            var bookmarks = AwfulWebExtensions.GetBookmarksAsync().Result;
+            Assert.IsNotNull(bookmarks);
+            Assert.IsNotNull(bookmarks.Threads);
         }
 
         [TestMethod]
@@ -117,7 +127,47 @@ namespace Awful.Core.Test
         public void TestThreadBookmarkAsync()
         {
             ThreadMetadata thread = new ThreadMetadata() { ThreadID = "3460814" };
-            Assert.Fail("Not Implemented");
+            ForumPageMetadata bookmarks = AwfulWebExtensions.GetBookmarksAsync().Result;
+            Assert.IsNotNull(bookmarks);
+
+            ThreadMetadata bookmarkedThread = bookmarks.Threads
+                .Where(t => t.ThreadID.Equals(thread.ThreadID))
+                .SingleOrDefault();
+
+            bool success = false;
+            if (bookmarkedThread != null)
+            {
+                success = thread.SetBookmarkAsync(AwfulWebExtensions.BookmarkOptions.Remove).Result;
+                Assert.IsTrue(success);
+                // The line below will fail:
+                // bookmarks = bookmarks.RefreshAsync().Result;
+
+                bookmarks = AwfulWebExtensions.GetBookmarksAsync().Result;
+                Assert.IsNotNull(bookmarks);
+
+                bookmarkedThread = bookmarks.Threads
+                    .Where(t => t.ThreadID.Equals(thread.ThreadID))
+                    .SingleOrDefault();
+
+                Assert.IsNull(bookmarkedThread);
+            }
+
+            else
+            {
+                success = thread.SetBookmarkAsync(AwfulWebExtensions.BookmarkOptions.Add).Result;
+                Assert.IsTrue(success);
+                // The line below will fail:
+                // bookmarks = bookmarks.RefreshAsync().Result;
+
+                bookmarks = AwfulWebExtensions.GetBookmarksAsync().Result;
+                Assert.IsNotNull(bookmarks);
+
+                bookmarkedThread = bookmarks.Threads
+                    .Where(t => t.ThreadID.Equals(thread.ThreadID))
+                    .SingleOrDefault();
+
+                Assert.IsNotNull(bookmarkedThread);
+            }
         }
 
         [TestMethod]
