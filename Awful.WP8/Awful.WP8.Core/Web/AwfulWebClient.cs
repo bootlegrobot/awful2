@@ -15,7 +15,7 @@ using System.Net.Browser;
 
 namespace Awful.Web
 {
-    public static class AwfulWebClient
+    public static class AwfulWebExtensions
     {
         public const int DefaultTimeoutInMilliseconds = 60000;
         private const string BASE_URL = "http://forums.somethingawful.com";
@@ -103,6 +103,16 @@ namespace Awful.Web
                     HtmlAgilityPack.HtmlDocument doc = response.ToHtmlDocument();
                     IEnumerable<ForumMetadata> forums = ForumParser.ParseForumList(doc);
                     return forums;
+                });
+        }
+
+        public static async Task<ForumPageMetadata> GetBookmarksAsync()
+        {
+            RestSharp.RestRequest request = new RestSharp.RestRequest("usercp.php", RestSharp.Method.GET);
+            return await Client.ExecuteRequestAsync(request, response =>
+                {
+                    var htmldoc = response.ToHtmlDocument();
+                    return ForumParser.ParseForumPage(htmldoc);
                 });
         }
 
@@ -213,7 +223,7 @@ namespace Awful.Web
 
         public static async Task<bool> SetBookmarkAsync(this ThreadMetadata thread, BookmarkOptions options)
         {
-            RestSharp.RestRequest request = new RestSharp.RestRequest(CoreConstants.BOOKMARK_THREAD_URI, RestSharp.Method.GET);
+            RestSharp.RestRequest request = new RestSharp.RestRequest(CoreConstants.BOOKMARK_THREAD_URI, RestSharp.Method.POST);
             request.AddParameter("json", "1");
             request.AddParameter("action", options == BookmarkOptions.Add
                 ? "cat_toggle"
@@ -284,6 +294,25 @@ namespace Awful.Web
             });
         }
 
+        public static async Task<bool> SendMessageAsync(this IPrivateMessageRequest pmRequest)
+        {
+            RestSharp.RestRequest request = new RestSharp.RestRequest("private.php", RestSharp.Method.POST);
+            request.AddParameter("prevmessageid", pmRequest.PrivateMessageId);
+            request.AddParameter("action", SEND_MESSAGE_ACTION_VALUE);
+            request.AddParameter("forward", pmRequest.IsForward ? "yes" : string.Empty);
+            request.AddParameter("touser", pmRequest.To);
+            request.AddParameter("title", pmRequest.Subject);
+            request.AddParameter("iconid", pmRequest.SelectedTag.Value);
+            request.AddParameter("message", pmRequest.Body);
+            request.AddParameter("parseurl", "yes");
+            request.AddParameter("savecopy", "yes");
+            request.AddParameter("submit", SEND_MESSAGE_SUBMIT_VALUE);
+            return await Client.ExecuteRequestAsync<bool>(request, response =>
+                {
+                    return response.StatusCode == HttpStatusCode.OK;
+                });
+        }
+
         public static async Task<IEnumerable<PrivateMessageFolderMetadata>> GetFolderListAsync()
         {
             // http://forums.somethingawful.com/private.php?
@@ -307,6 +336,87 @@ namespace Awful.Web
                 var doc = response.ToHtmlDocument();
                 return PrivateMessageParser.ParsePrivateMessageFolder(doc);
             });
+        }
+
+        #region private messaging url parameters 
+        private const int SENT_MESSAGE_FOLDERID = -1;
+        private const int INBOX_MESSAGE_FOLDERID = 0;
+        private const string SEND_MESSAGE_ACTION_VALUE = "dosend";
+        private const string NEW_MESSAGE_ACTION_VALUE = "newmessage";
+        private const string MOVE_MESSAGE_ACTION_VALUE = "dostuff";
+        private const string SEND_MESSAGE_SUBMIT_VALUE = "Send Message";
+        private const string MOVE_MESSAGE_SUBMIT_VALUE = "Move";
+        private const string DELETE_MESSAGE_SUBMIT_ACTION = "Delete";
+        #endregion
+
+        private static async Task<bool> PrivateMessageAPISend(IEnumerable<PrivateMessageMetadata> messages,
+            string destinationFolderId, string sourceFolderId, string actionQuery, string actionValue)
+        {
+            string folderId = null;
+            RestSharp.RestRequest request = new RestSharp.RestRequest("private.php", RestSharp.Method.POST);
+            foreach (var message in messages)
+            {
+                folderId = message.FolderId;
+                request.AddParameter(string.Format("privatemessage[{0}]", message.PrivateMessageId), "yes");
+            }
+
+            request.AddParameter("action", MOVE_MESSAGE_ACTION_VALUE);
+            request.AddParameter("thisfolder", sourceFolderId);
+            request.AddParameter("folderid", destinationFolderId);
+            request.AddParameter(actionQuery, actionValue);
+
+            return await Client.ExecuteRequestAsync<bool>(request, response =>
+            {
+                return response.StatusCode == HttpStatusCode.OK;
+            });
+        }
+
+        public static async Task<bool> DeleteAllAsync(this IEnumerable<PrivateMessageMetadata> messages)
+        {
+            string folderId = messages.First().FolderId;
+            return await PrivateMessageAPISend(messages, folderId, folderId, "delete", DELETE_MESSAGE_SUBMIT_ACTION);
+        }
+
+        public static async Task<bool> DeleteAsync(this PrivateMessageMetadata message)
+        {
+            var list = new List<PrivateMessageMetadata>() { message };
+            return await PrivateMessageAPISend(list, message.FolderId, message.FolderId, "delete", 
+                DELETE_MESSAGE_SUBMIT_ACTION);
+        }
+
+        public static async Task<bool> MoveAllAsync(this IEnumerable<PrivateMessageMetadata> messages,
+            PrivateMessageFolderMetadata folder)
+        {
+            string folderid = messages.First().FolderId;
+            return await PrivateMessageAPISend(messages, folder.FolderId, folderid, "move", MOVE_MESSAGE_SUBMIT_VALUE);
+        }
+
+        public static async Task<bool> MoveAsync(this PrivateMessageMetadata message,
+            PrivateMessageFolderMetadata folder)
+        {
+            var list = new List<PrivateMessageMetadata> { message };
+            return await list.MoveAllAsync(folder);
+        }
+
+        public static async Task<PrivateMessageFolderEditor> EditPrivateMessageFoldersAsync()
+        {
+            RestSharp.RestRequest request = new RestSharp.RestRequest("private.php", RestSharp.Method.GET);
+            request.AddParameter("action", "editfolders");
+            return await Client.ExecuteRequestAsync<PrivateMessageFolderEditor>(request, response =>
+                {
+                    var htmldoc = response.ToHtmlDocument();
+                    return PrivateMessageParser.ParseEditFolderPage(htmldoc);
+                });
+        }
+
+        public static async Task<bool> SaveChangesAsync(this PrivateMessageFolderEditor editor)
+        {
+            RestSharp.RestRequest request = new RestSharp.RestRequest("private.php", RestSharp.Method.POST);
+            request.AddBody(editor.GenerateRequestData());
+            return await Client.ExecuteRequestAsync<bool>(request, response =>
+                {
+                    return response.StatusCode == HttpStatusCode.OK;
+                });
         }
 
         #region Replying to Threads

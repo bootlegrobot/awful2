@@ -328,6 +328,7 @@ namespace Awful.Deprecated
             return MetroStyler.Metrofy(page.Posts);
         }
 
+        /*
         public static ThreadPageMetadata Page(this ThreadMetadata thread, int pageNumber)
         {
             return AwfulContentRequest.Threads.LoadThreadPage(thread.ThreadID, pageNumber);
@@ -379,6 +380,7 @@ namespace Awful.Deprecated
         {
             return AwfulContentRequest.Threads.BeginPostEdit(post.PostID);
         }
+        */ 
 
         #endregion
 
@@ -393,6 +395,9 @@ namespace Awful.Deprecated
             return forum;
         }
 
+        #endregion
+
+        /*
         public static ForumPageMetadata Page(this ForumMetadata forum, int pageNumber)
         {
             ForumPageMetadata page = null;
@@ -494,6 +499,8 @@ namespace Awful.Deprecated
         }
 
         #endregion
+        
+        */
 
         #region User Extensions
 
@@ -553,11 +560,13 @@ namespace Awful.Deprecated
             return forums;
         }
 
+        /*
         public static ForumPageMetadata LoadBookmarks(this UserMetadata user)
         {
             UserBookmarksMetadata data = new UserBookmarksMetadata();
             return data.Page(0);
         }
+        */
 
         public static IEnumerable<PrivateMessageFolderMetadata> LoadPrivateMessageFolders(this UserMetadata user)
         {
