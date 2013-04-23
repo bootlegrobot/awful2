@@ -112,6 +112,9 @@
     <Compile Include="..\..\Awful.WP8\Awful.WP8.Core.Test\Awful.WP8.Core.Test\AwfulWebClientTest.cs">
       <Link>AwfulWebClientTest.cs</Link>
     </Compile>
+    <Compile Include="..\..\Awful.WP8\Awful.WP8.Core.Test\Awful.WP8.Core.Test\TestConfiguration.cs">
+      <Link>TestConfiguration.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
