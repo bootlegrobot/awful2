@@ -47,7 +47,8 @@ namespace Awful.Web
 
         public static async Task<UserMetadata> LoginAsync(string username, string password)
         {
-            /*
+            /* THIS DOESN'T WORK FOR SOME REASON:
+             * 
             RestSharp.RestRequest request = new RestSharp.RestRequest("account.php", RestSharp.Method.POST);
             request.AddParameter("action", "login");
             request.AddParameter("username", username);
@@ -62,7 +63,8 @@ namespace Awful.Web
 
                     return user;
                 });
-            */
+             * 
+             */
 
             TaskCompletionSource<IEnumerable<Cookie>> tcs = new TaskCompletionSource<IEnumerable<Cookie>>();
             Awful.Deprecated.AwfulLoginClient login = new Deprecated.AwfulLoginClient();
@@ -72,6 +74,30 @@ namespace Awful.Web
             user.Username = username;
             user.Cookies = new List<Cookie>(cookies);
             return user;
+        }
+
+        public static async Task<IUserCPSettings> GetUserCPAsync()
+        {
+            // http://forums.somethingawful.com/member.php?action=editoptions
+            RestSharp.RestRequest request = new RestSharp.RestRequest("member.php", RestSharp.Method.GET);
+            request.AddParameter("action", "editoptions");
+            return await Client.ExecuteRequestAsync<IUserCPSettings>(request, response =>
+            {
+                HtmlAgilityPack.HtmlDocument doc = response.ToHtmlDocument();
+                var cp = UserCPSettings.FromHtmlDocument(doc);
+                return cp;
+            });
+
+        }
+
+        public static async Task<bool> SaveAsync(this IUserCPSettings cp)
+        {
+            RestSharp.IRestRequest request = new RestSharp.RestRequest("member.php", RestSharp.Method.POST);
+            request = cp.PreparePostRequest(request);
+            return await Client.ExecuteRequestAsync<bool>(request, resp =>
+                {
+                    return resp.StatusCode == HttpStatusCode.OK;
+                });
         }
 
         public static async Task<IEnumerable<TagMetadata>> GetSmiliesAsync()

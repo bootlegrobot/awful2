@@ -105,6 +105,7 @@
     <Compile Include="Models\Metadata.cs" />
     <Compile Include="Models\PrivateMessageRequest.cs" />
     <Compile Include="Models\ThreadPostRequest.cs" />
+    <Compile Include="Models\UserCPSettings.cs" />
     <Compile Include="Parsing\ForumParser.cs" />
     <Compile Include="Parsing\MetroStyler.cs" />
     <Compile Include="Parsing\PostContentStyler.cs" />
