@@ -35,7 +35,7 @@ namespace Awful
         internal IRestRequest PreparePostRequest(IRestRequest request);
     }
 
-    public class UserCPSettings : IUserCPSettings
+    internal class UserCPSettings : IUserCPSettings
     {
         #region Input Names
 
