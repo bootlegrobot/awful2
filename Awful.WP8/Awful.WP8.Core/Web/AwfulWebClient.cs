@@ -76,24 +76,37 @@ namespace Awful.Web
             return user;
         }
 
-        public static async Task<IUserCPSettings> GetUserCPAsync()
+        public static async Task<IUserFeatures> GetUserFeaturesAsync()
+        {
+            // http://forums.somethingawful.com/member.php?action=accountfeatures
+            RestSharp.RestRequest request = new RestSharp.RestRequest("member.php", RestSharp.Method.GET);
+            request.AddParameter("action", "accountfeatures");
+            return await Client.ExecuteRequestAsync<IUserFeatures>(request, response =>
+            {
+                HtmlAgilityPack.HtmlDocument doc = response.ToHtmlDocument();
+                var cp = UserFeatures.FromHtmlDocument(doc);
+                return cp;
+            });
+        }
+
+        public static async Task<IUserSettings> GetUserCPAsync()
         {
             // http://forums.somethingawful.com/member.php?action=editoptions
             RestSharp.RestRequest request = new RestSharp.RestRequest("member.php", RestSharp.Method.GET);
             request.AddParameter("action", "editoptions");
-            return await Client.ExecuteRequestAsync<IUserCPSettings>(request, response =>
+            return await Client.ExecuteRequestAsync<IUserSettings>(request, response =>
             {
                 HtmlAgilityPack.HtmlDocument doc = response.ToHtmlDocument();
-                var cp = UserCPSettings.FromHtmlDocument(doc);
+                var cp = UserSettings.FromHtmlDocument(doc);
                 return cp;
             });
 
         }
 
-        public static async Task<bool> SaveAsync(this IUserCPSettings cp)
+        public static async Task<bool> SaveAsync(this IUserSettings cp)
         {
             RestSharp.IRestRequest request = new RestSharp.RestRequest("member.php", RestSharp.Method.POST);
-            request = cp.PreparePostRequest(request);
+            request = (cp as IPreparePostRequest).PreparePostRequest(request);
             return await Client.ExecuteRequestAsync<bool>(request, resp =>
                 {
                     return resp.StatusCode == HttpStatusCode.OK;

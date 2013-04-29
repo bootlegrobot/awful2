@@ -9,7 +9,7 @@ using RestSharp;
 
 namespace Awful
 {
-    public interface IUserCPSettings
+    public interface IUserSettings
     {
         bool InvisbleMode { get; set; }
         bool AutomaticLogin { get; set; }
@@ -31,11 +31,9 @@ namespace Awful
         bool ShowVideo { get; set; }
         bool ShowSmilies { get; set; }
         bool DisableAdvancedPostingFeatures { get; set; }
-
-        internal IRestRequest PreparePostRequest(IRestRequest request);
     }
 
-    internal class UserCPSettings : IUserCPSettings
+    internal class UserSettings : IUserSettings, IPreparePostRequest
     {
         #region Input Names
 
@@ -69,9 +67,9 @@ namespace Awful
 
         private Dictionary<string, bool> SettingsTable { get { return userCPTable; } }
        
-        public static UserCPSettings FromHtmlDocument(HtmlDocument doc)
+        public static UserSettings FromHtmlDocument(HtmlDocument doc)
         {
-            UserCPSettings cpSettings = new UserCPSettings();
+            UserSettings cpSettings = new UserSettings();
 
             // grab list of all radio type nodes that are checked
             var options = doc.DocumentNode.Descendants("input")
@@ -100,7 +98,7 @@ namespace Awful
             return value == "yes" ? true : false;
         }
 
-        internal IRestRequest PreparePostRequest(IRestRequest request)
+        public IRestRequest PreparePostRequest(IRestRequest request)
         {
             request.Method = Method.POST;
             foreach (var key in SettingsTable.Keys)
