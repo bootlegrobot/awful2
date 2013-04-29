@@ -63,7 +63,10 @@ namespace Awful.Common
 
         void _worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (!e.Cancelled)
+            if (e.Error != null)
+                this._error(e.Error);
+
+            else if (!e.Cancelled)
                 this._success(e.Result);
         }
 
