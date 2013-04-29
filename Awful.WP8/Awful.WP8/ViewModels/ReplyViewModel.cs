@@ -177,7 +177,7 @@ namespace Awful.ViewModels
         /// Not supported in Windows Phone OS versions &lt; 8.0.
         /// </summary>
         /// <param name="obj"></param>
-        internal void AttachImage(object obj) { }
+        internal void AttachImage(object obj) { MessageBox.Show("Sorry, this feature is not available for Windows Phone 7."); }
 #endif
 
 #if WP8

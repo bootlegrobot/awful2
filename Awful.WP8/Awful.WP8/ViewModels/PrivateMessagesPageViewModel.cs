@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Globalization;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
+using System.Windows.Media;
 
 namespace Awful.ViewModels
 {
@@ -165,6 +166,41 @@ namespace Awful.ViewModels
 
         public PrivateMessageDataSource SelectedItem { get; set; }
     }
+
+    public class PrivateMessageSubtitleColor : DependencyObject, IValueConverter
+    {
+        public static readonly DependencyProperty NewMessageBrushProperty = DependencyProperty.Register(
+           "NewMessageBrush", typeof(SolidColorBrush), typeof(PrivateMessageSubtitleColor), new PropertyMetadata(null));
+
+        public static readonly DependencyProperty OldMessageBrushProperty = DependencyProperty.Register(
+            "OldMessageBrush", typeof(SolidColorBrush), typeof(PrivateMessageSubtitleColor), new PropertyMetadata(null));
+
+        public SolidColorBrush NewMessageBrush
+        {
+            get { return GetValue(NewMessageBrushProperty) as SolidColorBrush; }
+            set { SetValue(NewMessageBrushProperty, value); }
+        }
+
+        public SolidColorBrush OldMessageBrush
+        {
+            get { return GetValue(OldMessageBrushProperty) as SolidColorBrush; }
+            set { SetValue(OldMessageBrushProperty, value); }
+        }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is PrivateMessageDataSource)
+                return (value as PrivateMessageDataSource).IsNew ? NewMessageBrush : OldMessageBrush;
+
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 
     public class PrivateMessageTemplateSelector : Telerik.Windows.Controls.DataTemplateSelector
     {

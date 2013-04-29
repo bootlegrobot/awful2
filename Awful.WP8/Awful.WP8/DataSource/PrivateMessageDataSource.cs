@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media;
 
 namespace Awful.Data
 {
@@ -35,13 +36,14 @@ namespace Awful.Data
             set { SetProperty(ref _subtitle, value, "Subtitle"); }
         }
 
+        public Brush SubtitleForeground { get; set; }
+
         private string _description;
         public string Description
         {
             get { return _description; }
             set { SetProperty(ref _description, value, "Description"); }
         }
-
 
         public void GetFormattedMessageAsync(Action<string> callback)
         {
@@ -177,6 +179,7 @@ namespace Awful.Data
             this.Title = first.Title;
             this.Subtitle = first.Subtitle;
             this.Description = FormatGroupDescription(Items);
+            this.IsNew = messages.Count(item => item.IsNew) > 0;
         }
 
         private readonly ObservableCollection<PrivateMessageDataSource> _items = new ObservableCollection<PrivateMessageDataSource>();
